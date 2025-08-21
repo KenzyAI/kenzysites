@@ -1,0 +1,114 @@
+version: '3.8'
+
+services:
+  # FastAPI Backend
+  backend:
+    build: ./backend
+    container_name: kenzysites-backend
+    ports:
+      - "8000:8000"
+    environment:
+      - DEBUG=True
+      - DATABASE_URL=postgresql://user:password@postgres:5432/kenzysites
+      - REDIS_URL=redis://redis:6379
+      - AGNO_API_KEY=${AGNO_API_KEY}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - LANDING_PAGE_ENGINE=${LANDING_PAGE_ENGINE:-boltdiy}
+    volumes:
+      - ./backend:/app
+    depends_on:
+      - postgres
+      - redis
+      - boltdiy
+    networks:
+      - kenzysites-network
+
+  # Bolt.DIY Service
+  boltdiy:
+    build: ./boltdiy
+    container_name: kenzysites-boltdiy
+    ports:
+      - "5173:5173"
+    environment:
+      - NODE_ENV=development
+    volumes:
+      - ./boltdiy/projects:/app/projects
+      - boltdiy-node-modules:/app/node_modules
+    networks:
+      - kenzysites-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5173"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: kenzysites-postgres
+    environment:
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=kenzysites
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - kenzysites-network
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    container_name: kenzysites-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    networks:
+      - kenzysites-network
+
+  # Next.js Frontend (optional)
+  frontend:
+    build: ./frontend
+    container_name: kenzysites-frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:8000
+      - NEXT_PUBLIC_BOLTDIY_URL=http://localhost:5173
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+      - /app/.next
+    depends_on:
+      - backend
+    networks:
+      - kenzysites-network
+
+  # Nginx Reverse Proxy (optional)
+  nginx:
+    image: nginx:alpine
+    container_name: kenzysites-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/ssl:/etc/nginx/ssl
+    depends_on:
+      - backend
+      - frontend
+      - boltdiy
+    networks:
+      - kenzysites-network
+
+volumes:
+  postgres-data:
+  redis-data:
+  boltdiy-node-modules:
+
+networks:
+  kenzysites-network:
+    driver: bridge

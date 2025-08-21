@@ -1,0 +1,236 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Modelos principais para o MVP
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  name          String?
+  password      String?
+  image         String?
+  emailVerified DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  
+  // Relacionamentos
+  sites         Site[]
+  subscriptions Subscription[]
+  invoices      Invoice[]
+  aiUsage       AIUsage[]
+  
+  @@map("users")
+}
+
+model Site {
+  id              String    @id @default(cuid())
+  name            String
+  slug            String    @unique
+  domain          String?
+  status          SiteStatus @default(CREATING)
+  wpUrl           String?
+  wpAdmin         String?
+  wpPassword      String?
+  template        String?
+  aiPrompt        String?   @db.Text
+  
+  // Metadados
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  lastBackup      DateTime?
+  suspendedAt     DateTime?
+  deletedAt       DateTime?
+  
+  // Relacionamentos
+  userId          String
+  user            User      @relation(fields: [userId], references: [id])
+  pages           Page[]
+  posts           Post[]
+  media           Media[]
+  
+  @@index([userId])
+  @@index([status])
+  @@map("sites")
+}
+
+model Page {
+  id          String    @id @default(cuid())
+  title       String
+  slug        String
+  content     String    @db.Text
+  seoTitle    String?
+  seoDesc     String?
+  status      String    @default("published")
+  
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  
+  siteId      String
+  site        Site      @relation(fields: [siteId], references: [id], onDelete: Cascade)
+  
+  @@unique([siteId, slug])
+  @@map("pages")
+}
+
+model Post {
+  id          String    @id @default(cuid())
+  title       String
+  slug        String
+  content     String    @db.Text
+  excerpt     String?
+  featuredImage String?
+  category    String?
+  tags        String[]
+  status      String    @default("draft")
+  publishedAt DateTime?
+  
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  
+  siteId      String
+  site        Site      @relation(fields: [siteId], references: [id], onDelete: Cascade)
+  
+  @@unique([siteId, slug])
+  @@index([status, publishedAt])
+  @@map("posts")
+}
+
+model Media {
+  id          String    @id @default(cuid())
+  filename    String
+  url         String
+  type        String
+  size        Int
+  
+  createdAt   DateTime  @default(now())
+  
+  siteId      String
+  site        Site      @relation(fields: [siteId], references: [id], onDelete: Cascade)
+  
+  @@map("media")
+}
+
+model Plan {
+  id              String    @id @default(cuid())
+  name            String
+  slug            String    @unique
+  price           Decimal
+  currency        String    @default("BRL")
+  interval        String    @default("month")
+  
+  // Limites
+  maxSites        Int
+  maxLandingPages Int
+  aiCredits       Int
+  maxPosts        Int
+  storage         Int       // em GB
+  bandwidth       Int       // em GB
+  
+  // Features
+  features        Json
+  
+  active          Boolean   @default(true)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  
+  subscriptions   Subscription[]
+  
+  @@map("plans")
+}
+
+model Subscription {
+  id              String    @id @default(cuid())
+  status          SubscriptionStatus @default(ACTIVE)
+  currentPeriodStart DateTime
+  currentPeriodEnd   DateTime
+  cancelAt        DateTime?
+  canceledAt      DateTime?
+  
+  // Gateway info
+  gatewayId       String?   // ID no Asaas/Stripe
+  gateway         String?   // "asaas" ou "stripe"
+  
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  
+  userId          String
+  user            User      @relation(fields: [userId], references: [id])
+  planId          String
+  plan            Plan      @relation(fields: [planId], references: [id])
+  
+  invoices        Invoice[]
+  
+  @@index([userId])
+  @@index([status])
+  @@map("subscriptions")
+}
+
+model Invoice {
+  id              String    @id @default(cuid())
+  number          String    @unique
+  amount          Decimal
+  currency        String    @default("BRL")
+  status          InvoiceStatus @default(PENDING)
+  dueDate         DateTime
+  paidAt          DateTime?
+  
+  // Gateway info
+  gatewayId       String?
+  gatewayUrl      String?
+  
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  
+  userId          String
+  user            User      @relation(fields: [userId], references: [id])
+  subscriptionId  String
+  subscription    Subscription @relation(fields: [subscriptionId], references: [id])
+  
+  @@index([userId])
+  @@index([status])
+  @@map("invoices")
+}
+
+model AIUsage {
+  id          String    @id @default(cuid())
+  action      String    // "site_generation", "content_generation", etc
+  credits     Int
+  metadata    Json?
+  
+  createdAt   DateTime  @default(now())
+  
+  userId      String
+  user        User      @relation(fields: [userId], references: [id])
+  
+  @@index([userId, createdAt])
+  @@map("ai_usage")
+}
+
+// Enums
+enum SiteStatus {
+  CREATING
+  ACTIVE
+  SUSPENDED
+  DELETED
+}
+
+enum SubscriptionStatus {
+  TRIALING
+  ACTIVE
+  PAST_DUE
+  CANCELED
+  UNPAID
+}
+
+enum InvoiceStatus {
+  PENDING
+  PAID
+  FAILED
+  CANCELED
+}

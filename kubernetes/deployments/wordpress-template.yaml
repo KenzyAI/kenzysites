@@ -1,0 +1,157 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wordpress-{{CLIENT_ID}}
+  namespace: client-{{CLIENT_ID}}
+  labels:
+    app: wordpress
+    client: "{{CLIENT_ID}}"
+    tier: frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: wordpress
+      client: "{{CLIENT_ID}}"
+  template:
+    metadata:
+      labels:
+        app: wordpress
+        client: "{{CLIENT_ID}}"
+        tier: frontend
+    spec:
+      containers:
+      - name: wordpress
+        image: wordpress:6.4-php8.2-fpm-alpine
+        env:
+        - name: WORDPRESS_DB_HOST
+          value: mysql-{{CLIENT_ID}}
+        - name: WORDPRESS_DB_USER
+          valueFrom:
+            secretKeyRef:
+              name: mysql-{{CLIENT_ID}}-secret
+              key: username
+        - name: WORDPRESS_DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysql-{{CLIENT_ID}}-secret
+              key: password
+        - name: WORDPRESS_DB_NAME
+          value: wordpress_{{CLIENT_ID}}
+        - name: WORDPRESS_TABLE_PREFIX
+          value: wp_{{CLIENT_ID}}_
+        - name: WORDPRESS_DEBUG
+          value: "false"
+        - name: WORDPRESS_CONFIG_EXTRA
+          value: |
+            /* ACF Pro License */
+            define('ACF_PRO_LICENSE', '{{ACF_LICENSE}}');
+            
+            /* Security Settings */
+            define('DISALLOW_FILE_EDIT', true);
+            define('FORCE_SSL_ADMIN', true);
+            define('WP_AUTO_UPDATE_CORE', 'minor');
+            
+            /* Performance Settings */
+            define('WP_CACHE', true);
+            define('WP_CACHE_KEY_SALT', '{{CLIENT_ID}}');
+            define('WP_MEMORY_LIMIT', '256M');
+            define('WP_MAX_MEMORY_LIMIT', '512M');
+            
+            /* Brazilian Settings */
+            define('WPLANG', 'pt_BR');
+            define('WP_TIMEZONE', 'America/Sao_Paulo');
+        ports:
+        - containerPort: 9000
+          name: fastcgi
+        volumeMounts:
+        - name: wordpress-persistent-storage
+          mountPath: /var/www/html/wp-content
+        - name: uploads
+          mountPath: /var/www/html/wp-content/uploads
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        livenessProbe:
+          tcpSocket:
+            port: 9000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          tcpSocket:
+            port: 9000
+          initialDelaySeconds: 5
+          periodSeconds: 5
+      
+      - name: nginx
+        image: nginx:alpine
+        ports:
+        - containerPort: 80
+          name: http
+        volumeMounts:
+        - name: nginx-config
+          mountPath: /etc/nginx/conf.d
+        - name: wordpress-persistent-storage
+          mountPath: /var/www/html/wp-content
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "50m"
+          limits:
+            memory: "128Mi"
+            cpu: "100m"
+      
+      - name: redis
+        image: redis:7-alpine
+        command: ["redis-server", "--maxmemory", "64mb", "--maxmemory-policy", "allkeys-lru"]
+        ports:
+        - containerPort: 6379
+          name: redis
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "50m"
+          limits:
+            memory: "128Mi"
+            cpu: "100m"
+      
+      volumes:
+      - name: wordpress-persistent-storage
+        persistentVolumeClaim:
+          claimName: wp-pvc-{{CLIENT_ID}}
+      - name: uploads
+        persistentVolumeClaim:
+          claimName: wp-uploads-pvc-{{CLIENT_ID}}
+      - name: nginx-config
+        configMap:
+          name: nginx-config-{{CLIENT_ID}}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: wp-pvc-{{CLIENT_ID}}
+  namespace: client-{{CLIENT_ID}}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+  storageClassName: standard
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: wp-uploads-pvc-{{CLIENT_ID}}
+  namespace: client-{{CLIENT_ID}}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+  storageClassName: standard

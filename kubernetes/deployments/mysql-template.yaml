@@ -1,0 +1,125 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql-{{CLIENT_ID}}
+  namespace: client-{{CLIENT_ID}}
+  labels:
+    app: mysql
+    client: "{{CLIENT_ID}}"
+    tier: database
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mysql
+      client: "{{CLIENT_ID}}"
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: mysql
+        client: "{{CLIENT_ID}}"
+        tier: database
+    spec:
+      containers:
+      - name: mysql
+        image: mysql:8.0
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysql-{{CLIENT_ID}}-secret
+              key: root-password
+        - name: MYSQL_DATABASE
+          value: wordpress_{{CLIENT_ID}}
+        - name: MYSQL_USER
+          valueFrom:
+            secretKeyRef:
+              name: mysql-{{CLIENT_ID}}-secret
+              key: username
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysql-{{CLIENT_ID}}-secret
+              key: password
+        args:
+          - --default-authentication-plugin=mysql_native_password
+          - --character-set-server=utf8mb4
+          - --collation-server=utf8mb4_unicode_ci
+          - --max_connections=100
+          - --innodb_buffer_pool_size=256M
+          - --innodb_log_file_size=64M
+        ports:
+        - containerPort: 3306
+          name: mysql
+        volumeMounts:
+        - name: mysql-persistent-storage
+          mountPath: /var/lib/mysql
+        - name: mysql-backup
+          mountPath: /backup
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "250m"
+          limits:
+            memory: "1Gi"
+            cpu: "500m"
+        livenessProbe:
+          exec:
+            command:
+            - mysqladmin
+            - ping
+            - -h
+            - localhost
+            - -u
+            - root
+            - -p$(MYSQL_ROOT_PASSWORD)
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          exec:
+            command:
+            - mysql
+            - -h
+            - localhost
+            - -u
+            - root
+            - -p$(MYSQL_ROOT_PASSWORD)
+            - -e
+            - "SELECT 1"
+          initialDelaySeconds: 5
+          periodSeconds: 5
+      volumes:
+      - name: mysql-persistent-storage
+        persistentVolumeClaim:
+          claimName: mysql-pvc-{{CLIENT_ID}}
+      - name: mysql-backup
+        persistentVolumeClaim:
+          claimName: mysql-backup-pvc-{{CLIENT_ID}}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mysql-pvc-{{CLIENT_ID}}
+  namespace: client-{{CLIENT_ID}}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 20Gi
+  storageClassName: standard
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mysql-backup-pvc-{{CLIENT_ID}}
+  namespace: client-{{CLIENT_ID}}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 20Gi
+  storageClassName: standard
