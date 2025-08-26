@@ -41,22 +41,22 @@ aioftp==0.21.4
 validate-docbr==1.10.0  # CPF/CNPJ validation
 brazilcep==7.0.1  # CEP validation
 
-# Payment Processing
-stripe==7.4.0  # For international payments (future)
-mercadopago==2.2.1  # Alternative Brazilian gateway (future)
+# Payment Processing (commented for initial deploy)
+# stripe==7.4.0  # For international payments (future)
+# mercadopago==2.2.1  # Alternative Brazilian gateway (future)
 
-# Background Tasks
-celery[redis]==5.3.4
+# Background Tasks (commented for initial deploy)
+# celery[redis]==5.3.4
 
-# Image Processing
-Pillow==10.1.0
-python-magic==0.4.27
+# Image Processing (commented for initial deploy)
+# Pillow==10.4.0
+# python-magic==0.4.27
 
 # Caching
 cachetools==5.3.2
 
-# WordPress/SSH
-paramiko==3.3.1
+# WordPress/SSH (commented for initial deploy)
+# paramiko==3.3.1
 
 # Utilities
 PyYAML==6.0.1
