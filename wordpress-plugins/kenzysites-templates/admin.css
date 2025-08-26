@@ -1,0 +1,210 @@
+/**
+ * KenzySites Template Manager - Admin Styles
+ */
+
+/* Dashboard Cards */
+.kenzysites-dashboard {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.kenzysites-card {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.kenzysites-card h2 {
+    margin-top: 0;
+    color: #0066FF;
+    font-size: 18px;
+    border-bottom: 2px solid #f0f0f0;
+    padding-bottom: 10px;
+}
+
+.kenzysites-card ul {
+    list-style: none;
+    padding: 0;
+    margin: 15px 0;
+}
+
+.kenzysites-card li {
+    padding: 5px 0;
+    font-size: 14px;
+}
+
+/* Export Section */
+.kenzysites-export-section {
+    background: #fff;
+    padding: 20px;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    margin-top: 20px;
+}
+
+.kenzysites-export-section h2 {
+    color: #0066FF;
+    margin-top: 0;
+}
+
+/* Buttons */
+.button.export-template {
+    background: #00D4FF;
+    border-color: #00D4FF;
+    color: #fff;
+}
+
+.button.export-template:hover {
+    background: #00B8E6;
+    border-color: #00B8E6;
+}
+
+.button.export-template:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Placeholders Table */
+.wrap code {
+    background: #f4f4f4;
+    padding: 3px 6px;
+    border-radius: 3px;
+    color: #d63384;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: inline-block;
+}
+
+.wrap code:hover {
+    background: #0066FF;
+    color: #fff;
+    transform: scale(1.05);
+}
+
+/* Status Indicators */
+.status-active {
+    color: #22c55e;
+    font-weight: bold;
+}
+
+.status-inactive {
+    color: #ef4444;
+    font-weight: bold;
+}
+
+.status-warning {
+    color: #f59e0b;
+    font-weight: bold;
+}
+
+/* Notice Boxes */
+.kenzysites-notice {
+    padding: 15px;
+    margin: 20px 0;
+    border-left: 4px solid #0066FF;
+    background: #f0f8ff;
+}
+
+.kenzysites-notice.success {
+    border-left-color: #22c55e;
+    background: #f0fdf4;
+}
+
+.kenzysites-notice.error {
+    border-left-color: #ef4444;
+    background: #fef2f2;
+}
+
+.kenzysites-notice.warning {
+    border-left-color: #f59e0b;
+    background: #fffbeb;
+}
+
+/* Template Preview */
+#template-preview {
+    border: 2px dashed #e5e7eb;
+    padding: 20px;
+    border-radius: 8px;
+    min-height: 200px;
+    background: #fafafa;
+    margin-top: 20px;
+}
+
+/* Export Result */
+#export-result {
+    margin-top: 20px;
+}
+
+#export-result .notice {
+    margin: 0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .kenzysites-dashboard {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Loading Spinner */
+.kenzysites-loading {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(0, 102, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: #0066FF;
+    animation: spin 1s ease-in-out infinite;
+    margin-left: 10px;
+    vertical-align: middle;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Quick Actions */
+.kenzysites-quick-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.kenzysites-quick-actions .button {
+    flex: 1;
+}
+
+/* Industry Tags */
+.industry-tag {
+    display: inline-block;
+    padding: 4px 10px;
+    background: #0066FF;
+    color: white;
+    border-radius: 20px;
+    font-size: 12px;
+    margin-right: 5px;
+}
+
+.industry-tag.restaurant {
+    background: #ef4444;
+}
+
+.industry-tag.healthcare {
+    background: #22c55e;
+}
+
+.industry-tag.ecommerce {
+    background: #f59e0b;
+}
+
+.industry-tag.services {
+    background: #8b5cf6;
+}
+
+.industry-tag.education {
+    background: #3b82f6;
+}

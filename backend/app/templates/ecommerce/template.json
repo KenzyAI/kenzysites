@@ -1,0 +1,516 @@
+{
+  "id": "ecommerce_store_v1",
+  "name": "Loja Virtual Completa",
+  "industry": "ecommerce",
+  "version": "1.0.0",
+  "description": "Template completo para e-commerce com catálogo de produtos, carrinho, checkout e integração com marketplaces",
+  "language": "pt-BR",
+  "features": [
+    "product_catalog",
+    "shopping_cart",
+    "secure_checkout",
+    "payment_gateways",
+    "order_tracking",
+    "customer_accounts",
+    "wishlist",
+    "product_reviews",
+    "inventory_management",
+    "marketplace_integration"
+  ],
+  "pages": [
+    {
+      "slug": "home",
+      "title": "{{BUSINESS_NAME}} - Loja Online",
+      "template": "elementor",
+      "sections": [
+        {
+          "type": "hero_slider",
+          "settings": {
+            "slides": [
+              {
+                "image": "{{SLIDE_1_IMAGE}}",
+                "title": "{{SLIDE_1_TITLE}}",
+                "subtitle": "{{SLIDE_1_SUBTITLE}}",
+                "button_text": "{{SLIDE_1_BUTTON}}",
+                "button_url": "{{SLIDE_1_URL}}"
+              },
+              {
+                "image": "{{SLIDE_2_IMAGE}}",
+                "title": "{{SLIDE_2_TITLE}}",
+                "subtitle": "{{SLIDE_2_SUBTITLE}}",
+                "button_text": "{{SLIDE_2_BUTTON}}",
+                "button_url": "{{SLIDE_2_URL}}"
+              }
+            ],
+            "autoplay": true,
+            "duration": 5000
+          }
+        },
+        {
+          "type": "features_bar",
+          "settings": {
+            "items": [
+              {
+                "icon": "fas fa-truck",
+                "title": "Frete Grátis",
+                "description": "{{FREE_SHIPPING_INFO}}"
+              },
+              {
+                "icon": "fas fa-shield-alt",
+                "title": "Compra Segura",
+                "description": "Site 100% seguro"
+              },
+              {
+                "icon": "fas fa-undo",
+                "title": "{{RETURN_DAYS}} dias",
+                "description": "Para troca ou devolução"
+              },
+              {
+                "icon": "fas fa-credit-card",
+                "title": "Parcelamento",
+                "description": "Em até {{MAX_INSTALLMENTS}}x"
+              }
+            ]
+          }
+        },
+        {
+          "type": "product_categories",
+          "settings": {
+            "title": "Categorias em Destaque",
+            "layout": "grid",
+            "categories": [
+              {
+                "name": "{{CATEGORY_1_NAME}}",
+                "image": "{{CATEGORY_1_IMAGE}}",
+                "url": "{{CATEGORY_1_URL}}",
+                "product_count": "{{CATEGORY_1_COUNT}}"
+              },
+              {
+                "name": "{{CATEGORY_2_NAME}}",
+                "image": "{{CATEGORY_2_IMAGE}}",
+                "url": "{{CATEGORY_2_URL}}",
+                "product_count": "{{CATEGORY_2_COUNT}}"
+              },
+              {
+                "name": "{{CATEGORY_3_NAME}}",
+                "image": "{{CATEGORY_3_IMAGE}}",
+                "url": "{{CATEGORY_3_URL}}",
+                "product_count": "{{CATEGORY_3_COUNT}}"
+              },
+              {
+                "name": "{{CATEGORY_4_NAME}}",
+                "image": "{{CATEGORY_4_IMAGE}}",
+                "url": "{{CATEGORY_4_URL}}",
+                "product_count": "{{CATEGORY_4_COUNT}}"
+              }
+            ]
+          }
+        },
+        {
+          "type": "featured_products",
+          "settings": {
+            "title": "Produtos em Destaque",
+            "layout": "carousel",
+            "products_count": 8,
+            "show_badges": true,
+            "badges": ["Novo", "Promoção", "Mais Vendido"],
+            "quick_view": true,
+            "add_to_cart": true,
+            "wishlist_button": true
+          }
+        },
+        {
+          "type": "promotion_banner",
+          "settings": {
+            "background": "{{PROMO_BANNER_BG}}",
+            "title": "{{PROMO_TITLE}}",
+            "subtitle": "{{PROMO_SUBTITLE}}",
+            "countdown": {
+              "enabled": true,
+              "end_date": "{{PROMO_END_DATE}}"
+            },
+            "button_text": "Ver Ofertas",
+            "button_url": "/promocoes"
+          }
+        },
+        {
+          "type": "best_sellers",
+          "settings": {
+            "title": "Mais Vendidos",
+            "layout": "grid",
+            "products_count": 6,
+            "period": "month"
+          }
+        },
+        {
+          "type": "new_arrivals",
+          "settings": {
+            "title": "Novidades",
+            "layout": "list",
+            "products_count": 4,
+            "days_threshold": 30
+          }
+        },
+        {
+          "type": "brands_showcase",
+          "settings": {
+            "title": "Nossas Marcas",
+            "layout": "logo_carousel",
+            "brands": "{{BRAND_LOGOS}}"
+          }
+        },
+        {
+          "type": "customer_reviews",
+          "settings": {
+            "title": "O que nossos clientes dizem",
+            "layout": "carousel",
+            "reviews": [
+              {
+                "text": "{{REVIEW_1_TEXT}}",
+                "author": "{{REVIEW_1_AUTHOR}}",
+                "rating": 5,
+                "product": "{{REVIEW_1_PRODUCT}}",
+                "verified": true
+              },
+              {
+                "text": "{{REVIEW_2_TEXT}}",
+                "author": "{{REVIEW_2_AUTHOR}}",
+                "rating": 5,
+                "product": "{{REVIEW_2_PRODUCT}}",
+                "verified": true
+              }
+            ]
+          }
+        },
+        {
+          "type": "newsletter",
+          "settings": {
+            "title": "Receba Ofertas Exclusivas",
+            "subtitle": "Cadastre-se e ganhe {{NEWSLETTER_DISCOUNT}}% de desconto",
+            "form_fields": ["email", "name"],
+            "incentive": "cupom de desconto",
+            "privacy_text": "Não enviamos spam. Seus dados estão seguros."
+          }
+        },
+        {
+          "type": "instagram_shop",
+          "settings": {
+            "title": "Siga-nos no Instagram",
+            "username": "{{INSTAGRAM_USERNAME}}",
+            "feed_count": 8,
+            "shoppable": true
+          }
+        }
+      ]
+    },
+    {
+      "slug": "loja",
+      "title": "Produtos - {{BUSINESS_NAME}}",
+      "template": "woocommerce",
+      "sections": [
+        {
+          "type": "shop_page",
+          "settings": {
+            "layout": "grid",
+            "products_per_page": 12,
+            "filters": {
+              "categories": true,
+              "price_range": true,
+              "attributes": true,
+              "brands": true,
+              "ratings": true
+            },
+            "sorting_options": [
+              "popularity",
+              "rating",
+              "date",
+              "price_low_high",
+              "price_high_low"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "slug": "carrinho",
+      "title": "Carrinho - {{BUSINESS_NAME}}",
+      "template": "woocommerce",
+      "sections": [
+        {
+          "type": "cart_page",
+          "settings": {
+            "cross_sells": true,
+            "shipping_calculator": true,
+            "coupon_field": true,
+            "continue_shopping_button": true
+          }
+        }
+      ]
+    },
+    {
+      "slug": "checkout",
+      "title": "Finalizar Compra - {{BUSINESS_NAME}}",
+      "template": "woocommerce",
+      "sections": [
+        {
+          "type": "checkout_page",
+          "settings": {
+            "guest_checkout": true,
+            "create_account_option": true,
+            "shipping_methods": ["pac", "sedex", "transportadora", "retirada"],
+            "payment_methods": ["pix", "boleto", "credit_card", "debit_card"],
+            "order_notes": true
+          }
+        }
+      ]
+    },
+    {
+      "slug": "minha-conta",
+      "title": "Minha Conta - {{BUSINESS_NAME}}",
+      "template": "woocommerce",
+      "sections": [
+        {
+          "type": "account_page",
+          "settings": {
+            "sections": [
+              "dashboard",
+              "orders",
+              "downloads",
+              "addresses",
+              "account_details",
+              "wishlist",
+              "logout"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "slug": "rastreamento",
+      "title": "Rastrear Pedido - {{BUSINESS_NAME}}",
+      "template": "elementor",
+      "sections": [
+        {
+          "type": "order_tracking",
+          "settings": {
+            "tracking_methods": ["order_number", "cpf", "email"],
+            "show_timeline": true,
+            "correios_integration": true
+          }
+        }
+      ]
+    },
+    {
+      "slug": "contato",
+      "title": "Contato - {{BUSINESS_NAME}}",
+      "template": "elementor",
+      "sections": [
+        {
+          "type": "contact_form",
+          "settings": {
+            "fields": ["name", "email", "phone", "order_number", "subject", "message"],
+            "departments": ["Vendas", "Suporte", "Trocas e Devoluções", "Parcerias"],
+            "response_time": "24 horas"
+          }
+        }
+      ]
+    }
+  ],
+  "navigation": {
+    "primary": [
+      {"label": "Início", "url": "/"},
+      {"label": "Loja", "url": "/loja"},
+      {"label": "Categorias", "url": "#", "dropdown": true},
+      {"label": "Promoções", "url": "/promocoes"},
+      {"label": "Rastreamento", "url": "/rastreamento"},
+      {"label": "Contato", "url": "/contato"}
+    ],
+    "secondary": [
+      {"label": "Minha Conta", "url": "/minha-conta"},
+      {"label": "Lista de Desejos", "url": "/wishlist"},
+      {"label": "Carrinho", "url": "/carrinho", "icon": "cart"}
+    ],
+    "mobile": "hamburger",
+    "sticky": true,
+    "mini_cart": true,
+    "search_bar": true
+  },
+  "design": {
+    "colors": {
+      "primary": "{{PRIMARY_COLOR}}",
+      "secondary": "{{SECONDARY_COLOR}}",
+      "accent": "{{ACCENT_COLOR}}",
+      "text": "#333333",
+      "background": "#FFFFFF",
+      "sale": "#FF0000",
+      "success": "#22C55E"
+    },
+    "typography": {
+      "heading_font": "Poppins",
+      "body_font": "Roboto",
+      "base_size": "16px"
+    },
+    "spacing": {
+      "section_padding": "60px",
+      "container_width": "1200px"
+    }
+  },
+  "seo": {
+    "meta_title": "{{BUSINESS_NAME}} - Loja Online | {{MAIN_CATEGORY}}",
+    "meta_description": "{{BUSINESS_DESCRIPTION}}. Frete grátis, pagamento seguro e entrega rápida.",
+    "keywords": [
+      "loja online",
+      "{{MAIN_CATEGORY}}",
+      "comprar online",
+      "e-commerce brasil",
+      "{{BUSINESS_NAME}}"
+    ],
+    "og_image": "{{OG_IMAGE}}",
+    "schema_type": "Store"
+  },
+  "brazilian_features": {
+    "whatsapp_widget": {
+      "enabled": true,
+      "position": "bottom-right",
+      "message": "Olá! Preciso de ajuda com meu pedido",
+      "number": "{{WHATSAPP_NUMBER}}"
+    },
+    "pix_payment": {
+      "enabled": true,
+      "discount": "{{PIX_DISCOUNT}}%",
+      "key": "{{PIX_KEY}}",
+      "qr_code_generator": true
+    },
+    "boleto_payment": {
+      "enabled": true,
+      "due_days": 3,
+      "discount": "{{BOLETO_DISCOUNT}}%"
+    },
+    "lgpd_notice": {
+      "enabled": true,
+      "text": "Utilizamos cookies para melhorar sua experiência de compra.",
+      "privacy_url": "/politica-privacidade"
+    },
+    "shipping_integrations": {
+      "correios": true,
+      "melhor_envio": true,
+      "loggi": false,
+      "jadlog": false
+    },
+    "marketplace_integrations": {
+      "mercado_livre": "{{ML_STORE_URL}}",
+      "magazine_luiza": "{{MAGALU_STORE_URL}}",
+      "americanas": "{{AMERICANAS_STORE_URL}}",
+      "shopee": "{{SHOPEE_STORE_URL}}"
+    },
+    "tax_settings": {
+      "show_taxes": true,
+      "include_in_price": false,
+      "nfe_automatic": true
+    }
+  },
+  "plugins_required": [
+    "woocommerce",
+    "elementor",
+    "advanced-custom-fields",
+    "brazilian-market-on-woocommerce",
+    "woocommerce-extra-checkout-fields-for-brazil",
+    "woocommerce-correios",
+    "woo-product-variation-swatches",
+    "yith-woocommerce-wishlist",
+    "yith-woocommerce-quick-view",
+    "wp-whatsapp-chat",
+    "yoast-seo",
+    "mailchimp-for-woocommerce"
+  ],
+  "acf_fields": [
+    {
+      "group": "store_info",
+      "fields": [
+        {"name": "cnpj", "type": "text", "label": "CNPJ"},
+        {"name": "state_registration", "type": "text", "label": "Inscrição Estadual"},
+        {"name": "main_category", "type": "select", "label": "Categoria Principal"},
+        {"name": "store_policy", "type": "wysiwyg", "label": "Política da Loja"}
+      ]
+    },
+    {
+      "group": "shipping_settings",
+      "fields": [
+        {"name": "free_shipping_minimum", "type": "number", "label": "Valor Mínimo Frete Grátis"},
+        {"name": "processing_time", "type": "text", "label": "Prazo de Processamento"},
+        {"name": "shipping_zones", "type": "repeater", "label": "Zonas de Entrega"}
+      ]
+    },
+    {
+      "group": "payment_settings",
+      "fields": [
+        {"name": "payment_gateways", "type": "checkbox", "label": "Gateways de Pagamento"},
+        {"name": "max_installments", "type": "number", "label": "Máximo de Parcelas"},
+        {"name": "minimum_installment", "type": "number", "label": "Valor Mínimo da Parcela"}
+      ]
+    }
+  ],
+  "placeholders": [
+    "{{BUSINESS_NAME}}",
+    "{{BUSINESS_DESCRIPTION}}",
+    "{{PHONE_NUMBER}}",
+    "{{WHATSAPP_NUMBER}}",
+    "{{EMAIL}}",
+    "{{ADDRESS}}",
+    "{{CNPJ}}",
+    "{{FREE_SHIPPING_INFO}}",
+    "{{RETURN_DAYS}}",
+    "{{MAX_INSTALLMENTS}}",
+    "{{SLIDE_1_IMAGE}}",
+    "{{SLIDE_1_TITLE}}",
+    "{{SLIDE_1_SUBTITLE}}",
+    "{{SLIDE_1_BUTTON}}",
+    "{{SLIDE_1_URL}}",
+    "{{SLIDE_2_IMAGE}}",
+    "{{SLIDE_2_TITLE}}",
+    "{{SLIDE_2_SUBTITLE}}",
+    "{{SLIDE_2_BUTTON}}",
+    "{{SLIDE_2_URL}}",
+    "{{CATEGORY_1_NAME}}",
+    "{{CATEGORY_1_IMAGE}}",
+    "{{CATEGORY_1_URL}}",
+    "{{CATEGORY_1_COUNT}}",
+    "{{CATEGORY_2_NAME}}",
+    "{{CATEGORY_2_IMAGE}}",
+    "{{CATEGORY_2_URL}}",
+    "{{CATEGORY_2_COUNT}}",
+    "{{CATEGORY_3_NAME}}",
+    "{{CATEGORY_3_IMAGE}}",
+    "{{CATEGORY_3_URL}}",
+    "{{CATEGORY_3_COUNT}}",
+    "{{CATEGORY_4_NAME}}",
+    "{{CATEGORY_4_IMAGE}}",
+    "{{CATEGORY_4_URL}}",
+    "{{CATEGORY_4_COUNT}}",
+    "{{PROMO_BANNER_BG}}",
+    "{{PROMO_TITLE}}",
+    "{{PROMO_SUBTITLE}}",
+    "{{PROMO_END_DATE}}",
+    "{{BRAND_LOGOS}}",
+    "{{REVIEW_1_TEXT}}",
+    "{{REVIEW_1_AUTHOR}}",
+    "{{REVIEW_1_PRODUCT}}",
+    "{{REVIEW_2_TEXT}}",
+    "{{REVIEW_2_AUTHOR}}",
+    "{{REVIEW_2_PRODUCT}}",
+    "{{NEWSLETTER_DISCOUNT}}",
+    "{{INSTAGRAM_USERNAME}}",
+    "{{PIX_KEY}}",
+    "{{PIX_DISCOUNT}}",
+    "{{BOLETO_DISCOUNT}}",
+    "{{ML_STORE_URL}}",
+    "{{MAGALU_STORE_URL}}",
+    "{{AMERICANAS_STORE_URL}}",
+    "{{SHOPEE_STORE_URL}}",
+    "{{MAIN_CATEGORY}}",
+    "{{PRIMARY_COLOR}}",
+    "{{SECONDARY_COLOR}}",
+    "{{ACCENT_COLOR}}",
+    "{{OG_IMAGE}}"
+  ]
+}

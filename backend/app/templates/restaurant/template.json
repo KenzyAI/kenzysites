@@ -1,0 +1,347 @@
+{
+  "id": "restaurant_brazilian_v1",
+  "name": "Restaurante Brasileiro Moderno",
+  "industry": "restaurant",
+  "version": "1.0.0",
+  "description": "Template completo para restaurantes com delivery, cardápio online e reservas",
+  "language": "pt-BR",
+  "features": [
+    "delivery_integration",
+    "online_menu",
+    "table_reservation",
+    "whatsapp_order",
+    "instagram_feed",
+    "customer_reviews"
+  ],
+  "pages": [
+    {
+      "slug": "home",
+      "title": "{{BUSINESS_NAME}} - Restaurante",
+      "template": "elementor",
+      "sections": [
+        {
+          "type": "hero",
+          "settings": {
+            "background_image": "{{HERO_IMAGE}}",
+            "overlay_color": "rgba(0,0,0,0.4)",
+            "title": "{{HERO_TITLE}}",
+            "subtitle": "{{HERO_SUBTITLE}}",
+            "buttons": [
+              {
+                "text": "Ver Cardápio",
+                "url": "#cardapio",
+                "style": "primary"
+              },
+              {
+                "text": "Fazer Pedido",
+                "url": "#delivery",
+                "style": "secondary"
+              }
+            ]
+          }
+        },
+        {
+          "type": "features",
+          "settings": {
+            "title": "Por que escolher {{BUSINESS_NAME}}?",
+            "items": [
+              {
+                "icon": "fas fa-utensils",
+                "title": "Comida Caseira",
+                "description": "Pratos preparados com amor e ingredientes frescos"
+              },
+              {
+                "icon": "fas fa-truck",
+                "title": "Delivery Rápido",
+                "description": "Entrega em até 40 minutos na sua região"
+              },
+              {
+                "icon": "fas fa-star",
+                "title": "Qualidade Garantida",
+                "description": "Mais de 500 avaliações 5 estrelas"
+              }
+            ]
+          }
+        },
+        {
+          "type": "menu_showcase",
+          "settings": {
+            "title": "Nossos Pratos Principais",
+            "categories": [
+              {
+                "name": "Entradas",
+                "items": [
+                  {
+                    "name": "{{MENU_ITEM_1_NAME}}",
+                    "description": "{{MENU_ITEM_1_DESC}}",
+                    "price": "{{MENU_ITEM_1_PRICE}}",
+                    "image": "{{MENU_ITEM_1_IMAGE}}"
+                  }
+                ]
+              },
+              {
+                "name": "Pratos Principais",
+                "items": [
+                  {
+                    "name": "{{MENU_ITEM_2_NAME}}",
+                    "description": "{{MENU_ITEM_2_DESC}}",
+                    "price": "{{MENU_ITEM_2_PRICE}}",
+                    "image": "{{MENU_ITEM_2_IMAGE}}"
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "type": "about",
+          "settings": {
+            "title": "{{ABOUT_TITLE}}",
+            "content": "{{ABOUT_TEXT}}",
+            "image": "{{ABOUT_IMAGE}}",
+            "years_experience": "{{YEARS_EXPERIENCE}}",
+            "chef_name": "{{CHEF_NAME}}"
+          }
+        },
+        {
+          "type": "testimonials",
+          "settings": {
+            "title": "O que nossos clientes dizem",
+            "items": [
+              {
+                "text": "{{TESTIMONIAL_1_TEXT}}",
+                "author": "{{TESTIMONIAL_1_AUTHOR}}",
+                "rating": 5
+              },
+              {
+                "text": "{{TESTIMONIAL_2_TEXT}}",
+                "author": "{{TESTIMONIAL_2_AUTHOR}}",
+                "rating": 5
+              }
+            ]
+          }
+        },
+        {
+          "type": "delivery_cta",
+          "settings": {
+            "title": "Peça Agora pelo WhatsApp",
+            "subtitle": "Delivery rápido e prático",
+            "whatsapp_number": "{{WHATSAPP_NUMBER}}",
+            "whatsapp_message": "Olá! Gostaria de fazer um pedido.",
+            "delivery_areas": "{{DELIVERY_AREAS}}",
+            "delivery_time": "30-45 minutos",
+            "minimum_order": "R$ 25,00"
+          }
+        },
+        {
+          "type": "location_hours",
+          "settings": {
+            "title": "Visite-nos",
+            "address": "{{ADDRESS}}",
+            "phone": "{{PHONE_NUMBER}}",
+            "opening_hours": "{{OPENING_HOURS}}",
+            "google_maps_embed": "{{GOOGLE_MAPS_EMBED}}"
+          }
+        },
+        {
+          "type": "instagram_feed",
+          "settings": {
+            "title": "Siga-nos no Instagram",
+            "username": "{{INSTAGRAM_USERNAME}}",
+            "feed_token": "{{INSTAGRAM_TOKEN}}",
+            "posts_count": 6
+          }
+        }
+      ]
+    },
+    {
+      "slug": "cardapio",
+      "title": "Cardápio - {{BUSINESS_NAME}}",
+      "template": "elementor",
+      "sections": [
+        {
+          "type": "menu_full",
+          "settings": {
+            "categories": [
+              "Entradas",
+              "Saladas",
+              "Pratos Principais",
+              "Sobremesas",
+              "Bebidas"
+            ],
+            "filter_enabled": true,
+            "search_enabled": true,
+            "price_display": "currency"
+          }
+        }
+      ]
+    },
+    {
+      "slug": "delivery",
+      "title": "Delivery - {{BUSINESS_NAME}}",
+      "template": "elementor",
+      "sections": [
+        {
+          "type": "delivery_system",
+          "settings": {
+            "integrations": ["ifood", "uber_eats", "whatsapp"],
+            "payment_methods": ["pix", "credit_card", "cash"],
+            "delivery_fee_calculation": "by_distance"
+          }
+        }
+      ]
+    },
+    {
+      "slug": "contato",
+      "title": "Contato - {{BUSINESS_NAME}}",
+      "template": "elementor",
+      "sections": [
+        {
+          "type": "contact_form",
+          "settings": {
+            "fields": ["name", "email", "phone", "message", "reservation_date", "guests_number"],
+            "email_to": "{{EMAIL}}",
+            "success_message": "Obrigado! Entraremos em contato em breve."
+          }
+        }
+      ]
+    }
+  ],
+  "navigation": {
+    "primary": [
+      {"label": "Início", "url": "/"},
+      {"label": "Cardápio", "url": "/cardapio"},
+      {"label": "Delivery", "url": "/delivery"},
+      {"label": "Sobre", "url": "#sobre"},
+      {"label": "Contato", "url": "/contato"}
+    ],
+    "mobile": "hamburger",
+    "sticky": true
+  },
+  "design": {
+    "colors": {
+      "primary": "{{PRIMARY_COLOR}}",
+      "secondary": "{{SECONDARY_COLOR}}",
+      "accent": "{{ACCENT_COLOR}}",
+      "text": "#333333",
+      "background": "#FFFFFF"
+    },
+    "typography": {
+      "heading_font": "Playfair Display",
+      "body_font": "Open Sans",
+      "base_size": "16px"
+    },
+    "spacing": {
+      "section_padding": "80px",
+      "container_width": "1200px"
+    }
+  },
+  "seo": {
+    "meta_title": "{{BUSINESS_NAME}} - Restaurante em {{CITY}}",
+    "meta_description": "{{BUSINESS_DESCRIPTION}}. Delivery e reservas. Cardápio completo online.",
+    "keywords": [
+      "restaurante {{CITY}}",
+      "delivery comida",
+      "{{CUISINE_TYPE}}",
+      "pedido online"
+    ],
+    "og_image": "{{OG_IMAGE}}",
+    "schema_type": "Restaurant"
+  },
+  "brazilian_features": {
+    "whatsapp_widget": {
+      "enabled": true,
+      "position": "bottom-right",
+      "message": "Olá! Gostaria de fazer um pedido",
+      "number": "{{WHATSAPP_NUMBER}}"
+    },
+    "pix_payment": {
+      "enabled": true,
+      "key": "{{PIX_KEY}}",
+      "qr_code": "{{PIX_QR_CODE}}"
+    },
+    "lgpd_notice": {
+      "enabled": true,
+      "text": "Este site utiliza cookies para melhorar sua experiência.",
+      "privacy_url": "/politica-privacidade"
+    },
+    "delivery_integrations": {
+      "ifood": "{{IFOOD_LINK}}",
+      "uber_eats": "{{UBER_EATS_LINK}}",
+      "rappi": "{{RAPPI_LINK}}"
+    }
+  },
+  "plugins_required": [
+    "elementor",
+    "advanced-custom-fields",
+    "restaurant-reservations",
+    "wp-whatsapp-chat",
+    "instagram-feed",
+    "yoast-seo"
+  ],
+  "acf_fields": [
+    {
+      "group": "restaurant_info",
+      "fields": [
+        {"name": "cuisine_type", "type": "text", "label": "Tipo de Cozinha"},
+        {"name": "chef_name", "type": "text", "label": "Nome do Chef"},
+        {"name": "capacity", "type": "number", "label": "Capacidade de Pessoas"},
+        {"name": "delivery_areas", "type": "textarea", "label": "Áreas de Entrega"},
+        {"name": "special_diets", "type": "checkbox", "label": "Dietas Especiais", "choices": ["Vegetariano", "Vegano", "Sem Glúten", "Low Carb"]}
+      ]
+    },
+    {
+      "group": "menu_items",
+      "fields": [
+        {"name": "menu_categories", "type": "repeater", "label": "Categorias do Menu"},
+        {"name": "daily_specials", "type": "repeater", "label": "Pratos do Dia"},
+        {"name": "price_range", "type": "select", "label": "Faixa de Preço", "choices": ["$", "$$", "$$$", "$$$$"]}
+      ]
+    }
+  ],
+  "placeholders": [
+    "{{BUSINESS_NAME}}",
+    "{{BUSINESS_DESCRIPTION}}",
+    "{{BUSINESS_TAGLINE}}",
+    "{{PHONE_NUMBER}}",
+    "{{WHATSAPP_NUMBER}}",
+    "{{EMAIL}}",
+    "{{ADDRESS}}",
+    "{{CITY}}",
+    "{{OPENING_HOURS}}",
+    "{{HERO_TITLE}}",
+    "{{HERO_SUBTITLE}}",
+    "{{HERO_IMAGE}}",
+    "{{ABOUT_TITLE}}",
+    "{{ABOUT_TEXT}}",
+    "{{ABOUT_IMAGE}}",
+    "{{CHEF_NAME}}",
+    "{{YEARS_EXPERIENCE}}",
+    "{{CUISINE_TYPE}}",
+    "{{MENU_ITEM_1_NAME}}",
+    "{{MENU_ITEM_1_DESC}}",
+    "{{MENU_ITEM_1_PRICE}}",
+    "{{MENU_ITEM_1_IMAGE}}",
+    "{{MENU_ITEM_2_NAME}}",
+    "{{MENU_ITEM_2_DESC}}",
+    "{{MENU_ITEM_2_PRICE}}",
+    "{{MENU_ITEM_2_IMAGE}}",
+    "{{DELIVERY_AREAS}}",
+    "{{PIX_KEY}}",
+    "{{PIX_QR_CODE}}",
+    "{{INSTAGRAM_USERNAME}}",
+    "{{INSTAGRAM_TOKEN}}",
+    "{{IFOOD_LINK}}",
+    "{{UBER_EATS_LINK}}",
+    "{{RAPPI_LINK}}",
+    "{{GOOGLE_MAPS_EMBED}}",
+    "{{PRIMARY_COLOR}}",
+    "{{SECONDARY_COLOR}}",
+    "{{ACCENT_COLOR}}",
+    "{{OG_IMAGE}}",
+    "{{TESTIMONIAL_1_TEXT}}",
+    "{{TESTIMONIAL_1_AUTHOR}}",
+    "{{TESTIMONIAL_2_TEXT}}",
+    "{{TESTIMONIAL_2_AUTHOR}}"
+  ]
+}

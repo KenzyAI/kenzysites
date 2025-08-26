@@ -1,788 +1,1482 @@
 """
-ACF (Advanced Custom Fields) Integration Service
+ACF Integration Service
+Handles Advanced Custom Fields integration for WordPress templates
+Generates field groups for Brazilian industries
 """
 
 import json
-import uuid
-from typing import Dict, Any, List, Optional
 import logging
-
-from app.models.template_models import (
-    ACFField, ACFFieldGroup, ACFFieldType, BrazilianTemplate, BRAZILIAN_INDUSTRIES
-)
+from typing import Dict, List, Any, Optional
+from datetime import datetime
+import hashlib
+import re
 
 logger = logging.getLogger(__name__)
 
-class ACFService:
-    """Service for ACF integration"""
+class ACFIntegrationService:
+    """Service for managing ACF field groups and integrations"""
     
     def __init__(self):
-        self.field_templates = self._initialize_field_templates()
-    
-    def _initialize_field_templates(self) -> Dict[str, List[Dict]]:
-        """Initialize common field templates for different industries"""
-        return {
-            "basic_business": [
-                {
-                    "key": "field_business_info",
-                    "label": "Informações do Negócio",
-                    "name": "business_info",
-                    "type": "group",
-                    "sub_fields": [
-                        {
-                            "key": "field_business_name",
-                            "label": "Nome da Empresa",
-                            "name": "business_name",
-                            "type": "text",
-                            "required": True,
-                            "placeholder": "{{business_name}}"
-                        },
-                        {
-                            "key": "field_business_description",
-                            "label": "Descrição do Negócio",
-                            "name": "business_description",
-                            "type": "textarea",
-                            "placeholder": "{{business_description}}"
-                        },
-                        {
-                            "key": "field_business_phone",
-                            "label": "Telefone",
-                            "name": "business_phone",
-                            "type": "text",
-                            "placeholder": "(11) 99999-9999"
-                        },
-                        {
-                            "key": "field_business_email",
-                            "label": "Email",
-                            "name": "business_email",
-                            "type": "email",
-                            "placeholder": "contato@empresa.com"
-                        },
-                        {
-                            "key": "field_business_address",
-                            "label": "Endereço",
-                            "name": "business_address",
-                            "type": "textarea",
-                            "placeholder": "Rua, número, bairro, cidade - CEP"
-                        }
-                    ]
-                }
-            ],
-            "contact_section": [
-                {
-                    "key": "field_contact_info",
-                    "label": "Informações de Contato",
-                    "name": "contact_info",
-                    "type": "group",
-                    "sub_fields": [
-                        {
-                            "key": "field_whatsapp",
-                            "label": "WhatsApp",
-                            "name": "whatsapp_number",
-                            "type": "text",
-                            "placeholder": "5511999999999",
-                            "instructions": "Número com código do país (55) + DDD + número"
-                        },
-                        {
-                            "key": "field_social_media",
-                            "label": "Redes Sociais",
-                            "name": "social_media",
-                            "type": "repeater",
-                            "sub_fields": [
-                                {
-                                    "key": "field_social_platform",
-                                    "label": "Plataforma",
-                                    "name": "platform",
-                                    "type": "select",
-                                    "choices": {
-                                        "facebook": "Facebook",
-                                        "instagram": "Instagram",
-                                        "linkedin": "LinkedIn",
-                                        "twitter": "Twitter",
-                                        "youtube": "YouTube"
-                                    }
-                                },
-                                {
-                                    "key": "field_social_url",
-                                    "label": "URL",
-                                    "name": "url",
-                                    "type": "url"
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ],
-            "services_section": [
-                {
-                    "key": "field_services",
-                    "label": "Serviços",
-                    "name": "services",
-                    "type": "repeater",
-                    "sub_fields": [
-                        {
-                            "key": "field_service_name",
-                            "label": "Nome do Serviço",
-                            "name": "service_name",
-                            "type": "text",
-                            "required": True
-                        },
-                        {
-                            "key": "field_service_description",
-                            "label": "Descrição",
-                            "name": "service_description",
-                            "type": "textarea"
-                        },
-                        {
-                            "key": "field_service_price",
-                            "label": "Preço",
-                            "name": "service_price",
-                            "type": "text",
-                            "placeholder": "R$ 0,00"
-                        },
-                        {
-                            "key": "field_service_image",
-                            "label": "Imagem",
-                            "name": "service_image",
-                            "type": "image",
-                            "return_format": "url"
-                        }
-                    ]
-                }
-            ]
+        self.field_types = {
+            'text': 'text',
+            'textarea': 'textarea',
+            'number': 'number',
+            'email': 'email',
+            'url': 'url',
+            'select': 'select',
+            'checkbox': 'checkbox',
+            'radio': 'radio',
+            'image': 'image',
+            'file': 'file',
+            'wysiwyg': 'wysiwyg',
+            'color_picker': 'color_picker',
+            'date_picker': 'date_picker',
+            'time_picker': 'time_picker',
+            'repeater': 'repeater',
+            'group': 'group',
+            'flexible_content': 'flexible_content',
+            'gallery': 'gallery',
+            'relationship': 'relationship',
+            'google_map': 'google_map',
+            'true_false': 'true_false'
+        }
+        
+        # Brazilian specific field configurations
+        self.brazilian_fields = {
+            'cpf': {
+                'type': 'text',
+                'label': 'CPF',
+                'instructions': 'Digite o CPF (apenas números)',
+                'maxlength': 14,
+                'placeholder': '000.000.000-00',
+                'pattern': r'^\d{3}\.\d{3}\.\d{3}-\d{2}$'
+            },
+            'cnpj': {
+                'type': 'text',
+                'label': 'CNPJ',
+                'instructions': 'Digite o CNPJ (apenas números)',
+                'maxlength': 18,
+                'placeholder': '00.000.000/0000-00',
+                'pattern': r'^\d{2}\.\d{3}\.\d{3}/\d{4}-\d{2}$'
+            },
+            'telefone': {
+                'type': 'text',
+                'label': 'Telefone',
+                'instructions': 'Telefone com DDD',
+                'placeholder': '(11) 99999-9999',
+                'pattern': r'^\(\d{2}\) \d{4,5}-\d{4}$'
+            },
+            'whatsapp': {
+                'type': 'text',
+                'label': 'WhatsApp',
+                'instructions': 'Número do WhatsApp com código do país',
+                'placeholder': '5511999999999',
+                'prepend': '+55'
+            },
+            'cep': {
+                'type': 'text',
+                'label': 'CEP',
+                'instructions': 'CEP do endereço',
+                'maxlength': 9,
+                'placeholder': '00000-000',
+                'pattern': r'^\d{5}-\d{3}$'
+            },
+            'pix': {
+                'type': 'text',
+                'label': 'Chave PIX',
+                'instructions': 'Chave PIX para pagamentos',
+                'placeholder': 'email@exemplo.com ou CPF/CNPJ'
+            }
         }
     
-    def create_template_fields_for_industry(self, industry: str, business_type: str = "service") -> List[ACFFieldGroup]:
-        """Create ACF fields for industry template"""
-        try:
-            field_groups = []
-            
-            # Always add basic business info
-            basic_fields = self._create_basic_business_fields()
-            field_groups.append(basic_fields)
-            
-            # Add contact section
-            contact_fields = self._create_contact_fields()
-            field_groups.append(contact_fields)
-            
-            # Add services section
-            services_fields = self._create_services_fields()
-            field_groups.append(services_fields)
-            
-            # Add industry-specific fields
-            industry_fields = self._create_industry_specific_fields(industry, business_type)
-            if industry_fields:
-                field_groups.extend(industry_fields)
-            
-            # Add Brazilian-specific fields if applicable
-            if industry.lower() in BRAZILIAN_INDUSTRIES:
-                brazilian_fields = self._create_brazilian_fields(industry)
-                if brazilian_fields:
-                    field_groups.append(brazilian_fields)
-            
-            logger.info(f"Created {len(field_groups)} field groups for industry: {industry}")
-            return field_groups
-            
-        except Exception as e:
-            logger.error(f"Error creating fields for industry {industry}: {str(e)}")
-            return []
-    
-    def _create_basic_business_fields(self) -> ACFFieldGroup:
-        """Create basic business information fields"""
-        fields = [
-            ACFField(
-                key="field_business_name",
-                label="Nome da Empresa",
-                name="business_name",
-                type=ACFFieldType.TEXT,
-                required=True,
-                placeholder="{{business_name}}",
-                instructions="Nome principal da empresa ou negócio"
-            ),
-            ACFField(
-                key="field_business_description",
-                label="Descrição do Negócio",
-                name="business_description",
-                type=ACFFieldType.TEXTAREA,
-                placeholder="{{business_description}}",
-                instructions="Breve descrição sobre o que a empresa faz"
-            ),
-            ACFField(
-                key="field_business_slogan",
-                label="Slogan/Tagline",
-                name="business_slogan",
-                type=ACFFieldType.TEXT,
-                placeholder="Sua frase marcante aqui",
-                instructions="Frase que representa sua marca"
-            ),
-            ACFField(
-                key="field_business_logo",
-                label="Logo da Empresa",
-                name="business_logo",
-                type=ACFFieldType.IMAGE,
-                return_format="url",
-                instructions="Upload do logo da empresa"
-            )
-        ]
+    def generate_field_group(
+        self,
+        group_key: str,
+        title: str,
+        fields: List[Dict[str, Any]],
+        location: Optional[List[Dict]] = None,
+        menu_order: int = 0
+    ) -> Dict[str, Any]:
+        """
+        Generate an ACF field group configuration
         
-        return ACFFieldGroup(
-            key="group_business_basic",
-            title="Informações Básicas da Empresa",
-            fields=fields,
-            location=[[{"param": "page_template", "operator": "==", "value": "default"}]]
-        )
-    
-    def _create_contact_fields(self) -> ACFFieldGroup:
-        """Create contact information fields"""
-        fields = [
-            ACFField(
-                key="field_contact_phone",
-                label="Telefone Principal",
-                name="contact_phone",
-                type=ACFFieldType.TEXT,
-                placeholder="(11) 99999-9999",
-                instructions="Telefone principal para contato"
-            ),
-            ACFField(
-                key="field_contact_email",
-                label="Email Principal",
-                name="contact_email",
-                type=ACFFieldType.EMAIL,
-                placeholder="contato@empresa.com",
-                instructions="Email principal para contato"
-            ),
-            ACFField(
-                key="field_contact_address",
-                label="Endereço Completo",
-                name="contact_address",
-                type=ACFFieldType.TEXTAREA,
-                placeholder="Rua, número, bairro, cidade - CEP",
-                instructions="Endereço completo da empresa"
-            ),
-            ACFField(
-                key="field_contact_whatsapp",
-                label="WhatsApp",
-                name="contact_whatsapp",
-                type=ACFFieldType.TEXT,
-                placeholder="5511999999999",
-                instructions="Número com código do país (55) + DDD + número"
-            ),
-            ACFField(
-                key="field_contact_hours",
-                label="Horário de Funcionamento",
-                name="contact_hours",
-                type=ACFFieldType.TEXTAREA,
-                placeholder="Segunda a Sexta: 08:00 às 18:00",
-                instructions="Horários de atendimento"
-            )
-        ]
+        Args:
+            group_key: Unique key for the field group
+            title: Display title for the field group
+            fields: List of field configurations
+            location: Location rules for where to show the field group
+            menu_order: Order in which to display the field group
         
-        return ACFFieldGroup(
-            key="group_contact_info",
-            title="Informações de Contato",
-            fields=fields,
-            location=[[{"param": "page_template", "operator": "==", "value": "default"}]]
-        )
-    
-    def _create_services_fields(self) -> ACFFieldGroup:
-        """Create services/products fields"""
-        fields = [
-            ACFField(
-                key="field_services_intro",
-                label="Introdução dos Serviços",
-                name="services_intro",
-                type=ACFFieldType.TEXTAREA,
-                placeholder="Conheça nossos principais serviços...",
-                instructions="Texto introdutório da seção de serviços"
-            ),
-            ACFField(
-                key="field_services_list",
-                label="Lista de Serviços",
-                name="services_list",
-                type=ACFFieldType.REPEATER,
-                instructions="Adicione os serviços oferecidos"
-            )
-        ]
+        Returns:
+            Complete ACF field group configuration
+        """
         
-        return ACFFieldGroup(
-            key="group_services",
-            title="Serviços e Produtos",
-            fields=fields,
-            location=[[{"param": "page_template", "operator": "==", "value": "default"}]]
-        )
+        if not location:
+            location = [[{
+                'param': 'post_type',
+                'operator': '==',
+                'value': 'page'
+            }]]
+        
+        field_group = {
+            'key': f'group_{group_key}',
+            'title': title,
+            'fields': [],
+            'location': location,
+            'menu_order': menu_order,
+            'position': 'normal',
+            'style': 'default',
+            'label_placement': 'top',
+            'instruction_placement': 'label',
+            'hide_on_screen': [],
+            'active': True,
+            'description': f'Generated by KenzySites on {datetime.now().isoformat()}'
+        }
+        
+        # Process each field
+        for idx, field_config in enumerate(fields):
+            field = self._create_field(field_config, f'{group_key}_{idx}')
+            field_group['fields'].append(field)
+        
+        return field_group
     
-    def _create_industry_specific_fields(self, industry: str, business_type: str) -> List[ACFFieldGroup]:
-        """Create industry-specific ACF fields"""
-        industry_lower = industry.lower()
+    def _create_field(self, config: Dict[str, Any], field_key: str) -> Dict[str, Any]:
+        """Create a single ACF field configuration"""
+        
+        field_type = config.get('type', 'text')
+        
+        field = {
+            'key': f'field_{field_key}',
+            'label': config.get('label', 'Field'),
+            'name': config.get('name', field_key),
+            'type': field_type,
+            'instructions': config.get('instructions', ''),
+            'required': config.get('required', 0),
+            'conditional_logic': config.get('conditional_logic', 0),
+            'wrapper': {
+                'width': config.get('width', ''),
+                'class': config.get('class', ''),
+                'id': config.get('id', '')
+            }
+        }
+        
+        # Add type-specific configurations
+        if field_type == 'text':
+            field.update({
+                'default_value': config.get('default_value', ''),
+                'placeholder': config.get('placeholder', ''),
+                'prepend': config.get('prepend', ''),
+                'append': config.get('append', ''),
+                'maxlength': config.get('maxlength', '')
+            })
+        
+        elif field_type == 'textarea':
+            field.update({
+                'default_value': config.get('default_value', ''),
+                'placeholder': config.get('placeholder', ''),
+                'maxlength': config.get('maxlength', ''),
+                'rows': config.get('rows', 4),
+                'new_lines': config.get('new_lines', 'wpautop')
+            })
+        
+        elif field_type == 'number':
+            field.update({
+                'default_value': config.get('default_value', ''),
+                'placeholder': config.get('placeholder', ''),
+                'prepend': config.get('prepend', ''),
+                'append': config.get('append', ''),
+                'min': config.get('min', ''),
+                'max': config.get('max', ''),
+                'step': config.get('step', '')
+            })
+        
+        elif field_type == 'image':
+            field.update({
+                'return_format': config.get('return_format', 'array'),
+                'preview_size': config.get('preview_size', 'thumbnail'),
+                'library': config.get('library', 'all'),
+                'min_width': config.get('min_width', ''),
+                'min_height': config.get('min_height', ''),
+                'max_width': config.get('max_width', ''),
+                'max_height': config.get('max_height', ''),
+                'max_size': config.get('max_size', ''),
+                'mime_types': config.get('mime_types', '')
+            })
+        
+        elif field_type == 'select':
+            field.update({
+                'choices': config.get('choices', {}),
+                'default_value': config.get('default_value', ''),
+                'allow_null': config.get('allow_null', 0),
+                'multiple': config.get('multiple', 0),
+                'ui': config.get('ui', 0),
+                'ajax': config.get('ajax', 0),
+                'return_format': config.get('return_format', 'value'),
+                'placeholder': config.get('placeholder', '')
+            })
+        
+        elif field_type == 'repeater':
+            field.update({
+                'collapsed': config.get('collapsed', ''),
+                'min': config.get('min', 0),
+                'max': config.get('max', 0),
+                'layout': config.get('layout', 'table'),
+                'button_label': config.get('button_label', 'Adicionar'),
+                'sub_fields': [
+                    self._create_field(sub_field, f'{field_key}_{i}')
+                    for i, sub_field in enumerate(config.get('sub_fields', []))
+                ]
+            })
+        
+        elif field_type == 'group':
+            field.update({
+                'layout': config.get('layout', 'block'),
+                'sub_fields': [
+                    self._create_field(sub_field, f'{field_key}_{i}')
+                    for i, sub_field in enumerate(config.get('sub_fields', []))
+                ]
+            })
+        
+        elif field_type == 'flexible_content':
+            field.update({
+                'layouts': self._create_flexible_layouts(
+                    config.get('layouts', []), 
+                    field_key
+                ),
+                'button_label': config.get('button_label', 'Adicionar Seção'),
+                'min': config.get('min', ''),
+                'max': config.get('max', '')
+            })
+        
+        elif field_type == 'wysiwyg':
+            field.update({
+                'default_value': config.get('default_value', ''),
+                'tabs': config.get('tabs', 'all'),
+                'toolbar': config.get('toolbar', 'full'),
+                'media_upload': config.get('media_upload', 1),
+                'delay': config.get('delay', 0)
+            })
+        
+        elif field_type == 'color_picker':
+            field.update({
+                'default_value': config.get('default_value', ''),
+                'enable_opacity': config.get('enable_opacity', 0)
+            })
+        
+        elif field_type == 'true_false':
+            field.update({
+                'message': config.get('message', ''),
+                'default_value': config.get('default_value', 0),
+                'ui': config.get('ui', 0),
+                'ui_on_text': config.get('ui_on_text', 'Sim'),
+                'ui_off_text': config.get('ui_off_text', 'Não')
+            })
+        
+        return field
+    
+    def _create_flexible_layouts(self, layouts: List[Dict], parent_key: str) -> List[Dict]:
+        """Create flexible content layouts"""
+        
+        flexible_layouts = []
+        
+        for idx, layout in enumerate(layouts):
+            layout_key = f'{parent_key}_layout_{idx}'
+            
+            flexible_layout = {
+                'key': layout_key,
+                'name': layout.get('name', f'layout_{idx}'),
+                'label': layout.get('label', 'Layout'),
+                'display': layout.get('display', 'block'),
+                'sub_fields': [
+                    self._create_field(sub_field, f'{layout_key}_{i}')
+                    for i, sub_field in enumerate(layout.get('sub_fields', []))
+                ],
+                'min': layout.get('min', ''),
+                'max': layout.get('max', '')
+            }
+            
+            flexible_layouts.append(flexible_layout)
+        
+        return flexible_layouts
+    
+    def generate_industry_fields(self, industry: str) -> List[Dict[str, Any]]:
+        """
+        Generate ACF field groups for specific Brazilian industries
+        
+        Args:
+            industry: Industry identifier
+        
+        Returns:
+            List of field group configurations
+        """
+        
         field_groups = []
         
-        if industry_lower in ["restaurante", "alimentacao"]:
-            field_groups.append(self._create_restaurant_fields())
-        elif industry_lower in ["saude", "clinica", "medico"]:
-            field_groups.append(self._create_healthcare_fields())
-        elif industry_lower in ["ecommerce", "loja"]:
-            field_groups.append(self._create_ecommerce_fields())
-        elif industry_lower in ["educacao", "escola"]:
-            field_groups.append(self._create_education_fields())
-        elif industry_lower in ["advocacia", "juridico"]:
-            field_groups.append(self._create_legal_fields())
+        # Base contact fields for all industries
+        contact_fields = [
+            {
+                'name': 'business_name',
+                'label': 'Nome do Negócio',
+                'type': 'text',
+                'required': 1,
+                'maxlength': 100
+            },
+            {
+                'name': 'business_logo',
+                'label': 'Logo da Empresa',
+                'type': 'image',
+                'return_format': 'url',
+                'preview_size': 'medium'
+            },
+            {
+                'name': 'business_slogan',
+                'label': 'Slogan',
+                'type': 'text',
+                'maxlength': 150,
+                'placeholder': 'Seu slogan aqui'
+            },
+            self.brazilian_fields['telefone'],
+            self.brazilian_fields['whatsapp'],
+            {
+                'name': 'email',
+                'label': 'E-mail',
+                'type': 'email',
+                'required': 1
+            },
+            {
+                'name': 'endereco',
+                'label': 'Endereço',
+                'type': 'group',
+                'sub_fields': [
+                    {
+                        'name': 'rua',
+                        'label': 'Rua',
+                        'type': 'text'
+                    },
+                    {
+                        'name': 'numero',
+                        'label': 'Número',
+                        'type': 'text'
+                    },
+                    {
+                        'name': 'complemento',
+                        'label': 'Complemento',
+                        'type': 'text'
+                    },
+                    {
+                        'name': 'bairro',
+                        'label': 'Bairro',
+                        'type': 'text'
+                    },
+                    {
+                        'name': 'cidade',
+                        'label': 'Cidade',
+                        'type': 'text'
+                    },
+                    {
+                        'name': 'estado',
+                        'label': 'Estado',
+                        'type': 'select',
+                        'choices': self._get_brazilian_states()
+                    },
+                    self.brazilian_fields['cep']
+                ]
+            }
+        ]
+        
+        # Add base contact field group
+        field_groups.append(self.generate_field_group(
+            'contact_info',
+            'Informações de Contato',
+            contact_fields,
+            menu_order=0
+        ))
+        
+        # Industry-specific field groups
+        if industry == 'restaurante':
+            field_groups.extend(self._generate_restaurant_fields())
+        elif industry == 'dentista':
+            field_groups.extend(self._generate_dentist_fields())
+        elif industry == 'advogado':
+            field_groups.extend(self._generate_lawyer_fields())
+        elif industry == 'clinica_estetica':
+            field_groups.extend(self._generate_aesthetic_clinic_fields())
+        elif industry == 'academia':
+            field_groups.extend(self._generate_gym_fields())
+        elif industry == 'imobiliaria':
+            field_groups.extend(self._generate_real_estate_fields())
+        elif industry == 'ecommerce':
+            field_groups.extend(self._generate_ecommerce_fields())
+        elif industry == 'educacao':
+            field_groups.extend(self._generate_education_fields())
+        elif industry == 'consultoria':
+            field_groups.extend(self._generate_consulting_fields())
+        else:
+            field_groups.extend(self._generate_generic_fields())
+        
+        # Add Brazilian compliance fields
+        field_groups.append(self._generate_brazilian_compliance_fields())
+        
+        # Add SEO fields
+        field_groups.append(self._generate_seo_fields())
         
         return field_groups
     
-    def _create_restaurant_fields(self) -> ACFFieldGroup:
-        """Create restaurant-specific fields"""
-        fields = [
-            ACFField(
-                key="field_restaurant_cuisine",
-                label="Tipo de Culinária",
-                name="restaurant_cuisine",
-                type=ACFFieldType.SELECT,
-                choices={
-                    "brasileira": "Brasileira",
-                    "italiana": "Italiana",
-                    "japonesa": "Japonesa",
-                    "chinesa": "Chinesa",
-                    "mexicana": "Mexicana",
-                    "fastfood": "Fast Food",
-                    "vegetariana": "Vegetariana",
-                    "vegana": "Vegana"
-                }
-            ),
-            ACFField(
-                key="field_restaurant_delivery",
-                label="Aceita Delivery",
-                name="restaurant_delivery",
-                type=ACFFieldType.TRUE_FALSE,
-                default_value=True
-            ),
-            ACFField(
-                key="field_restaurant_reservation",
-                label="Aceita Reservas",
-                name="restaurant_reservation",
-                type=ACFFieldType.TRUE_FALSE,
-                default_value=True
-            ),
-            ACFField(
-                key="field_restaurant_menu_url",
-                label="Link do Cardápio",
-                name="restaurant_menu_url",
-                type=ACFFieldType.URL,
-                placeholder="https://cardapio.com"
-            )
-        ]
+    def _generate_restaurant_fields(self) -> List[Dict[str, Any]]:
+        """Generate fields for restaurant industry"""
         
-        return ACFFieldGroup(
-            key="group_restaurant_specific",
-            title="Informações do Restaurante",
-            fields=fields
-        )
-    
-    def _create_healthcare_fields(self) -> ACFFieldGroup:
-        """Create healthcare-specific fields"""
-        fields = [
-            ACFField(
-                key="field_healthcare_specialty",
-                label="Especialidade",
-                name="healthcare_specialty",
-                type=ACFFieldType.TEXT,
-                placeholder="Clínica Geral, Odontologia, etc."
-            ),
-            ACFField(
-                key="field_healthcare_crm",
-                label="CRM/Registro Profissional",
-                name="healthcare_crm",
-                type=ACFFieldType.TEXT,
-                placeholder="CRM 12345/SP"
-            ),
-            ACFField(
-                key="field_healthcare_insurance",
-                label="Planos de Saúde Aceitos",
-                name="healthcare_insurance",
-                type=ACFFieldType.TEXTAREA,
-                placeholder="SulAmérica, Bradesco, Unimed..."
-            ),
-            ACFField(
-                key="field_healthcare_booking",
-                label="Link de Agendamento",
-                name="healthcare_booking",
-                type=ACFFieldType.URL,
-                placeholder="https://agendamento.com"
-            )
-        ]
+        field_groups = []
         
-        return ACFFieldGroup(
-            key="group_healthcare_specific",
-            title="Informações da Clínica/Consultório",
-            fields=fields
-        )
-    
-    def _create_ecommerce_fields(self) -> ACFFieldGroup:
-        """Create e-commerce specific fields"""
-        fields = [
-            ACFField(
-                key="field_ecommerce_category",
-                label="Categoria Principal",
-                name="ecommerce_category",
-                type=ACFFieldType.TEXT,
-                placeholder="Moda, Eletrônicos, Casa..."
-            ),
-            ACFField(
-                key="field_ecommerce_payment",
-                label="Formas de Pagamento",
-                name="ecommerce_payment",
-                type=ACFFieldType.CHECKBOX,
-                choices={
-                    "cartao": "Cartão de Crédito/Débito",
-                    "pix": "PIX",
-                    "boleto": "Boleto",
-                    "transferencia": "Transferência"
-                }
-            ),
-            ACFField(
-                key="field_ecommerce_shipping",
-                label="Informações de Entrega",
-                name="ecommerce_shipping",
-                type=ACFFieldType.TEXTAREA,
-                placeholder="Entregamos em todo Brasil via Correios..."
-            ),
-            ACFField(
-                key="field_ecommerce_store_url",
-                label="Link da Loja",
-                name="ecommerce_store_url",
-                type=ACFFieldType.URL,
-                placeholder="https://loja.com"
-            )
-        ]
-        
-        return ACFFieldGroup(
-            key="group_ecommerce_specific",
-            title="Informações da Loja Virtual",
-            fields=fields
-        )
-    
-    def _create_education_fields(self) -> ACFFieldGroup:
-        """Create education-specific fields"""
-        fields = [
-            ACFField(
-                key="field_education_type",
-                label="Tipo de Ensino",
-                name="education_type",
-                type=ACFFieldType.SELECT,
-                choices={
-                    "infantil": "Educação Infantil",
-                    "fundamental": "Ensino Fundamental",
-                    "medio": "Ensino Médio",
-                    "tecnico": "Técnico",
-                    "superior": "Superior",
-                    "curso_livre": "Curso Livre",
-                    "online": "Ensino Online"
-                }
-            ),
-            ACFField(
-                key="field_education_courses",
-                label="Cursos Oferecidos",
-                name="education_courses",
-                type=ACFFieldType.TEXTAREA,
-                placeholder="Liste os principais cursos..."
-            ),
-            ACFField(
-                key="field_education_duration",
-                label="Duração dos Cursos",
-                name="education_duration",
-                type=ACFFieldType.TEXT,
-                placeholder="2 anos, 6 meses, etc."
-            ),
-            ACFField(
-                key="field_education_enrollment",
-                label="Link de Inscrição",
-                name="education_enrollment",
-                type=ACFFieldType.URL,
-                placeholder="https://inscricoes.escola.com"
-            )
-        ]
-        
-        return ACFFieldGroup(
-            key="group_education_specific",
-            title="Informações Educacionais",
-            fields=fields
-        )
-    
-    def _create_legal_fields(self) -> ACFFieldGroup:
-        """Create legal services specific fields"""
-        fields = [
-            ACFField(
-                key="field_legal_areas",
-                label="Áreas de Atuação",
-                name="legal_areas",
-                type=ACFFieldType.CHECKBOX,
-                choices={
-                    "civil": "Direito Civil",
-                    "criminal": "Direito Criminal",
-                    "trabalhista": "Direito Trabalhista",
-                    "empresarial": "Direito Empresarial",
-                    "tributario": "Direito Tributário",
-                    "familia": "Direito de Família",
-                    "imobiliario": "Direito Imobiliário"
-                }
-            ),
-            ACFField(
-                key="field_legal_oab",
-                label="Número da OAB",
-                name="legal_oab",
-                type=ACFFieldType.TEXT,
-                placeholder="OAB/SP 123456"
-            ),
-            ACFField(
-                key="field_legal_consultation",
-                label="Consulta Gratuita",
-                name="legal_consultation",
-                type=ACFFieldType.TRUE_FALSE,
-                default_value=True
-            ),
-            ACFField(
-                key="field_legal_booking",
-                label="Link de Agendamento",
-                name="legal_booking",
-                type=ACFFieldType.URL,
-                placeholder="https://agendamento.escritorio.com"
-            )
-        ]
-        
-        return ACFFieldGroup(
-            key="group_legal_specific",
-            title="Informações do Escritório",
-            fields=fields
-        )
-    
-    def _create_brazilian_fields(self, industry: str) -> Optional[ACFFieldGroup]:
-        """Create Brazilian-specific fields"""
-        brazilian_template = BRAZILIAN_INDUSTRIES.get(industry.lower())
-        if not brazilian_template:
-            return None
-        
-        fields = []
-        
-        # CNPJ field
-        if brazilian_template.cnpj_field:
-            fields.append(ACFField(
-                key="field_cnpj",
-                label="CNPJ",
-                name="cnpj",
-                type=ACFFieldType.TEXT,
-                placeholder="00.000.000/0000-00",
-                instructions="CNPJ da empresa"
-            ))
-        
-        # CPF field (for individual professionals)
-        if brazilian_template.cpf_field:
-            fields.append(ACFField(
-                key="field_cpf",
-                label="CPF",
-                name="cpf",
-                type=ACFFieldType.TEXT,
-                placeholder="000.000.000-00",
-                instructions="CPF do profissional"
-            ))
-        
-        # PIX payment info
-        if brazilian_template.pix_payment:
-            fields.append(ACFField(
-                key="field_pix_key",
-                label="Chave PIX",
-                name="pix_key",
-                type=ACFFieldType.TEXT,
-                placeholder="email@exemplo.com ou telefone",
-                instructions="Chave PIX para recebimentos"
-            ))
-        
-        # LGPD notice
-        if brazilian_template.lgpd_notice:
-            fields.append(ACFField(
-                key="field_lgpd_text",
-                label="Texto LGPD",
-                name="lgpd_text",
-                type=ACFFieldType.TEXTAREA,
-                default_value="Este site utiliza cookies para melhorar sua experiência. Ao continuar navegando, você concorda com nossa Política de Privacidade.",
-                instructions="Texto de aviso LGPD"
-            ))
-        
-        # Delivery areas (for restaurants)
-        if brazilian_template.delivery_areas:
-            fields.append(ACFField(
-                key="field_delivery_areas",
-                label="Áreas de Entrega",
-                name="delivery_areas",
-                type=ACFFieldType.TEXTAREA,
-                placeholder="Centro, Zona Sul, Zona Norte...",
-                instructions="Regiões atendidas para delivery"
-            ))
-        
-        if not fields:
-            return None
-        
-        return ACFFieldGroup(
-            key="group_brazilian_specific",
-            title="Informações Brasil",
-            fields=fields
-        )
-    
-    def personalize_fields_with_ai(self, field_group: ACFFieldGroup, business_data: Dict[str, Any]) -> None:
-        """Personalize fields with AI-generated content"""
-        try:
-            for field in field_group.fields:
-                if field.default_value and isinstance(field.default_value, str):
-                    # Replace placeholders with actual business data
-                    personalized_value = field.default_value
-                    for key, value in business_data.items():
-                        placeholder = f"{{{{{key}}}}}"
-                        if placeholder in personalized_value:
-                            personalized_value = personalized_value.replace(placeholder, str(value))
-                    field.default_value = personalized_value
-                
-                # Update placeholders as well
-                if field.placeholder and isinstance(field.placeholder, str):
-                    personalized_placeholder = field.placeholder
-                    for key, value in business_data.items():
-                        placeholder = f"{{{{{key}}}}}"
-                        if placeholder in personalized_placeholder:
-                            personalized_placeholder = personalized_placeholder.replace(placeholder, str(value))
-                    field.placeholder = personalized_placeholder
-            
-            logger.info(f"Personalized field group: {field_group.title}")
-            
-        except Exception as e:
-            logger.error(f"Error personalizing field group {field_group.title}: {str(e)}")
-    
-    def generate_acf_export(self, field_groups: List[ACFFieldGroup]) -> Dict[str, Any]:
-        """Generate ACF export data compatible with WordPress"""
-        try:
-            export_data = []
-            
-            for group in field_groups:
-                # Convert field group to ACF export format
-                group_data = {
-                    "key": group.key,
-                    "title": group.title,
-                    "fields": [],
-                    "location": group.location,
-                    "menu_order": group.menu_order,
-                    "position": group.position,
-                    "style": group.style,
-                    "label_placement": group.label_placement,
-                    "instruction_placement": group.instruction_placement,
-                    "hide_on_screen": group.hide_on_screen or [],
-                    "active": group.active,
-                    "description": group.description
-                }
-                
-                # Convert fields
-                for field in group.fields:
-                    field_data = {
-                        "key": field.key,
-                        "label": field.label,
-                        "name": field.name,
-                        "type": field.type.value,
-                        "instructions": field.instructions,
-                        "required": 1 if field.required else 0,
-                        "conditional_logic": field.conditional_logic or 0,
-                        "wrapper": field.wrapper or {
-                            "width": "",
-                            "class": "",
-                            "id": ""
-                        },
-                        "default_value": field.default_value or "",
-                        "placeholder": field.placeholder,
-                        "prepend": field.prepend,
-                        "append": field.append,
-                        "formatting": field.formatting,
-                        "maxlength": field.maxlength or "",
+        # Restaurant information
+        restaurant_fields = [
+            {
+                'name': 'tipo_cozinha',
+                'label': 'Tipo de Cozinha',
+                'type': 'select',
+                'choices': {
+                    'italiana': 'Italiana',
+                    'japonesa': 'Japonesa',
+                    'brasileira': 'Brasileira',
+                    'mexicana': 'Mexicana',
+                    'chinesa': 'Chinesa',
+                    'francesa': 'Francesa',
+                    'vegetariana': 'Vegetariana',
+                    'vegana': 'Vegana',
+                    'regional': 'Regional',
+                    'contemporanea': 'Contemporânea',
+                    'outros': 'Outros'
+                },
+                'multiple': 1
+            },
+            {
+                'name': 'horario_funcionamento',
+                'label': 'Horário de Funcionamento',
+                'type': 'repeater',
+                'layout': 'table',
+                'sub_fields': [
+                    {
+                        'name': 'dia_semana',
+                        'label': 'Dia da Semana',
+                        'type': 'select',
+                        'choices': {
+                            'segunda': 'Segunda-feira',
+                            'terca': 'Terça-feira',
+                            'quarta': 'Quarta-feira',
+                            'quinta': 'Quinta-feira',
+                            'sexta': 'Sexta-feira',
+                            'sabado': 'Sábado',
+                            'domingo': 'Domingo'
+                        }
+                    },
+                    {
+                        'name': 'abertura',
+                        'label': 'Abertura',
+                        'type': 'time_picker'
+                    },
+                    {
+                        'name': 'fechamento',
+                        'label': 'Fechamento',
+                        'type': 'time_picker'
                     }
-                    
-                    # Add type-specific properties
-                    if field.type in [ACFFieldType.SELECT, ACFFieldType.CHECKBOX, ACFFieldType.RADIO]:
-                        field_data["choices"] = field.choices or {}
-                        field_data["allow_null"] = 1 if field.allow_null else 0
-                        field_data["multiple"] = 1 if field.multiple else 0
-                        field_data["ui"] = 1 if field.ui else 0
-                        field_data["ajax"] = 1 if field.ajax else 0
-                        field_data["return_format"] = field.return_format
-                    
-                    group_data["fields"].append(field_data)
-                
-                export_data.append(group_data)
-            
-            # Final export structure
-            final_export = {
-                "version": 2,
-                "export_date": "2025-01-20 12:00:00",
-                "field_groups": export_data
+                ]
+            },
+            {
+                'name': 'capacidade',
+                'label': 'Capacidade de Pessoas',
+                'type': 'number',
+                'min': 1
+            },
+            {
+                'name': 'aceita_reservas',
+                'label': 'Aceita Reservas',
+                'type': 'true_false',
+                'ui': 1
+            },
+            {
+                'name': 'delivery',
+                'label': 'Possui Delivery',
+                'type': 'true_false',
+                'ui': 1
+            },
+            {
+                'name': 'area_entrega',
+                'label': 'Área de Entrega',
+                'type': 'textarea',
+                'rows': 3,
+                'conditional_logic': [[{
+                    'field': 'field_delivery',
+                    'operator': '==',
+                    'value': '1'
+                }]]
+            },
+            {
+                'name': 'formas_pagamento',
+                'label': 'Formas de Pagamento',
+                'type': 'checkbox',
+                'choices': {
+                    'dinheiro': 'Dinheiro',
+                    'pix': 'PIX',
+                    'cartao_credito': 'Cartão de Crédito',
+                    'cartao_debito': 'Cartão de Débito',
+                    'vale_refeicao': 'Vale Refeição',
+                    'vale_alimentacao': 'Vale Alimentação'
+                }
             }
-            
-            logger.info(f"Generated ACF export with {len(export_data)} field groups")
-            return final_export
-            
-        except Exception as e:
-            logger.error(f"Error generating ACF export: {str(e)}")
-            return {}
+        ]
+        
+        field_groups.append(self.generate_field_group(
+            'restaurant_info',
+            'Informações do Restaurante',
+            restaurant_fields,
+            menu_order=1
+        ))
+        
+        # Menu fields
+        menu_fields = [
+            {
+                'name': 'cardapio',
+                'label': 'Cardápio',
+                'type': 'repeater',
+                'layout': 'row',
+                'button_label': 'Adicionar Item',
+                'sub_fields': [
+                    {
+                        'name': 'categoria',
+                        'label': 'Categoria',
+                        'type': 'select',
+                        'choices': {
+                            'entrada': 'Entrada',
+                            'prato_principal': 'Prato Principal',
+                            'sobremesa': 'Sobremesa',
+                            'bebida': 'Bebida',
+                            'promocao': 'Promoção'
+                        }
+                    },
+                    {
+                        'name': 'nome_prato',
+                        'label': 'Nome do Prato',
+                        'type': 'text',
+                        'required': 1
+                    },
+                    {
+                        'name': 'descricao',
+                        'label': 'Descrição',
+                        'type': 'textarea',
+                        'rows': 2
+                    },
+                    {
+                        'name': 'preco',
+                        'label': 'Preço',
+                        'type': 'number',
+                        'prepend': 'R$',
+                        'min': 0,
+                        'step': 0.01
+                    },
+                    {
+                        'name': 'foto_prato',
+                        'label': 'Foto do Prato',
+                        'type': 'image',
+                        'return_format': 'url'
+                    },
+                    {
+                        'name': 'destaque',
+                        'label': 'Prato em Destaque',
+                        'type': 'true_false'
+                    }
+                ]
+            }
+        ]
+        
+        field_groups.append(self.generate_field_group(
+            'restaurant_menu',
+            'Cardápio',
+            menu_fields,
+            menu_order=2
+        ))
+        
+        return field_groups
     
-    def get_template_recommendations(self, industry: str) -> Dict[str, Any]:
-        """Get template recommendations for industry"""
-        recommendations = {
-            "theme": "Astra",
-            "plugins": ["advanced-custom-fields-pro", "elementor"],
-            "colors": {"primary": "#0066FF", "secondary": "#00D4FF"},
-            "fonts": {"heading": "Inter", "body": "Inter"}
+    def _generate_dentist_fields(self) -> List[Dict[str, Any]]:
+        """Generate fields for dentist clinic"""
+        
+        field_groups = []
+        
+        # Dentist information
+        dentist_fields = [
+            {
+                'name': 'cro',
+                'label': 'CRO',
+                'type': 'text',
+                'instructions': 'Número do registro no Conselho Regional de Odontologia',
+                'required': 1
+            },
+            {
+                'name': 'especialidades',
+                'label': 'Especialidades',
+                'type': 'checkbox',
+                'choices': {
+                    'ortodontia': 'Ortodontia',
+                    'implantodontia': 'Implantodontia',
+                    'endodontia': 'Endodontia',
+                    'periodontia': 'Periodontia',
+                    'protese': 'Prótese',
+                    'estetica': 'Estética',
+                    'odontopediatria': 'Odontopediatria',
+                    'cirurgia': 'Cirurgia Bucomaxilofacial',
+                    'clareamento': 'Clareamento',
+                    'geral': 'Clínica Geral'
+                }
+            },
+            {
+                'name': 'convenios',
+                'label': 'Convênios Aceitos',
+                'type': 'repeater',
+                'layout': 'table',
+                'button_label': 'Adicionar Convênio',
+                'sub_fields': [
+                    {
+                        'name': 'nome_convenio',
+                        'label': 'Nome do Convênio',
+                        'type': 'text'
+                    },
+                    {
+                        'name': 'logo_convenio',
+                        'label': 'Logo',
+                        'type': 'image',
+                        'return_format': 'url'
+                    }
+                ]
+            },
+            {
+                'name': 'emergencia_24h',
+                'label': 'Atendimento de Emergência 24h',
+                'type': 'true_false',
+                'ui': 1
+            },
+            {
+                'name': 'agendamento_online',
+                'label': 'Agendamento Online',
+                'type': 'true_false',
+                'ui': 1
+            }
+        ]
+        
+        field_groups.append(self.generate_field_group(
+            'dentist_info',
+            'Informações da Clínica Odontológica',
+            dentist_fields,
+            menu_order=1
+        ))
+        
+        # Services and procedures
+        services_fields = [
+            {
+                'name': 'procedimentos',
+                'label': 'Procedimentos Oferecidos',
+                'type': 'repeater',
+                'layout': 'row',
+                'button_label': 'Adicionar Procedimento',
+                'sub_fields': [
+                    {
+                        'name': 'nome_procedimento',
+                        'label': 'Nome do Procedimento',
+                        'type': 'text',
+                        'required': 1
+                    },
+                    {
+                        'name': 'descricao',
+                        'label': 'Descrição',
+                        'type': 'textarea',
+                        'rows': 3
+                    },
+                    {
+                        'name': 'duracao_media',
+                        'label': 'Duração Média',
+                        'type': 'text',
+                        'placeholder': 'Ex: 30 minutos'
+                    },
+                    {
+                        'name': 'preco_base',
+                        'label': 'Preço Base',
+                        'type': 'text',
+                        'prepend': 'R$',
+                        'placeholder': 'A partir de'
+                    }
+                ]
+            }
+        ]
+        
+        field_groups.append(self.generate_field_group(
+            'dentist_services',
+            'Serviços e Procedimentos',
+            services_fields,
+            menu_order=2
+        ))
+        
+        return field_groups
+    
+    def _generate_lawyer_fields(self) -> List[Dict[str, Any]]:
+        """Generate fields for law firm"""
+        
+        field_groups = []
+        
+        # Lawyer information
+        lawyer_fields = [
+            {
+                'name': 'oab',
+                'label': 'Número da OAB',
+                'type': 'text',
+                'instructions': 'Número de registro na Ordem dos Advogados do Brasil',
+                'required': 1
+            },
+            {
+                'name': 'areas_atuacao',
+                'label': 'Áreas de Atuação',
+                'type': 'checkbox',
+                'choices': {
+                    'civil': 'Direito Civil',
+                    'criminal': 'Direito Criminal',
+                    'trabalhista': 'Direito Trabalhista',
+                    'familia': 'Direito de Família',
+                    'empresarial': 'Direito Empresarial',
+                    'tributario': 'Direito Tributário',
+                    'consumidor': 'Direito do Consumidor',
+                    'imobiliario': 'Direito Imobiliário',
+                    'previdenciario': 'Direito Previdenciário',
+                    'digital': 'Direito Digital'
+                }
+            },
+            {
+                'name': 'consulta_gratuita',
+                'label': 'Oferece Consulta Gratuita',
+                'type': 'true_false',
+                'ui': 1
+            },
+            {
+                'name': 'atendimento_online',
+                'label': 'Atendimento Online',
+                'type': 'true_false',
+                'ui': 1
+            },
+            {
+                'name': 'experiencia_anos',
+                'label': 'Anos de Experiência',
+                'type': 'number',
+                'min': 0
+            }
+        ]
+        
+        field_groups.append(self.generate_field_group(
+            'lawyer_info',
+            'Informações do Escritório de Advocacia',
+            lawyer_fields,
+            menu_order=1
+        ))
+        
+        return field_groups
+    
+    def _generate_aesthetic_clinic_fields(self) -> List[Dict[str, Any]]:
+        """Generate fields for aesthetic clinic"""
+        
+        field_groups = []
+        
+        # Clinic information
+        clinic_fields = [
+            {
+                'name': 'responsavel_tecnico',
+                'label': 'Responsável Técnico',
+                'type': 'text',
+                'required': 1
+            },
+            {
+                'name': 'registro_profissional',
+                'label': 'Registro Profissional',
+                'type': 'text',
+                'instructions': 'CRM, CRF ou outro registro profissional'
+            },
+            {
+                'name': 'procedimentos_esteticos',
+                'label': 'Procedimentos Estéticos',
+                'type': 'checkbox',
+                'choices': {
+                    'botox': 'Botox',
+                    'preenchimento': 'Preenchimento Facial',
+                    'harmonizacao': 'Harmonização Facial',
+                    'limpeza_pele': 'Limpeza de Pele',
+                    'peeling': 'Peeling',
+                    'laser': 'Tratamentos a Laser',
+                    'criolipolise': 'Criolipólise',
+                    'depilacao_laser': 'Depilação a Laser',
+                    'microagulhamento': 'Microagulhamento',
+                    'bioestimuladores': 'Bioestimuladores'
+                }
+            },
+            {
+                'name': 'avaliacao_gratuita',
+                'label': 'Avaliação Gratuita',
+                'type': 'true_false',
+                'ui': 1
+            }
+        ]
+        
+        field_groups.append(self.generate_field_group(
+            'aesthetic_clinic_info',
+            'Informações da Clínica de Estética',
+            clinic_fields,
+            menu_order=1
+        ))
+        
+        return field_groups
+    
+    def _generate_gym_fields(self) -> List[Dict[str, Any]]:
+        """Generate fields for gym/fitness center"""
+        
+        field_groups = []
+        
+        # Gym information
+        gym_fields = [
+            {
+                'name': 'modalidades',
+                'label': 'Modalidades Oferecidas',
+                'type': 'checkbox',
+                'choices': {
+                    'musculacao': 'Musculação',
+                    'crossfit': 'CrossFit',
+                    'funcional': 'Funcional',
+                    'pilates': 'Pilates',
+                    'yoga': 'Yoga',
+                    'spinning': 'Spinning',
+                    'natacao': 'Natação',
+                    'artes_marciais': 'Artes Marciais',
+                    'danca': 'Dança',
+                    'personal': 'Personal Trainer'
+                }
+            },
+            {
+                'name': 'horario_funcionamento',
+                'label': 'Horário de Funcionamento',
+                'type': 'group',
+                'sub_fields': [
+                    {
+                        'name': 'semana',
+                        'label': 'Segunda a Sexta',
+                        'type': 'text',
+                        'placeholder': 'Ex: 06:00 às 23:00'
+                    },
+                    {
+                        'name': 'sabado',
+                        'label': 'Sábado',
+                        'type': 'text',
+                        'placeholder': 'Ex: 08:00 às 18:00'
+                    },
+                    {
+                        'name': 'domingo',
+                        'label': 'Domingo',
+                        'type': 'text',
+                        'placeholder': 'Ex: 09:00 às 14:00'
+                    }
+                ]
+            },
+            {
+                'name': 'aula_experimental',
+                'label': 'Aula Experimental Gratuita',
+                'type': 'true_false',
+                'ui': 1
+            },
+            {
+                'name': 'estacionamento',
+                'label': 'Possui Estacionamento',
+                'type': 'true_false',
+                'ui': 1
+            }
+        ]
+        
+        field_groups.append(self.generate_field_group(
+            'gym_info',
+            'Informações da Academia',
+            gym_fields,
+            menu_order=1
+        ))
+        
+        # Plans and pricing
+        plans_fields = [
+            {
+                'name': 'planos',
+                'label': 'Planos',
+                'type': 'repeater',
+                'layout': 'row',
+                'button_label': 'Adicionar Plano',
+                'sub_fields': [
+                    {
+                        'name': 'nome_plano',
+                        'label': 'Nome do Plano',
+                        'type': 'text',
+                        'required': 1
+                    },
+                    {
+                        'name': 'descricao',
+                        'label': 'Descrição',
+                        'type': 'textarea',
+                        'rows': 2
+                    },
+                    {
+                        'name': 'preco_mensal',
+                        'label': 'Preço Mensal',
+                        'type': 'number',
+                        'prepend': 'R$',
+                        'min': 0
+                    },
+                    {
+                        'name': 'beneficios',
+                        'label': 'Benefícios',
+                        'type': 'textarea',
+                        'rows': 3,
+                        'instructions': 'Liste os benefícios, um por linha'
+                    }
+                ]
+            }
+        ]
+        
+        field_groups.append(self.generate_field_group(
+            'gym_plans',
+            'Planos e Preços',
+            plans_fields,
+            menu_order=2
+        ))
+        
+        return field_groups
+    
+    def _generate_real_estate_fields(self) -> List[Dict[str, Any]]:
+        """Generate fields for real estate agency"""
+        
+        field_groups = []
+        
+        # Real estate information
+        real_estate_fields = [
+            {
+                'name': 'creci',
+                'label': 'CRECI',
+                'type': 'text',
+                'instructions': 'Número do registro no Conselho Regional de Corretores de Imóveis',
+                'required': 1
+            },
+            {
+                'name': 'tipos_imoveis',
+                'label': 'Tipos de Imóveis',
+                'type': 'checkbox',
+                'choices': {
+                    'apartamento': 'Apartamento',
+                    'casa': 'Casa',
+                    'terreno': 'Terreno',
+                    'comercial': 'Comercial',
+                    'rural': 'Rural',
+                    'industrial': 'Industrial',
+                    'cobertura': 'Cobertura',
+                    'kitnet': 'Kitnet/Studio'
+                }
+            },
+            {
+                'name': 'servicos',
+                'label': 'Serviços Oferecidos',
+                'type': 'checkbox',
+                'choices': {
+                    'venda': 'Venda',
+                    'aluguel': 'Aluguel',
+                    'administracao': 'Administração de Imóveis',
+                    'avaliacao': 'Avaliação de Imóveis',
+                    'consultoria': 'Consultoria Imobiliária',
+                    'financiamento': 'Assessoria em Financiamento'
+                }
+            },
+            {
+                'name': 'regioes_atendidas',
+                'label': 'Regiões Atendidas',
+                'type': 'textarea',
+                'rows': 3,
+                'instructions': 'Liste as regiões/bairros atendidos'
+            }
+        ]
+        
+        field_groups.append(self.generate_field_group(
+            'real_estate_info',
+            'Informações da Imobiliária',
+            real_estate_fields,
+            menu_order=1
+        ))
+        
+        return field_groups
+    
+    def _generate_ecommerce_fields(self) -> List[Dict[str, Any]]:
+        """Generate fields for e-commerce"""
+        
+        field_groups = []
+        
+        # E-commerce information
+        ecommerce_fields = [
+            self.brazilian_fields['cnpj'],
+            {
+                'name': 'categorias_produtos',
+                'label': 'Categorias de Produtos',
+                'type': 'textarea',
+                'rows': 3,
+                'instructions': 'Liste as principais categorias de produtos'
+            },
+            {
+                'name': 'formas_pagamento',
+                'label': 'Formas de Pagamento',
+                'type': 'checkbox',
+                'choices': {
+                    'pix': 'PIX',
+                    'boleto': 'Boleto',
+                    'cartao_credito': 'Cartão de Crédito',
+                    'cartao_debito': 'Cartão de Débito',
+                    'transferencia': 'Transferência Bancária',
+                    'mercado_pago': 'Mercado Pago',
+                    'paypal': 'PayPal',
+                    'pagseguro': 'PagSeguro'
+                }
+            },
+            {
+                'name': 'frete_gratis',
+                'label': 'Frete Grátis',
+                'type': 'text',
+                'placeholder': 'Ex: Acima de R$ 199,00'
+            },
+            {
+                'name': 'prazo_entrega',
+                'label': 'Prazo de Entrega',
+                'type': 'text',
+                'placeholder': 'Ex: 3 a 7 dias úteis'
+            },
+            {
+                'name': 'troca_devolucao',
+                'label': 'Política de Troca e Devolução',
+                'type': 'textarea',
+                'rows': 3
+            }
+        ]
+        
+        field_groups.append(self.generate_field_group(
+            'ecommerce_info',
+            'Informações do E-commerce',
+            ecommerce_fields,
+            menu_order=1
+        ))
+        
+        return field_groups
+    
+    def _generate_education_fields(self) -> List[Dict[str, Any]]:
+        """Generate fields for educational institution"""
+        
+        field_groups = []
+        
+        # Education information
+        education_fields = [
+            {
+                'name': 'tipo_instituicao',
+                'label': 'Tipo de Instituição',
+                'type': 'select',
+                'choices': {
+                    'escola_infantil': 'Escola Infantil',
+                    'escola_fundamental': 'Escola Fundamental',
+                    'escola_medio': 'Escola Médio',
+                    'curso_tecnico': 'Curso Técnico',
+                    'curso_livre': 'Curso Livre',
+                    'curso_idiomas': 'Curso de Idiomas',
+                    'preparatorio': 'Curso Preparatório',
+                    'universidade': 'Universidade/Faculdade'
+                }
+            },
+            {
+                'name': 'mec_autorizado',
+                'label': 'Autorizado pelo MEC',
+                'type': 'true_false',
+                'ui': 1
+            },
+            {
+                'name': 'modalidades_ensino',
+                'label': 'Modalidades de Ensino',
+                'type': 'checkbox',
+                'choices': {
+                    'presencial': 'Presencial',
+                    'ead': 'EAD (Ensino a Distância)',
+                    'hibrido': 'Híbrido',
+                    'intensivo': 'Intensivo'
+                }
+            },
+            {
+                'name': 'matriculas_abertas',
+                'label': 'Matrículas Abertas',
+                'type': 'true_false',
+                'ui': 1
+            }
+        ]
+        
+        field_groups.append(self.generate_field_group(
+            'education_info',
+            'Informações da Instituição de Ensino',
+            education_fields,
+            menu_order=1
+        ))
+        
+        # Courses
+        courses_fields = [
+            {
+                'name': 'cursos',
+                'label': 'Cursos Oferecidos',
+                'type': 'repeater',
+                'layout': 'row',
+                'button_label': 'Adicionar Curso',
+                'sub_fields': [
+                    {
+                        'name': 'nome_curso',
+                        'label': 'Nome do Curso',
+                        'type': 'text',
+                        'required': 1
+                    },
+                    {
+                        'name': 'duracao',
+                        'label': 'Duração',
+                        'type': 'text',
+                        'placeholder': 'Ex: 6 meses, 2 anos'
+                    },
+                    {
+                        'name': 'carga_horaria',
+                        'label': 'Carga Horária',
+                        'type': 'text',
+                        'placeholder': 'Ex: 360 horas'
+                    },
+                    {
+                        'name': 'investimento',
+                        'label': 'Investimento',
+                        'type': 'text',
+                        'prepend': 'R$',
+                        'placeholder': 'Mensalidade ou valor total'
+                    }
+                ]
+            }
+        ]
+        
+        field_groups.append(self.generate_field_group(
+            'education_courses',
+            'Cursos',
+            courses_fields,
+            menu_order=2
+        ))
+        
+        return field_groups
+    
+    def _generate_consulting_fields(self) -> List[Dict[str, Any]]:
+        """Generate fields for consulting business"""
+        
+        field_groups = []
+        
+        # Consulting information
+        consulting_fields = [
+            {
+                'name': 'areas_consultoria',
+                'label': 'Áreas de Consultoria',
+                'type': 'checkbox',
+                'choices': {
+                    'estrategia': 'Estratégia Empresarial',
+                    'financeira': 'Consultoria Financeira',
+                    'marketing': 'Marketing e Vendas',
+                    'rh': 'Recursos Humanos',
+                    'tecnologia': 'Tecnologia e Inovação',
+                    'processos': 'Gestão de Processos',
+                    'qualidade': 'Qualidade',
+                    'sustentabilidade': 'Sustentabilidade',
+                    'tributaria': 'Consultoria Tributária'
+                }
+            },
+            {
+                'name': 'porte_clientes',
+                'label': 'Porte de Clientes Atendidos',
+                'type': 'checkbox',
+                'choices': {
+                    'mei': 'MEI',
+                    'pequena': 'Pequena Empresa',
+                    'media': 'Média Empresa',
+                    'grande': 'Grande Empresa',
+                    'multinacional': 'Multinacional'
+                }
+            },
+            {
+                'name': 'consulta_inicial_gratuita',
+                'label': 'Consulta Inicial Gratuita',
+                'type': 'true_false',
+                'ui': 1
+            }
+        ]
+        
+        field_groups.append(self.generate_field_group(
+            'consulting_info',
+            'Informações de Consultoria',
+            consulting_fields,
+            menu_order=1
+        ))
+        
+        return field_groups
+    
+    def _generate_generic_fields(self) -> List[Dict[str, Any]]:
+        """Generate generic business fields"""
+        
+        field_groups = []
+        
+        # Generic business information
+        generic_fields = [
+            {
+                'name': 'sobre_empresa',
+                'label': 'Sobre a Empresa',
+                'type': 'wysiwyg',
+                'toolbar': 'full',
+                'media_upload': 1
+            },
+            {
+                'name': 'missao',
+                'label': 'Missão',
+                'type': 'textarea',
+                'rows': 3
+            },
+            {
+                'name': 'visao',
+                'label': 'Visão',
+                'type': 'textarea',
+                'rows': 3
+            },
+            {
+                'name': 'valores',
+                'label': 'Valores',
+                'type': 'textarea',
+                'rows': 4,
+                'instructions': 'Liste os valores da empresa'
+            }
+        ]
+        
+        field_groups.append(self.generate_field_group(
+            'generic_business_info',
+            'Informações do Negócio',
+            generic_fields,
+            menu_order=1
+        ))
+        
+        # Services
+        services_fields = [
+            {
+                'name': 'servicos',
+                'label': 'Serviços/Produtos',
+                'type': 'repeater',
+                'layout': 'row',
+                'button_label': 'Adicionar Serviço/Produto',
+                'sub_fields': [
+                    {
+                        'name': 'nome',
+                        'label': 'Nome',
+                        'type': 'text',
+                        'required': 1
+                    },
+                    {
+                        'name': 'descricao',
+                        'label': 'Descrição',
+                        'type': 'textarea',
+                        'rows': 3
+                    },
+                    {
+                        'name': 'preco',
+                        'label': 'Preço',
+                        'type': 'text',
+                        'prepend': 'R$'
+                    },
+                    {
+                        'name': 'imagem',
+                        'label': 'Imagem',
+                        'type': 'image',
+                        'return_format': 'url'
+                    }
+                ]
+            }
+        ]
+        
+        field_groups.append(self.generate_field_group(
+            'generic_services',
+            'Serviços/Produtos',
+            services_fields,
+            menu_order=2
+        ))
+        
+        return field_groups
+    
+    def _generate_brazilian_compliance_fields(self) -> Dict[str, Any]:
+        """Generate Brazilian compliance and legal fields"""
+        
+        compliance_fields = [
+            self.brazilian_fields['cnpj'],
+            {
+                'name': 'inscricao_estadual',
+                'label': 'Inscrição Estadual',
+                'type': 'text'
+            },
+            {
+                'name': 'inscricao_municipal',
+                'label': 'Inscrição Municipal',
+                'type': 'text'
+            },
+            self.brazilian_fields['pix'],
+            {
+                'name': 'lgpd_compliance',
+                'label': 'Conformidade LGPD',
+                'type': 'group',
+                'sub_fields': [
+                    {
+                        'name': 'politica_privacidade',
+                        'label': 'Link da Política de Privacidade',
+                        'type': 'url'
+                    },
+                    {
+                        'name': 'termos_uso',
+                        'label': 'Link dos Termos de Uso',
+                        'type': 'url'
+                    },
+                    {
+                        'name': 'dpo_contato',
+                        'label': 'Contato do DPO (Encarregado de Dados)',
+                        'type': 'email'
+                    }
+                ]
+            }
+        ]
+        
+        return self.generate_field_group(
+            'brazilian_compliance',
+            'Informações Legais e Compliance',
+            compliance_fields,
+            menu_order=8
+        )
+    
+    def _generate_seo_fields(self) -> Dict[str, Any]:
+        """Generate SEO optimization fields"""
+        
+        seo_fields = [
+            {
+                'name': 'seo_title',
+                'label': 'Título SEO',
+                'type': 'text',
+                'maxlength': 60,
+                'instructions': 'Título para mecanismos de busca (máx. 60 caracteres)'
+            },
+            {
+                'name': 'seo_description',
+                'label': 'Meta Descrição',
+                'type': 'textarea',
+                'rows': 3,
+                'maxlength': 160,
+                'instructions': 'Descrição para mecanismos de busca (máx. 160 caracteres)'
+            },
+            {
+                'name': 'seo_keywords',
+                'label': 'Palavras-chave',
+                'type': 'text',
+                'instructions': 'Palavras-chave separadas por vírgula'
+            },
+            {
+                'name': 'og_image',
+                'label': 'Imagem para Redes Sociais',
+                'type': 'image',
+                'return_format': 'url',
+                'instructions': 'Imagem para compartilhamento (1200x630px recomendado)'
+            }
+        ]
+        
+        return self.generate_field_group(
+            'seo_settings',
+            'Configurações SEO',
+            seo_fields,
+            menu_order=9
+        )
+    
+    def _get_brazilian_states(self) -> Dict[str, str]:
+        """Get Brazilian states for select fields"""
+        
+        return {
+            'AC': 'Acre',
+            'AL': 'Alagoas',
+            'AP': 'Amapá',
+            'AM': 'Amazonas',
+            'BA': 'Bahia',
+            'CE': 'Ceará',
+            'DF': 'Distrito Federal',
+            'ES': 'Espírito Santo',
+            'GO': 'Goiás',
+            'MA': 'Maranhão',
+            'MT': 'Mato Grosso',
+            'MS': 'Mato Grosso do Sul',
+            'MG': 'Minas Gerais',
+            'PA': 'Pará',
+            'PB': 'Paraíba',
+            'PR': 'Paraná',
+            'PE': 'Pernambuco',
+            'PI': 'Piauí',
+            'RJ': 'Rio de Janeiro',
+            'RN': 'Rio Grande do Norte',
+            'RS': 'Rio Grande do Sul',
+            'RO': 'Rondônia',
+            'RR': 'Roraima',
+            'SC': 'Santa Catarina',
+            'SP': 'São Paulo',
+            'SE': 'Sergipe',
+            'TO': 'Tocantins'
         }
-        
-        # Industry-specific recommendations
-        industry_lower = industry.lower()
-        
-        if industry_lower in ["restaurante", "alimentacao"]:
-            recommendations.update({
-                "plugins": recommendations["plugins"] + ["restaurant-menu", "wp-reservation"],
-                "colors": {"primary": "#FF6B35", "secondary": "#F7931E"},
-                "fonts": {"heading": "Playfair Display", "body": "Source Sans Pro"}
-            })
-        elif industry_lower in ["saude", "clinica"]:
-            recommendations.update({
-                "plugins": recommendations["plugins"] + ["bookly", "appointment-booking"],
-                "colors": {"primary": "#2E8B57", "secondary": "#98FB98"},
-                "fonts": {"heading": "Lato", "body": "Open Sans"}
-            })
-        elif industry_lower in ["advocacia", "juridico"]:
-            recommendations.update({
-                "colors": {"primary": "#1C3A5C", "secondary": "#B8860B"},
-                "fonts": {"heading": "Merriweather", "body": "Source Sans Pro"}
-            })
-        
-        return recommendations
     
-    def generate_wp_cli_commands(self, field_groups: List[ACFFieldGroup]) -> List[str]:
-        """Generate WP-CLI commands to import ACF fields"""
-        commands = []
+    def export_to_json(self, field_groups: List[Dict[str, Any]]) -> str:
+        """Export field groups to JSON format for ACF import"""
         
-        try:
-            # Create export file content
-            export_data = self.generate_acf_export(field_groups)
-            export_json = json.dumps(export_data, indent=2, ensure_ascii=False)
-            
-            # Commands to import ACF
-            commands = [
-                # Create temporary file with ACF export
-                f"cat > /tmp/acf-export.json << 'EOF'\n{export_json}\nEOF",
-                
-                # Import ACF fields
-                "wp acf import /tmp/acf-export.json",
-                
-                # Clean up
-                "rm /tmp/acf-export.json"
-            ]
-            
-            logger.info(f"Generated {len(commands)} WP-CLI commands for ACF import")
-            
-        except Exception as e:
-            logger.error(f"Error generating WP-CLI commands: {str(e)}")
+        return json.dumps(field_groups, indent=2, ensure_ascii=False)
+    
+    def export_to_php(self, field_groups: List[Dict[str, Any]]) -> str:
+        """Export field groups to PHP format for ACF registration"""
         
-        return commands
+        php_code = "<?php\n\n"
+        php_code += "if( function_exists('acf_add_local_field_group') ):\n\n"
+        
+        for group in field_groups:
+            php_code += f"acf_add_local_field_group({self._dict_to_php_array(group)});\n\n"
+        
+        php_code += "endif;"
+        
+        return php_code
+    
+    def _dict_to_php_array(self, data: Any, indent: int = 1) -> str:
+        """Convert Python dict to PHP array format"""
+        
+        if isinstance(data, dict):
+            items = []
+            for key, value in data.items():
+                php_value = self._dict_to_php_array(value, indent + 1)
+                items.append(f"{'    ' * indent}'{key}' => {php_value}")
+            
+            return "array(\n" + ",\n".join(items) + f"\n{'    ' * (indent - 1)})"
+        
+        elif isinstance(data, list):
+            items = []
+            for value in data:
+                php_value = self._dict_to_php_array(value, indent + 1)
+                items.append(f"{'    ' * indent}{php_value}")
+            
+            return "array(\n" + ",\n".join(items) + f"\n{'    ' * (indent - 1)})"
+        
+        elif isinstance(data, bool):
+            return 'true' if data else 'false'
+        
+        elif isinstance(data, (int, float)):
+            return str(data)
+        
+        elif data is None:
+            return 'null'
+        
+        else:
+            # Escape single quotes in strings
+            escaped = str(data).replace("'", "\\'")
+            return f"'{escaped}'"
 
-acf_service = ACFService()
+# Initialize the service
+acf_service = ACFIntegrationService()

@@ -1,0 +1,594 @@
+{
+  "id": "services_business_v1",
+  "name": "Empresa de Serviços Profissionais",
+  "industry": "services",
+  "version": "1.0.0",
+  "description": "Template versátil para empresas de serviços: consultoria, contabilidade, advocacia, marketing, TI e mais",
+  "language": "pt-BR",
+  "features": [
+    "service_showcase",
+    "portfolio",
+    "case_studies",
+    "team_profiles",
+    "quote_calculator",
+    "appointment_booking",
+    "client_testimonials",
+    "blog_section"
+  ],
+  "pages": [
+    {
+      "slug": "home",
+      "title": "{{BUSINESS_NAME}} - {{SERVICE_TYPE}}",
+      "template": "elementor",
+      "sections": [
+        {
+          "type": "hero",
+          "settings": {
+            "background_type": "gradient",
+            "gradient_colors": ["{{PRIMARY_COLOR}}", "{{SECONDARY_COLOR}}"],
+            "title": "{{HERO_TITLE}}",
+            "subtitle": "{{HERO_SUBTITLE}}",
+            "buttons": [
+              {
+                "text": "Solicitar Orçamento",
+                "url": "#orcamento",
+                "style": "primary"
+              },
+              {
+                "text": "Nossos Serviços",
+                "url": "#servicos",
+                "style": "outline"
+              }
+            ],
+            "trust_badges": [
+              "{{YEARS_EXPERIENCE}} anos de experiência",
+              "{{CLIENTS_SERVED}}+ clientes atendidos",
+              "{{SUCCESS_RATE}}% de satisfação"
+            ]
+          }
+        },
+        {
+          "type": "services_grid",
+          "settings": {
+            "title": "Nossos Serviços",
+            "subtitle": "Soluções completas para sua empresa",
+            "layout": "cards",
+            "services": [
+              {
+                "icon": "{{SERVICE_1_ICON}}",
+                "title": "{{SERVICE_1_TITLE}}",
+                "description": "{{SERVICE_1_DESC}}",
+                "features": "{{SERVICE_1_FEATURES}}",
+                "link": "/servicos/{{SERVICE_1_SLUG}}"
+              },
+              {
+                "icon": "{{SERVICE_2_ICON}}",
+                "title": "{{SERVICE_2_TITLE}}",
+                "description": "{{SERVICE_2_DESC}}",
+                "features": "{{SERVICE_2_FEATURES}}",
+                "link": "/servicos/{{SERVICE_2_SLUG}}"
+              },
+              {
+                "icon": "{{SERVICE_3_ICON}}",
+                "title": "{{SERVICE_3_TITLE}}",
+                "description": "{{SERVICE_3_DESC}}",
+                "features": "{{SERVICE_3_FEATURES}}",
+                "link": "/servicos/{{SERVICE_3_SLUG}}"
+              },
+              {
+                "icon": "{{SERVICE_4_ICON}}",
+                "title": "{{SERVICE_4_TITLE}}",
+                "description": "{{SERVICE_4_DESC}}",
+                "features": "{{SERVICE_4_FEATURES}}",
+                "link": "/servicos/{{SERVICE_4_SLUG}}"
+              }
+            ]
+          }
+        },
+        {
+          "type": "about_company",
+          "settings": {
+            "title": "{{ABOUT_TITLE}}",
+            "content": "{{ABOUT_TEXT}}",
+            "image": "{{ABOUT_IMAGE}}",
+            "video_url": "{{ABOUT_VIDEO}}",
+            "stats": [
+              {
+                "number": "{{YEARS_EXPERIENCE}}",
+                "label": "Anos de Experiência"
+              },
+              {
+                "number": "{{PROJECTS_COMPLETED}}",
+                "label": "Projetos Concluídos"
+              },
+              {
+                "number": "{{TEAM_SIZE}}",
+                "label": "Profissionais"
+              },
+              {
+                "number": "{{AWARDS_WON}}",
+                "label": "Prêmios"
+              }
+            ]
+          }
+        },
+        {
+          "type": "work_process",
+          "settings": {
+            "title": "Como Trabalhamos",
+            "steps": [
+              {
+                "number": "01",
+                "title": "Análise",
+                "description": "Entendemos suas necessidades"
+              },
+              {
+                "number": "02",
+                "title": "Planejamento",
+                "description": "Criamos a estratégia ideal"
+              },
+              {
+                "number": "03",
+                "title": "Execução",
+                "description": "Implementamos com excelência"
+              },
+              {
+                "number": "04",
+                "title": "Acompanhamento",
+                "description": "Suporte contínuo"
+              }
+            ]
+          }
+        },
+        {
+          "type": "portfolio_showcase",
+          "settings": {
+            "title": "Casos de Sucesso",
+            "layout": "masonry",
+            "filter_categories": true,
+            "items": [
+              {
+                "title": "{{PORTFOLIO_1_TITLE}}",
+                "category": "{{PORTFOLIO_1_CATEGORY}}",
+                "image": "{{PORTFOLIO_1_IMAGE}}",
+                "description": "{{PORTFOLIO_1_DESC}}",
+                "results": "{{PORTFOLIO_1_RESULTS}}"
+              },
+              {
+                "title": "{{PORTFOLIO_2_TITLE}}",
+                "category": "{{PORTFOLIO_2_CATEGORY}}",
+                "image": "{{PORTFOLIO_2_IMAGE}}",
+                "description": "{{PORTFOLIO_2_DESC}}",
+                "results": "{{PORTFOLIO_2_RESULTS}}"
+              }
+            ]
+          }
+        },
+        {
+          "type": "team_members",
+          "settings": {
+            "title": "Nossa Equipe",
+            "layout": "grid",
+            "members": [
+              {
+                "name": "{{TEAM_1_NAME}}",
+                "position": "{{TEAM_1_POSITION}}",
+                "bio": "{{TEAM_1_BIO}}",
+                "photo": "{{TEAM_1_PHOTO}}",
+                "linkedin": "{{TEAM_1_LINKEDIN}}"
+              },
+              {
+                "name": "{{TEAM_2_NAME}}",
+                "position": "{{TEAM_2_POSITION}}",
+                "bio": "{{TEAM_2_BIO}}",
+                "photo": "{{TEAM_2_PHOTO}}",
+                "linkedin": "{{TEAM_2_LINKEDIN}}"
+              }
+            ]
+          }
+        },
+        {
+          "type": "testimonials",
+          "settings": {
+            "title": "Depoimentos de Clientes",
+            "layout": "slider",
+            "items": [
+              {
+                "text": "{{TESTIMONIAL_1_TEXT}}",
+                "author": "{{TESTIMONIAL_1_AUTHOR}}",
+                "company": "{{TESTIMONIAL_1_COMPANY}}",
+                "position": "{{TESTIMONIAL_1_POSITION}}",
+                "rating": 5
+              },
+              {
+                "text": "{{TESTIMONIAL_2_TEXT}}",
+                "author": "{{TESTIMONIAL_2_AUTHOR}}",
+                "company": "{{TESTIMONIAL_2_COMPANY}}",
+                "position": "{{TESTIMONIAL_2_POSITION}}",
+                "rating": 5
+              }
+            ]
+          }
+        },
+        {
+          "type": "clients_logos",
+          "settings": {
+            "title": "Empresas que Confiam em Nós",
+            "layout": "carousel",
+            "logos": "{{CLIENT_LOGOS}}"
+          }
+        },
+        {
+          "type": "pricing_plans",
+          "settings": {
+            "title": "Planos e Preços",
+            "subtitle": "Escolha o melhor para sua empresa",
+            "plans": [
+              {
+                "name": "{{PLAN_1_NAME}}",
+                "price": "{{PLAN_1_PRICE}}",
+                "period": "{{PLAN_1_PERIOD}}",
+                "features": "{{PLAN_1_FEATURES}}",
+                "highlighted": false
+              },
+              {
+                "name": "{{PLAN_2_NAME}}",
+                "price": "{{PLAN_2_PRICE}}",
+                "period": "{{PLAN_2_PERIOD}}",
+                "features": "{{PLAN_2_FEATURES}}",
+                "highlighted": true
+              },
+              {
+                "name": "{{PLAN_3_NAME}}",
+                "price": "{{PLAN_3_PRICE}}",
+                "period": "{{PLAN_3_PERIOD}}",
+                "features": "{{PLAN_3_FEATURES}}",
+                "highlighted": false
+              }
+            ]
+          }
+        },
+        {
+          "type": "quote_form",
+          "settings": {
+            "title": "Solicite um Orçamento",
+            "subtitle": "Resposta em até 24 horas",
+            "fields": [
+              "name",
+              "company",
+              "email",
+              "phone",
+              "service_type",
+              "budget_range",
+              "project_description",
+              "timeline"
+            ],
+            "service_options": "{{SERVICE_OPTIONS}}",
+            "budget_ranges": [
+              "Até R$ 5.000",
+              "R$ 5.000 - R$ 10.000",
+              "R$ 10.000 - R$ 25.000",
+              "R$ 25.000 - R$ 50.000",
+              "Acima de R$ 50.000"
+            ]
+          }
+        },
+        {
+          "type": "blog_preview",
+          "settings": {
+            "title": "Últimas do Blog",
+            "posts_count": 3,
+            "categories": ["dicas", "novidades", "cases"]
+          }
+        },
+        {
+          "type": "cta_section",
+          "settings": {
+            "background": "gradient",
+            "title": "Pronto para transformar seu negócio?",
+            "subtitle": "Entre em contato e descubra como podemos ajudar",
+            "button_text": "Fale Conosco",
+            "button_url": "/contato",
+            "whatsapp_button": true
+          }
+        }
+      ]
+    },
+    {
+      "slug": "servicos",
+      "title": "Serviços - {{BUSINESS_NAME}}",
+      "template": "elementor",
+      "sections": [
+        {
+          "type": "services_detailed",
+          "settings": {
+            "layout": "tabs",
+            "show_pricing": true,
+            "show_process": true,
+            "consultation_form": true
+          }
+        }
+      ]
+    },
+    {
+      "slug": "portfolio",
+      "title": "Portfólio - {{BUSINESS_NAME}}",
+      "template": "elementor",
+      "sections": [
+        {
+          "type": "portfolio_gallery",
+          "settings": {
+            "filter_enabled": true,
+            "categories": "{{PORTFOLIO_CATEGORIES}}",
+            "items_per_page": 12,
+            "lightbox": true
+          }
+        }
+      ]
+    },
+    {
+      "slug": "sobre",
+      "title": "Sobre - {{BUSINESS_NAME}}",
+      "template": "elementor",
+      "sections": [
+        {
+          "type": "company_story",
+          "settings": {
+            "timeline": true,
+            "mission_vision_values": true,
+            "certifications": "{{CERTIFICATIONS}}",
+            "partnerships": "{{PARTNERSHIPS}}"
+          }
+        }
+      ]
+    },
+    {
+      "slug": "blog",
+      "title": "Blog - {{BUSINESS_NAME}}",
+      "template": "blog",
+      "sections": [
+        {
+          "type": "blog_listing",
+          "settings": {
+            "layout": "grid",
+            "sidebar": true,
+            "categories_widget": true,
+            "search_widget": true,
+            "newsletter_widget": true
+          }
+        }
+      ]
+    },
+    {
+      "slug": "contato",
+      "title": "Contato - {{BUSINESS_NAME}}",
+      "template": "elementor",
+      "sections": [
+        {
+          "type": "contact_info",
+          "settings": {
+            "show_map": true,
+            "show_hours": true,
+            "departments": [
+              {
+                "name": "Comercial",
+                "email": "{{SALES_EMAIL}}",
+                "phone": "{{SALES_PHONE}}"
+              },
+              {
+                "name": "Suporte",
+                "email": "{{SUPPORT_EMAIL}}",
+                "phone": "{{SUPPORT_PHONE}}"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "navigation": {
+    "primary": [
+      {"label": "Início", "url": "/"},
+      {"label": "Serviços", "url": "/servicos"},
+      {"label": "Portfólio", "url": "/portfolio"},
+      {"label": "Sobre", "url": "/sobre"},
+      {"label": "Blog", "url": "/blog"},
+      {"label": "Contato", "url": "/contato"}
+    ],
+    "mobile": "hamburger",
+    "sticky": true,
+    "cta_button": {
+      "text": "Orçamento",
+      "url": "#orcamento"
+    }
+  },
+  "design": {
+    "colors": {
+      "primary": "{{PRIMARY_COLOR}}",
+      "secondary": "{{SECONDARY_COLOR}}",
+      "accent": "{{ACCENT_COLOR}}",
+      "text": "#333333",
+      "background": "#FFFFFF"
+    },
+    "typography": {
+      "heading_font": "Inter",
+      "body_font": "Inter",
+      "base_size": "16px"
+    },
+    "spacing": {
+      "section_padding": "80px",
+      "container_width": "1200px"
+    }
+  },
+  "seo": {
+    "meta_title": "{{BUSINESS_NAME}} - {{SERVICE_TYPE}} em {{CITY}}",
+    "meta_description": "{{BUSINESS_DESCRIPTION}}. Atendimento personalizado e resultados comprovados.",
+    "keywords": [
+      "{{SERVICE_TYPE}}",
+      "{{SERVICE_1_TITLE}}",
+      "{{SERVICE_2_TITLE}}",
+      "empresa {{CITY}}",
+      "consultoria"
+    ],
+    "og_image": "{{OG_IMAGE}}",
+    "schema_type": "ProfessionalService"
+  },
+  "brazilian_features": {
+    "whatsapp_widget": {
+      "enabled": true,
+      "position": "bottom-right",
+      "message": "Olá! Gostaria de saber mais sobre seus serviços",
+      "number": "{{WHATSAPP_NUMBER}}"
+    },
+    "lgpd_notice": {
+      "enabled": true,
+      "text": "Utilizamos cookies para melhorar sua experiência.",
+      "privacy_url": "/politica-privacidade"
+    },
+    "business_info": {
+      "cnpj": "{{CNPJ}}",
+      "state_registration": "{{STATE_REG}}",
+      "city_registration": "{{CITY_REG}}"
+    },
+    "certifications": {
+      "iso_9001": false,
+      "iso_14001": false,
+      "great_place_to_work": false
+    }
+  },
+  "plugins_required": [
+    "elementor",
+    "advanced-custom-fields",
+    "contact-form-7",
+    "wp-whatsapp-chat",
+    "yoast-seo",
+    "portfolio-post-type",
+    "team-members",
+    "testimonials-widget"
+  ],
+  "acf_fields": [
+    {
+      "group": "company_info",
+      "fields": [
+        {"name": "service_type", "type": "text", "label": "Tipo de Serviço"},
+        {"name": "years_experience", "type": "number", "label": "Anos de Experiência"},
+        {"name": "team_size", "type": "number", "label": "Tamanho da Equipe"},
+        {"name": "certifications", "type": "repeater", "label": "Certificações"}
+      ]
+    },
+    {
+      "group": "services",
+      "fields": [
+        {"name": "service_list", "type": "repeater", "label": "Lista de Serviços"},
+        {"name": "service_pricing", "type": "repeater", "label": "Tabela de Preços"},
+        {"name": "consultation_free", "type": "true_false", "label": "Consulta Gratuita"}
+      ]
+    },
+    {
+      "group": "portfolio",
+      "fields": [
+        {"name": "portfolio_items", "type": "repeater", "label": "Itens do Portfólio"},
+        {"name": "case_studies", "type": "repeater", "label": "Casos de Sucesso"},
+        {"name": "client_logos", "type": "gallery", "label": "Logos de Clientes"}
+      ]
+    }
+  ],
+  "placeholders": [
+    "{{BUSINESS_NAME}}",
+    "{{BUSINESS_DESCRIPTION}}",
+    "{{SERVICE_TYPE}}",
+    "{{PHONE_NUMBER}}",
+    "{{WHATSAPP_NUMBER}}",
+    "{{EMAIL}}",
+    "{{ADDRESS}}",
+    "{{CITY}}",
+    "{{CNPJ}}",
+    "{{STATE_REG}}",
+    "{{CITY_REG}}",
+    "{{HERO_TITLE}}",
+    "{{HERO_SUBTITLE}}",
+    "{{ABOUT_TITLE}}",
+    "{{ABOUT_TEXT}}",
+    "{{ABOUT_IMAGE}}",
+    "{{ABOUT_VIDEO}}",
+    "{{YEARS_EXPERIENCE}}",
+    "{{CLIENTS_SERVED}}",
+    "{{SUCCESS_RATE}}",
+    "{{PROJECTS_COMPLETED}}",
+    "{{TEAM_SIZE}}",
+    "{{AWARDS_WON}}",
+    "{{SERVICE_1_ICON}}",
+    "{{SERVICE_1_TITLE}}",
+    "{{SERVICE_1_DESC}}",
+    "{{SERVICE_1_FEATURES}}",
+    "{{SERVICE_1_SLUG}}",
+    "{{SERVICE_2_ICON}}",
+    "{{SERVICE_2_TITLE}}",
+    "{{SERVICE_2_DESC}}",
+    "{{SERVICE_2_FEATURES}}",
+    "{{SERVICE_2_SLUG}}",
+    "{{SERVICE_3_ICON}}",
+    "{{SERVICE_3_TITLE}}",
+    "{{SERVICE_3_DESC}}",
+    "{{SERVICE_3_FEATURES}}",
+    "{{SERVICE_3_SLUG}}",
+    "{{SERVICE_4_ICON}}",
+    "{{SERVICE_4_TITLE}}",
+    "{{SERVICE_4_DESC}}",
+    "{{SERVICE_4_FEATURES}}",
+    "{{SERVICE_4_SLUG}}",
+    "{{PORTFOLIO_1_TITLE}}",
+    "{{PORTFOLIO_1_CATEGORY}}",
+    "{{PORTFOLIO_1_IMAGE}}",
+    "{{PORTFOLIO_1_DESC}}",
+    "{{PORTFOLIO_1_RESULTS}}",
+    "{{PORTFOLIO_2_TITLE}}",
+    "{{PORTFOLIO_2_CATEGORY}}",
+    "{{PORTFOLIO_2_IMAGE}}",
+    "{{PORTFOLIO_2_DESC}}",
+    "{{PORTFOLIO_2_RESULTS}}",
+    "{{PORTFOLIO_CATEGORIES}}",
+    "{{TEAM_1_NAME}}",
+    "{{TEAM_1_POSITION}}",
+    "{{TEAM_1_BIO}}",
+    "{{TEAM_1_PHOTO}}",
+    "{{TEAM_1_LINKEDIN}}",
+    "{{TEAM_2_NAME}}",
+    "{{TEAM_2_POSITION}}",
+    "{{TEAM_2_BIO}}",
+    "{{TEAM_2_PHOTO}}",
+    "{{TEAM_2_LINKEDIN}}",
+    "{{TESTIMONIAL_1_TEXT}}",
+    "{{TESTIMONIAL_1_AUTHOR}}",
+    "{{TESTIMONIAL_1_COMPANY}}",
+    "{{TESTIMONIAL_1_POSITION}}",
+    "{{TESTIMONIAL_2_TEXT}}",
+    "{{TESTIMONIAL_2_AUTHOR}}",
+    "{{TESTIMONIAL_2_COMPANY}}",
+    "{{TESTIMONIAL_2_POSITION}}",
+    "{{CLIENT_LOGOS}}",
+    "{{PLAN_1_NAME}}",
+    "{{PLAN_1_PRICE}}",
+    "{{PLAN_1_PERIOD}}",
+    "{{PLAN_1_FEATURES}}",
+    "{{PLAN_2_NAME}}",
+    "{{PLAN_2_PRICE}}",
+    "{{PLAN_2_PERIOD}}",
+    "{{PLAN_2_FEATURES}}",
+    "{{PLAN_3_NAME}}",
+    "{{PLAN_3_PRICE}}",
+    "{{PLAN_3_PERIOD}}",
+    "{{PLAN_3_FEATURES}}",
+    "{{SERVICE_OPTIONS}}",
+    "{{CERTIFICATIONS}}",
+    "{{PARTNERSHIPS}}",
+    "{{SALES_EMAIL}}",
+    "{{SALES_PHONE}}",
+    "{{SUPPORT_EMAIL}}",
+    "{{SUPPORT_PHONE}}",
+    "{{PRIMARY_COLOR}}",
+    "{{SECONDARY_COLOR}}",
+    "{{ACCENT_COLOR}}",
+    "{{OG_IMAGE}}"
+  ]
+}

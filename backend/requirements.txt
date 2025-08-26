@@ -1,4 +1,4 @@
-# WordPress AI SaaS - Backend Dependencies
+# KenzySites - Backend Dependencies
 # Python 3.12+ required
 
 # Core Framework
@@ -6,6 +6,7 @@ fastapi==0.115.0
 uvicorn[standard]==0.24.0
 pydantic==2.5.0
 pydantic-settings==2.1.0
+python-multipart==0.0.6
 
 # Agno Framework - AI Agent Orchestration  
 agno==1.1.1
@@ -16,19 +17,29 @@ openai==1.50.0
 google-generativeai==0.8.0
 
 # Database & ORM
-prisma==0.13.0
-asyncpg==0.29.0
-redis==5.0.0
+sqlalchemy==2.0.23
+psycopg2-binary==2.9.9
+alembic==1.12.1
+mysql-connector-python==8.2.0
+redis==4.6.0
 
 # Authentication & Security
 python-jose[cryptography]==3.3.0
-python-multipart==0.0.6
+passlib[bcrypt]==1.7.4
 bcrypt==4.1.0
+email-validator==2.1.0
+python-decouple==3.8
 
 # HTTP & API
 httpx==0.25.2
 requests==2.31.0
 aiofiles==23.2.1
+aiohttp==3.9.1
+aioftp==0.21.4
+
+# Brazilian Features
+validate-docbr==1.10.0  # CPF/CNPJ validation
+brazilcep==0.2.0  # CEP validation
 
 # Payment Processing
 stripe==7.4.0  # For international payments (future)
@@ -36,11 +47,42 @@ mercadopago==2.2.1  # Alternative Brazilian gateway (future)
 
 # Background Tasks
 celery[redis]==5.3.4
-python-celery[redis]==5.3.4
+
+# Image Processing
+Pillow==10.1.0
+python-magic==0.4.27
+
+# Caching
+cachetools==5.3.2
+
+# WordPress/SSH
+paramiko==3.3.1
+
+# Utilities
+PyYAML==6.0.1
+Jinja2==3.1.2
+lxml==4.9.3
+pytz==2023.3
 
 # Monitoring & Logging
 structlog==23.2.0
 sentry-sdk[fastapi]==1.38.0
+prometheus-client==0.19.0
 
 # Environment & Config
 python-dotenv==1.0.0
+
+# API Rate Limiting
+slowapi==0.1.9
+
+# Testing
+pytest==7.4.3
+pytest-asyncio==0.21.1
+
+# Development
+black==23.11.0
+flake8==6.1.0
+
+# Documentation
+mkdocs==1.5.3
+mkdocs-material==9.4.14

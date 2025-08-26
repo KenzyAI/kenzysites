@@ -62,6 +62,15 @@ class KenzySites_ACF_Converter {
         // Save to database
         $this->save_converted_template($template_data);
         
+        // Register ACF field groups for this page
+        $this->register_acf_field_groups($template_data['acf_field_groups'], $page_id);
+        
+        // Switch page from Elementor to ACF editing mode
+        $this->switch_page_to_acf_mode($page_id);
+        
+        // Convert content to use template variables
+        $this->convert_content_to_template_variables($page_id, $landing_page_type);
+        
         return $template_data;
     }
     
@@ -807,6 +816,61 @@ class KenzySites_ACF_Converter {
     }
     
     /**
+     * Register ACF field groups for a specific page
+     */
+    private function register_acf_field_groups($field_groups, $page_id) {
+        if (!function_exists('acf_add_local_field_group')) {
+            throw new Exception(__('ACF plugin não está instalado ou ativo', 'kenzysites-converter'));
+        }
+        
+        foreach ($field_groups as $field_group) {
+            if (is_null($field_group)) {
+                continue;
+            }
+            
+            // Update location rules to target specific page
+            $field_group['location'] = [
+                [
+                    [
+                        'param' => 'page',
+                        'operator' => '==',
+                        'value' => $page_id
+                    ]
+                ]
+            ];
+            
+            // Add unique prefix to avoid conflicts
+            $field_group['key'] = 'kenzysites_page_' . $page_id . '_' . $field_group['key'];
+            
+            // Ensure fields have proper keys
+            if (isset($field_group['fields'])) {
+                foreach ($field_group['fields'] as &$field) {
+                    $field['key'] = 'kenzysites_page_' . $page_id . '_' . $field['key'];
+                }
+            }
+            
+            // Register the field group
+            acf_add_local_field_group($field_group);
+        }
+    }
+    
+    /**
+     * Switch page from Elementor to ACF editing mode
+     */
+    private function switch_page_to_acf_mode($page_id) {
+        // Remove Elementor data/meta to disable Elementor editing
+        delete_post_meta($page_id, '_elementor_edit_mode');
+        delete_post_meta($page_id, '_elementor_template_type');
+        
+        // Set ACF mode flag
+        update_post_meta($page_id, '_kenzysites_acf_mode', '1');
+        update_post_meta($page_id, '_kenzysites_converted_from_elementor', current_time('mysql'));
+        
+        // Update page template to use ACF template
+        update_post_meta($page_id, '_wp_page_template', 'page-kenzysites-acf.php');
+    }
+    
+    /**
      * Get converted template by ID
      */
     public function get_converted_template($template_id) {
@@ -844,5 +908,199 @@ class KenzySites_ACF_Converter {
             ['%s', '%s', '%s'],
             ['%s']
         );
+    }
+    
+    /**
+     * Convert page content to use template variables
+     */
+    private function convert_content_to_template_variables($page_id, $landing_page_type) {
+        $page = get_post($page_id);
+        if (!$page) {
+            return;
+        }
+        
+        $content = $page->post_content;
+        $industry = $this->detect_industry_from_type($landing_page_type);
+        
+        // Apply template variable conversion based on industry
+        $converted_content = $this->apply_template_variables($content, $industry);
+        
+        // Update page content with template variables
+        wp_update_post([
+            'ID' => $page_id,
+            'post_content' => $converted_content
+        ]);
+        
+        // Set template type meta
+        update_post_meta($page_id, '_kenzysites_template_type', $industry);
+        
+        // Set default variables based on detected industry
+        $this->set_default_template_variables($page_id, $industry, $content);
+    }
+    
+    /**
+     * Apply template variables to content
+     */
+    private function apply_template_variables($content, $industry) {
+        $replacements = $this->get_template_replacements($industry);
+        
+        foreach ($replacements as $search => $variable) {
+            $content = str_ireplace($search, '{{' . $variable . '}}', $content);
+        }
+        
+        return $content;
+    }
+    
+    /**
+     * Get template variable replacements based on industry
+     */
+    private function get_template_replacements($industry) {
+        $replacements = [
+            // Common replacements for all industries
+            'Dra. ' => 'NOME_MEDICO',
+            'Dr. ' => 'NOME_MEDICO', 
+            '(32) 99977-5783' => 'TELEFONE',
+            '(11) 99999-9999' => 'TELEFONE',
+            'Ubá - MG' => 'CIDADE',
+            'Ubá/MG' => 'CIDADE',
+        ];
+        
+        switch ($industry) {
+            case 'medico':
+                $replacements = array_merge($replacements, [
+                    'Dra. Mariana Matioli' => 'NOME_MEDICO',
+                    'Gastroenterologia' => 'ESPECIALIDADE',
+                    'gastroenterologia' => 'ESPECIALIDADE',
+                    'CRM 90932' => 'CRM',
+                    'Hospital São Januário' => 'CONSULTORIO',
+                    'Av. Beira Rio, 545 - Centro, Ubá - MG, 36500-000' => 'ENDERECO',
+                    'Formada pelo UNIFAGOC' => 'FORMACAO',
+                    'pós-graduada em Gastroenterologia pela Universidade de Ciências Médicas de Juiz de Fora' => 'POS_GRADUACAO',
+                ]);
+                break;
+                
+            case 'restaurante':
+                $replacements = array_merge($replacements, [
+                    'Bella Italia' => 'NOME_RESTAURANTE',
+                    'italiana' => 'TIPO_COZINHA',
+                    'Chef Mario' => 'CHEF',
+                ]);
+                break;
+                
+            case 'academia':
+                $replacements = array_merge($replacements, [
+                    'PowerFit' => 'NOME_ACADEMIA',
+                    'musculação' => 'MODALIDADES',
+                    'personal trainer' => 'PERSONAL_TRAINER',
+                ]);
+                break;
+        }
+        
+        return $replacements;
+    }
+    
+    /**
+     * Set default template variables for page
+     */
+    private function set_default_template_variables($page_id, $industry, $content) {
+        $default_variables = [];
+        
+        // Extract actual values from content before conversion
+        $extracted_values = $this->extract_values_from_content($content, $industry);
+        
+        switch ($industry) {
+            case 'medico':
+                $default_variables = [
+                    'NOME_MEDICO' => $extracted_values['nome_medico'] ?? 'Dr. João Silva',
+                    'ESPECIALIDADE' => $extracted_values['especialidade'] ?? 'Clínico Geral',
+                    'CRM' => $extracted_values['crm'] ?? '12345',
+                    'TELEFONE' => $extracted_values['telefone'] ?? '(11) 99999-9999',
+                    'CIDADE' => $extracted_values['cidade'] ?? 'São Paulo',
+                    'CONSULTORIO' => $extracted_values['consultorio'] ?? 'Clínica Médica',
+                    'ENDERECO' => $extracted_values['endereco'] ?? 'Rua das Flores, 123',
+                    'FORMACAO' => $extracted_values['formacao'] ?? 'Universidade Federal',
+                    'POS_GRADUACAO' => $extracted_values['pos_graduacao'] ?? 'Especialização em Medicina',
+                ];
+                break;
+                
+            case 'restaurante':
+                $default_variables = [
+                    'NOME_RESTAURANTE' => $extracted_values['nome_restaurante'] ?? 'Restaurante Gourmet',
+                    'TIPO_COZINHA' => $extracted_values['tipo_cozinha'] ?? 'Brasileira',
+                    'CHEF' => $extracted_values['chef'] ?? 'Chef Renato',
+                    'TELEFONE' => $extracted_values['telefone'] ?? '(11) 99999-9999',
+                    'CIDADE' => $extracted_values['cidade'] ?? 'São Paulo',
+                ];
+                break;
+                
+            case 'academia':
+                $default_variables = [
+                    'NOME_ACADEMIA' => $extracted_values['nome_academia'] ?? 'Academia Fitness',
+                    'MODALIDADES' => $extracted_values['modalidades'] ?? 'Musculação, Funcional',
+                    'PERSONAL_TRAINER' => $extracted_values['personal'] ?? 'Personal Trainers Certificados',
+                    'TELEFONE' => $extracted_values['telefone'] ?? '(11) 99999-9999',
+                    'CIDADE' => $extracted_values['cidade'] ?? 'São Paulo',
+                ];
+                break;
+        }
+        
+        update_post_meta($page_id, '_kenzysites_template_variables', $default_variables);
+    }
+    
+    /**
+     * Extract actual values from content
+     */
+    private function extract_values_from_content($content, $industry) {
+        $values = [];
+        
+        // Extract phone numbers
+        if (preg_match('/\(\d{2}\)\s*\d{4,5}-?\d{4}/', $content, $matches)) {
+            $values['telefone'] = $matches[0];
+        }
+        
+        // Extract doctor names
+        if (preg_match('/Dr[a]?\.\s+([A-Za-z\s]+)/', $content, $matches)) {
+            $values['nome_medico'] = trim($matches[0]);
+        }
+        
+        // Extract cities (pattern: word + - + state)
+        if (preg_match('/([A-Za-z\s]+)\s*-\s*[A-Z]{2}/', $content, $matches)) {
+            $values['cidade'] = trim($matches[1]);
+        }
+        
+        // Industry-specific extractions
+        switch ($industry) {
+            case 'medico':
+                // Extract specialties
+                $medical_terms = ['gastroenterologia', 'cardiologia', 'dermatologia', 'neurologia', 'ortopedia'];
+                foreach ($medical_terms as $term) {
+                    if (stripos($content, $term) !== false) {
+                        $values['especialidade'] = ucfirst($term);
+                        break;
+                    }
+                }
+                
+                // Extract CRM
+                if (preg_match('/CRM\s*(\d+)/', $content, $matches)) {
+                    $values['crm'] = 'CRM ' . $matches[1];
+                }
+                break;
+        }
+        
+        return $values;
+    }
+    
+    /**
+     * Detect industry from landing page type
+     */
+    private function detect_industry_from_type($landing_page_type) {
+        $type_mapping = [
+            'service_showcase' => 'medico',
+            'lead_generation' => 'medico',
+            'product_launch' => 'restaurante',
+            'event_promotion' => 'academia',
+        ];
+        
+        return $type_mapping[$landing_page_type] ?? 'medico';
     }
 }

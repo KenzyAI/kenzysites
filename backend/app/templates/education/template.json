@@ -1,0 +1,596 @@
+{
+  "id": "education_institution_v1",
+  "name": "Instituição de Ensino Moderna",
+  "industry": "education",
+  "version": "1.0.0",
+  "description": "Template completo para escolas, cursos, faculdades e instituições de ensino com portal do aluno e matrículas online",
+  "language": "pt-BR",
+  "features": [
+    "course_catalog",
+    "online_enrollment",
+    "student_portal",
+    "teacher_profiles",
+    "class_schedule",
+    "events_calendar",
+    "library_resources",
+    "online_learning",
+    "payment_integration"
+  ],
+  "pages": [
+    {
+      "slug": "home",
+      "title": "{{BUSINESS_NAME}} - Educação de Qualidade",
+      "template": "elementor",
+      "sections": [
+        {
+          "type": "hero",
+          "settings": {
+            "background_video": "{{HERO_VIDEO}}",
+            "fallback_image": "{{HERO_IMAGE}}",
+            "overlay_color": "rgba(0,0,0,0.3)",
+            "title": "{{HERO_TITLE}}",
+            "subtitle": "{{HERO_SUBTITLE}}",
+            "buttons": [
+              {
+                "text": "Matrículas Abertas",
+                "url": "/matriculas",
+                "style": "primary"
+              },
+              {
+                "text": "Conheça os Cursos",
+                "url": "/cursos",
+                "style": "secondary"
+              }
+            ],
+            "enrollment_banner": {
+              "enabled": true,
+              "text": "{{ENROLLMENT_STATUS}}",
+              "deadline": "{{ENROLLMENT_DEADLINE}}"
+            }
+          }
+        },
+        {
+          "type": "features",
+          "settings": {
+            "title": "Por que escolher {{BUSINESS_NAME}}?",
+            "items": [
+              {
+                "icon": "fas fa-graduation-cap",
+                "title": "Ensino de Excelência",
+                "description": "{{EXCELLENCE_DESC}}"
+              },
+              {
+                "icon": "fas fa-users",
+                "title": "Professores Qualificados",
+                "description": "{{TEACHERS_DESC}}"
+              },
+              {
+                "icon": "fas fa-laptop",
+                "title": "Tecnologia Educacional",
+                "description": "{{TECHNOLOGY_DESC}}"
+              },
+              {
+                "icon": "fas fa-certificate",
+                "title": "Certificação Reconhecida",
+                "description": "{{CERTIFICATION_DESC}}"
+              }
+            ]
+          }
+        },
+        {
+          "type": "courses_showcase",
+          "settings": {
+            "title": "Nossos Cursos",
+            "subtitle": "Formação completa para seu futuro",
+            "layout": "grid",
+            "courses": [
+              {
+                "name": "{{COURSE_1_NAME}}",
+                "description": "{{COURSE_1_DESC}}",
+                "duration": "{{COURSE_1_DURATION}}",
+                "level": "{{COURSE_1_LEVEL}}",
+                "price": "{{COURSE_1_PRICE}}",
+                "image": "{{COURSE_1_IMAGE}}",
+                "start_date": "{{COURSE_1_START}}"
+              },
+              {
+                "name": "{{COURSE_2_NAME}}",
+                "description": "{{COURSE_2_DESC}}",
+                "duration": "{{COURSE_2_DURATION}}",
+                "level": "{{COURSE_2_LEVEL}}",
+                "price": "{{COURSE_2_PRICE}}",
+                "image": "{{COURSE_2_IMAGE}}",
+                "start_date": "{{COURSE_2_START}}"
+              },
+              {
+                "name": "{{COURSE_3_NAME}}",
+                "description": "{{COURSE_3_DESC}}",
+                "duration": "{{COURSE_3_DURATION}}",
+                "level": "{{COURSE_3_LEVEL}}",
+                "price": "{{COURSE_3_PRICE}}",
+                "image": "{{COURSE_3_IMAGE}}",
+                "start_date": "{{COURSE_3_START}}"
+              }
+            ],
+            "show_more_button": true
+          }
+        },
+        {
+          "type": "statistics",
+          "settings": {
+            "background": "gradient",
+            "stats": [
+              {
+                "number": "{{STUDENTS_COUNT}}",
+                "label": "Alunos",
+                "icon": "fas fa-user-graduate"
+              },
+              {
+                "number": "{{COURSES_COUNT}}",
+                "label": "Cursos",
+                "icon": "fas fa-book"
+              },
+              {
+                "number": "{{TEACHERS_COUNT}}",
+                "label": "Professores",
+                "icon": "fas fa-chalkboard-teacher"
+              },
+              {
+                "number": "{{APPROVAL_RATE}}%",
+                "label": "Taxa de Aprovação",
+                "icon": "fas fa-trophy"
+              }
+            ]
+          }
+        },
+        {
+          "type": "teachers_showcase",
+          "settings": {
+            "title": "Nossos Professores",
+            "layout": "carousel",
+            "teachers": [
+              {
+                "name": "{{TEACHER_1_NAME}}",
+                "subject": "{{TEACHER_1_SUBJECT}}",
+                "qualification": "{{TEACHER_1_QUALIFICATION}}",
+                "bio": "{{TEACHER_1_BIO}}",
+                "photo": "{{TEACHER_1_PHOTO}}",
+                "experience": "{{TEACHER_1_EXPERIENCE}}"
+              },
+              {
+                "name": "{{TEACHER_2_NAME}}",
+                "subject": "{{TEACHER_2_SUBJECT}}",
+                "qualification": "{{TEACHER_2_QUALIFICATION}}",
+                "bio": "{{TEACHER_2_BIO}}",
+                "photo": "{{TEACHER_2_PHOTO}}",
+                "experience": "{{TEACHER_2_EXPERIENCE}}"
+              }
+            ]
+          }
+        },
+        {
+          "type": "student_testimonials",
+          "settings": {
+            "title": "Depoimentos de Alunos",
+            "layout": "cards",
+            "testimonials": [
+              {
+                "text": "{{STUDENT_1_TEXT}}",
+                "author": "{{STUDENT_1_NAME}}",
+                "course": "{{STUDENT_1_COURSE}}",
+                "year": "{{STUDENT_1_YEAR}}",
+                "photo": "{{STUDENT_1_PHOTO}}",
+                "rating": 5
+              },
+              {
+                "text": "{{STUDENT_2_TEXT}}",
+                "author": "{{STUDENT_2_NAME}}",
+                "course": "{{STUDENT_2_COURSE}}",
+                "year": "{{STUDENT_2_YEAR}}",
+                "photo": "{{STUDENT_2_PHOTO}}",
+                "rating": 5
+              }
+            ]
+          }
+        },
+        {
+          "type": "events_calendar",
+          "settings": {
+            "title": "Próximos Eventos",
+            "show_featured": true,
+            "categories": ["Palestras", "Workshops", "Eventos Culturais", "Formaturas"],
+            "upcoming_count": 4
+          }
+        },
+        {
+          "type": "blog_news",
+          "settings": {
+            "title": "Notícias e Novidades",
+            "categories": ["Institucional", "Acadêmico", "Eventos"],
+            "posts_count": 3,
+            "show_date": true,
+            "show_author": false
+          }
+        },
+        {
+          "type": "partners_accreditation",
+          "settings": {
+            "title": "Parceiros e Credenciamento",
+            "partners_logos": "{{PARTNER_LOGOS}}",
+            "accreditations": [
+              {
+                "name": "MEC",
+                "logo": "{{MEC_LOGO}}",
+                "description": "Reconhecido pelo MEC"
+              },
+              {
+                "name": "{{ACCREDITATION_NAME}}",
+                "logo": "{{ACCREDITATION_LOGO}}",
+                "description": "{{ACCREDITATION_DESC}}"
+              }
+            ]
+          }
+        },
+        {
+          "type": "enrollment_cta",
+          "settings": {
+            "background": "{{CTA_BACKGROUND}}",
+            "title": "Matrículas Abertas {{ENROLLMENT_PERIOD}}",
+            "subtitle": "Garanta sua vaga!",
+            "benefits": [
+              "{{BENEFIT_1}}",
+              "{{BENEFIT_2}}",
+              "{{BENEFIT_3}}"
+            ],
+            "button_text": "Fazer Matrícula",
+            "button_url": "/matriculas",
+            "whatsapp_contact": true
+          }
+        },
+        {
+          "type": "location_contact",
+          "settings": {
+            "title": "Visite Nossa Instituição",
+            "address": "{{ADDRESS}}",
+            "phone": "{{PHONE_NUMBER}}",
+            "whatsapp": "{{WHATSAPP_NUMBER}}",
+            "email": "{{EMAIL}}",
+            "secretary_hours": "{{SECRETARY_HOURS}}",
+            "google_maps_embed": "{{GOOGLE_MAPS_EMBED}}"
+          }
+        }
+      ]
+    },
+    {
+      "slug": "cursos",
+      "title": "Cursos - {{BUSINESS_NAME}}",
+      "template": "elementor",
+      "sections": [
+        {
+          "type": "courses_catalog",
+          "settings": {
+            "filters": ["level", "duration", "category", "price"],
+            "layout": "grid",
+            "show_syllabus": true,
+            "enrollment_button": true,
+            "compare_feature": true
+          }
+        }
+      ]
+    },
+    {
+      "slug": "matriculas",
+      "title": "Matrículas - {{BUSINESS_NAME}}",
+      "template": "elementor",
+      "sections": [
+        {
+          "type": "enrollment_form",
+          "settings": {
+            "steps": [
+              "Dados Pessoais",
+              "Escolha do Curso",
+              "Documentação",
+              "Pagamento",
+              "Confirmação"
+            ],
+            "required_documents": [
+              "RG",
+              "CPF",
+              "Comprovante de Residência",
+              "Histórico Escolar",
+              "Foto 3x4"
+            ],
+            "payment_options": ["boleto", "cartao", "pix"],
+            "installments": true
+          }
+        }
+      ]
+    },
+    {
+      "slug": "portal-aluno",
+      "title": "Portal do Aluno - {{BUSINESS_NAME}}",
+      "template": "elementor",
+      "sections": [
+        {
+          "type": "student_portal",
+          "settings": {
+            "features": [
+              "grades",
+              "attendance",
+              "schedule",
+              "materials",
+              "financial",
+              "certificates"
+            ],
+            "login_required": true
+          }
+        }
+      ]
+    },
+    {
+      "slug": "professores",
+      "title": "Corpo Docente - {{BUSINESS_NAME}}",
+      "template": "elementor",
+      "sections": [
+        {
+          "type": "teachers_directory",
+          "settings": {
+            "filter_by_subject": true,
+            "show_qualifications": true,
+            "contact_enabled": false
+          }
+        }
+      ]
+    },
+    {
+      "slug": "sobre",
+      "title": "Sobre - {{BUSINESS_NAME}}",
+      "template": "elementor",
+      "sections": [
+        {
+          "type": "institution_history",
+          "settings": {
+            "timeline": true,
+            "mission": "{{MISSION}}",
+            "vision": "{{VISION}}",
+            "values": "{{VALUES}}",
+            "foundation_year": "{{FOUNDATION_YEAR}}"
+          }
+        }
+      ]
+    },
+    {
+      "slug": "contato",
+      "title": "Contato - {{BUSINESS_NAME}}",
+      "template": "elementor",
+      "sections": [
+        {
+          "type": "contact_form",
+          "settings": {
+            "departments": [
+              "Secretaria",
+              "Coordenação",
+              "Financeiro",
+              "Suporte Técnico"
+            ],
+            "fields": ["name", "email", "phone", "subject", "message"],
+            "response_time": "24 horas úteis"
+          }
+        }
+      ]
+    }
+  ],
+  "navigation": {
+    "primary": [
+      {"label": "Início", "url": "/"},
+      {"label": "Cursos", "url": "/cursos"},
+      {"label": "Matrículas", "url": "/matriculas"},
+      {"label": "Professores", "url": "/professores"},
+      {"label": "Sobre", "url": "/sobre"},
+      {"label": "Contato", "url": "/contato"}
+    ],
+    "secondary": [
+      {"label": "Portal do Aluno", "url": "/portal-aluno", "icon": "user"},
+      {"label": "Biblioteca", "url": "/biblioteca", "icon": "book"}
+    ],
+    "mobile": "hamburger",
+    "sticky": true,
+    "enrollment_button": true
+  },
+  "design": {
+    "colors": {
+      "primary": "{{PRIMARY_COLOR}}",
+      "secondary": "{{SECONDARY_COLOR}}",
+      "accent": "{{ACCENT_COLOR}}",
+      "text": "#333333",
+      "background": "#FFFFFF"
+    },
+    "typography": {
+      "heading_font": "Poppins",
+      "body_font": "Open Sans",
+      "base_size": "16px"
+    },
+    "spacing": {
+      "section_padding": "80px",
+      "container_width": "1200px"
+    }
+  },
+  "seo": {
+    "meta_title": "{{BUSINESS_NAME}} - Instituição de Ensino em {{CITY}}",
+    "meta_description": "{{BUSINESS_DESCRIPTION}}. Matrículas abertas. Cursos reconhecidos pelo MEC.",
+    "keywords": [
+      "escola {{CITY}}",
+      "curso {{CITY}}",
+      "educação",
+      "ensino",
+      "{{COURSE_1_NAME}}",
+      "{{COURSE_2_NAME}}"
+    ],
+    "og_image": "{{OG_IMAGE}}",
+    "schema_type": "EducationalOrganization"
+  },
+  "brazilian_features": {
+    "whatsapp_widget": {
+      "enabled": true,
+      "position": "bottom-right",
+      "message": "Olá! Gostaria de informações sobre matrículas",
+      "number": "{{WHATSAPP_NUMBER}}"
+    },
+    "student_portal": {
+      "enabled": true,
+      "integration": "{{PORTAL_SYSTEM}}",
+      "features": ["notas", "frequencia", "boletos", "materiais"]
+    },
+    "lgpd_notice": {
+      "enabled": true,
+      "text": "Protegemos os dados de alunos conforme a LGPD.",
+      "privacy_url": "/politica-privacidade"
+    },
+    "mec_integration": {
+      "institution_code": "{{MEC_CODE}}",
+      "e_mec_link": "{{EMEC_LINK}}",
+      "authorized_courses": true
+    },
+    "payment_integrations": {
+      "boleto_bancario": true,
+      "pix": true,
+      "cartao_credito": true,
+      "desconto_pontualidade": "{{DISCOUNT_PERCENTAGE}}%"
+    },
+    "educational_systems": {
+      "google_classroom": false,
+      "moodle": true,
+      "microsoft_teams": false
+    }
+  },
+  "plugins_required": [
+    "elementor",
+    "advanced-custom-fields",
+    "learnpress",
+    "wp-whatsapp-chat",
+    "events-calendar",
+    "contact-form-7",
+    "user-registration",
+    "yoast-seo",
+    "woocommerce"
+  ],
+  "acf_fields": [
+    {
+      "group": "institution_info",
+      "fields": [
+        {"name": "institution_type", "type": "select", "label": "Tipo de Instituição"},
+        {"name": "mec_code", "type": "text", "label": "Código MEC"},
+        {"name": "foundation_year", "type": "number", "label": "Ano de Fundação"},
+        {"name": "education_levels", "type": "checkbox", "label": "Níveis de Ensino"}
+      ]
+    },
+    {
+      "group": "courses",
+      "fields": [
+        {"name": "course_catalog", "type": "repeater", "label": "Catálogo de Cursos"},
+        {"name": "course_duration", "type": "text", "label": "Duração"},
+        {"name": "course_price", "type": "number", "label": "Mensalidade"},
+        {"name": "course_schedule", "type": "select", "label": "Turno"}
+      ]
+    },
+    {
+      "group": "enrollment",
+      "fields": [
+        {"name": "enrollment_period", "type": "date_range", "label": "Período de Matrículas"},
+        {"name": "required_age", "type": "number", "label": "Idade Mínima"},
+        {"name": "available_spots", "type": "number", "label": "Vagas Disponíveis"},
+        {"name": "selection_process", "type": "wysiwyg", "label": "Processo Seletivo"}
+      ]
+    }
+  ],
+  "placeholders": [
+    "{{BUSINESS_NAME}}",
+    "{{BUSINESS_DESCRIPTION}}",
+    "{{PHONE_NUMBER}}",
+    "{{WHATSAPP_NUMBER}}",
+    "{{EMAIL}}",
+    "{{ADDRESS}}",
+    "{{CITY}}",
+    "{{SECRETARY_HOURS}}",
+    "{{HERO_TITLE}}",
+    "{{HERO_SUBTITLE}}",
+    "{{HERO_VIDEO}}",
+    "{{HERO_IMAGE}}",
+    "{{ENROLLMENT_STATUS}}",
+    "{{ENROLLMENT_DEADLINE}}",
+    "{{ENROLLMENT_PERIOD}}",
+    "{{EXCELLENCE_DESC}}",
+    "{{TEACHERS_DESC}}",
+    "{{TECHNOLOGY_DESC}}",
+    "{{CERTIFICATION_DESC}}",
+    "{{STUDENTS_COUNT}}",
+    "{{COURSES_COUNT}}",
+    "{{TEACHERS_COUNT}}",
+    "{{APPROVAL_RATE}}",
+    "{{COURSE_1_NAME}}",
+    "{{COURSE_1_DESC}}",
+    "{{COURSE_1_DURATION}}",
+    "{{COURSE_1_LEVEL}}",
+    "{{COURSE_1_PRICE}}",
+    "{{COURSE_1_IMAGE}}",
+    "{{COURSE_1_START}}",
+    "{{COURSE_2_NAME}}",
+    "{{COURSE_2_DESC}}",
+    "{{COURSE_2_DURATION}}",
+    "{{COURSE_2_LEVEL}}",
+    "{{COURSE_2_PRICE}}",
+    "{{COURSE_2_IMAGE}}",
+    "{{COURSE_2_START}}",
+    "{{COURSE_3_NAME}}",
+    "{{COURSE_3_DESC}}",
+    "{{COURSE_3_DURATION}}",
+    "{{COURSE_3_LEVEL}}",
+    "{{COURSE_3_PRICE}}",
+    "{{COURSE_3_IMAGE}}",
+    "{{COURSE_3_START}}",
+    "{{TEACHER_1_NAME}}",
+    "{{TEACHER_1_SUBJECT}}",
+    "{{TEACHER_1_QUALIFICATION}}",
+    "{{TEACHER_1_BIO}}",
+    "{{TEACHER_1_PHOTO}}",
+    "{{TEACHER_1_EXPERIENCE}}",
+    "{{TEACHER_2_NAME}}",
+    "{{TEACHER_2_SUBJECT}}",
+    "{{TEACHER_2_QUALIFICATION}}",
+    "{{TEACHER_2_BIO}}",
+    "{{TEACHER_2_PHOTO}}",
+    "{{TEACHER_2_EXPERIENCE}}",
+    "{{STUDENT_1_TEXT}}",
+    "{{STUDENT_1_NAME}}",
+    "{{STUDENT_1_COURSE}}",
+    "{{STUDENT_1_YEAR}}",
+    "{{STUDENT_1_PHOTO}}",
+    "{{STUDENT_2_TEXT}}",
+    "{{STUDENT_2_NAME}}",
+    "{{STUDENT_2_COURSE}}",
+    "{{STUDENT_2_YEAR}}",
+    "{{STUDENT_2_PHOTO}}",
+    "{{PARTNER_LOGOS}}",
+    "{{MEC_LOGO}}",
+    "{{MEC_CODE}}",
+    "{{EMEC_LINK}}",
+    "{{ACCREDITATION_NAME}}",
+    "{{ACCREDITATION_LOGO}}",
+    "{{ACCREDITATION_DESC}}",
+    "{{CTA_BACKGROUND}}",
+    "{{BENEFIT_1}}",
+    "{{BENEFIT_2}}",
+    "{{BENEFIT_3}}",
+    "{{MISSION}}",
+    "{{VISION}}",
+    "{{VALUES}}",
+    "{{FOUNDATION_YEAR}}",
+    "{{PORTAL_SYSTEM}}",
+    "{{DISCOUNT_PERCENTAGE}}",
+    "{{PRIMARY_COLOR}}",
+    "{{SECONDARY_COLOR}}",
+    "{{ACCENT_COLOR}}",
+    "{{OG_IMAGE}}",
+    "{{GOOGLE_MAPS_EMBED}}"
+  ]
+}

@@ -140,6 +140,643 @@ class ElementorToACFConverter:
             {"pattern": r"desconto|discount|promoção", "field": "discount_price", "type": ACFFieldType.TEXT}
         ]
     
+    async def generate_elementor_page_from_template(
+        self,
+        business_data: Dict[str, Any],
+        industry: str,
+        page_type: str = "home"
+    ) -> Dict[str, Any]:
+        """
+        Generate Elementor page from scratch using business data
+        Inspired by ZipWP's instant generation approach
+        """
+        
+        try:
+            logger.info(f"🎨 Generating Elementor page for {business_data.get('business_name')} - {page_type}")
+            
+            # 1. Select appropriate template based on industry and page type
+            template_structure = self._get_industry_template(industry, page_type)
+            
+            # 2. Generate dynamic content for placeholders
+            dynamic_content = self._generate_page_content(business_data, industry, page_type)
+            
+            # 3. Create Elementor JSON structure
+            elementor_data = self._build_elementor_structure(template_structure, dynamic_content)
+            
+            # 4. Generate ACF fields for the page
+            acf_fields = self._generate_page_acf_fields(business_data, industry, page_type)
+            
+            # 5. Create integration code
+            integration_code = self._generate_integration_code(elementor_data, acf_fields)
+            
+            return {
+                "generation_id": f"gen_{page_type}_{uuid.uuid4().hex[:8]}",
+                "page_type": page_type,
+                "industry": industry,
+                "elementor_data": elementor_data,
+                "acf_fields": acf_fields,
+                "integration_code": integration_code,
+                "dynamic_content": dynamic_content,
+                "template_structure": template_structure,
+                "generation_time": datetime.now().isoformat(),
+                "ready_to_deploy": True
+            }
+            
+        except Exception as e:
+            logger.error(f"Error generating Elementor page: {str(e)}")
+            raise
+    
+    def _get_industry_template(self, industry: str, page_type: str) -> Dict[str, Any]:
+        """Get template structure for industry and page type"""
+        
+        # Industry-specific templates
+        industry_templates = {
+            "restaurante": {
+                "home": {
+                    "sections": [
+                        {
+                            "type": "hero_banner",
+                            "elements": ["restaurant_name", "hero_image", "tagline", "cta_button"]
+                        },
+                        {
+                            "type": "featured_menu",
+                            "elements": ["menu_title", "featured_items", "view_menu_button"]
+                        },
+                        {
+                            "type": "delivery_info",
+                            "elements": ["delivery_title", "delivery_areas", "order_button"]
+                        },
+                        {
+                            "type": "contact_footer",
+                            "elements": ["phone", "whatsapp", "address", "hours"]
+                        }
+                    ]
+                }
+            },
+            "saude": {
+                "home": {
+                    "sections": [
+                        {
+                            "type": "hero_banner",
+                            "elements": ["clinic_name", "doctor_name", "specialty", "appointment_button"]
+                        },
+                        {
+                            "type": "services",
+                            "elements": ["services_title", "service_grid", "benefits_list"]
+                        },
+                        {
+                            "type": "credentials",
+                            "elements": ["doctor_photo", "qualifications", "experience"]
+                        },
+                        {
+                            "type": "appointment_booking",
+                            "elements": ["booking_title", "contact_form", "emergency_info"]
+                        }
+                    ]
+                }
+            },
+            "ecommerce": {
+                "home": {
+                    "sections": [
+                        {
+                            "type": "hero_banner",
+                            "elements": ["store_name", "main_product", "special_offer", "shop_button"]
+                        },
+                        {
+                            "type": "featured_products", 
+                            "elements": ["products_title", "product_grid", "categories"]
+                        },
+                        {
+                            "type": "benefits",
+                            "elements": ["shipping_info", "payment_methods", "guarantee"]
+                        },
+                        {
+                            "type": "testimonials",
+                            "elements": ["reviews_title", "customer_reviews", "rating_display"]
+                        }
+                    ]
+                }
+            }
+        }
+        
+        # Default generic template
+        generic_template = {
+            "home": {
+                "sections": [
+                    {
+                        "type": "hero_banner",
+                        "elements": ["business_name", "hero_image", "description", "cta_button"]
+                    },
+                    {
+                        "type": "services",
+                        "elements": ["services_title", "services_grid", "service_description"]
+                    },
+                    {
+                        "type": "about",
+                        "elements": ["about_title", "about_text", "team_photo"]
+                    },
+                    {
+                        "type": "contact",
+                        "elements": ["contact_title", "contact_form", "contact_info"]
+                    }
+                ]
+            }
+        }
+        
+        return industry_templates.get(industry, generic_template).get(page_type, generic_template["home"])
+    
+    def _generate_page_content(self, business_data: Dict[str, Any], industry: str, page_type: str) -> Dict[str, Any]:
+        """Generate content for page based on business data"""
+        
+        business_name = business_data.get("business_name", "Sua Empresa")
+        description = business_data.get("business_description", "")
+        services = business_data.get("services", [])
+        
+        # Industry-specific content generation
+        if industry == "restaurante":
+            return {
+                "restaurant_name": business_name,
+                "tagline": "Sabor que você vai amar ❤️",
+                "hero_image": "hero-restaurant.jpg",
+                "menu_title": "Nosso Cardápio",
+                "featured_items": ["Prato do Dia", "Especialidade da Casa", "Sobremesa Especial"],
+                "delivery_title": "Delivery",
+                "delivery_areas": "Entregamos em toda região central",
+                "order_button": "Fazer Pedido",
+                "phone": business_data.get("phone_number", "(11) 99999-9999"),
+                "whatsapp": business_data.get("whatsapp_number", "(11) 99999-9999"),
+                "address": business_data.get("address", "Rua Principal, 123"),
+                "hours": "Seg-Dom: 11h às 23h"
+            }
+        
+        elif industry == "saude":
+            return {
+                "clinic_name": business_name,
+                "doctor_name": business_data.get("doctor_name", "Dr. Especialista"),
+                "specialty": business_data.get("specialty", "Clínica Geral"),
+                "appointment_button": "Agendar Consulta",
+                "services_title": "Nossos Serviços",
+                "service_grid": services[:4] if services else ["Consulta", "Exames", "Tratamentos"],
+                "benefits_list": ["Atendimento personalizado", "Equipamentos modernos", "Profissionais qualificados"],
+                "doctor_photo": "doctor-profile.jpg",
+                "qualifications": "CRM 12345 - Especialista em " + business_data.get("specialty", "Medicina"),
+                "experience": "Mais de 10 anos de experiência",
+                "booking_title": "Agende sua Consulta",
+                "emergency_info": "Emergências: " + business_data.get("phone_number", "(11) 99999-9999")
+            }
+        
+        elif industry == "ecommerce":
+            return {
+                "store_name": business_name,
+                "main_product": business_data.get("main_product", "Produtos de Qualidade"),
+                "special_offer": "🔥 Oferta Especial: 20% OFF",
+                "shop_button": "Ver Produtos",
+                "products_title": "Produtos em Destaque",
+                "product_grid": ["Produto 1", "Produto 2", "Produto 3", "Produto 4"],
+                "categories": ["Categoria A", "Categoria B", "Categoria C"],
+                "shipping_info": "📦 Frete Grátis acima de R$ 100",
+                "payment_methods": "💳 PIX, Cartão, Boleto",
+                "guarantee": "✅ 30 dias para troca",
+                "reviews_title": "O que nossos clientes dizem",
+                "customer_reviews": [
+                    {"text": "Excelente qualidade!", "author": "Cliente Satisfeito"},
+                    {"text": "Entrega rápida!", "author": "Comprador Feliz"}
+                ],
+                "rating_display": "⭐⭐⭐⭐⭐ 4.8/5"
+            }
+        
+        # Generic content
+        return {
+            "business_name": business_name,
+            "description": description,
+            "hero_image": "hero-generic.jpg",
+            "services_title": "Nossos Serviços",
+            "services_grid": services[:4] if services else ["Serviço 1", "Serviço 2", "Serviço 3"],
+            "service_description": "Oferecemos serviços de alta qualidade",
+            "about_title": f"Sobre {business_name}",
+            "about_text": description or f"{business_name} oferece soluções profissionais com qualidade e confiança.",
+            "team_photo": "team.jpg",
+            "contact_title": "Entre em Contato",
+            "contact_info": {
+                "phone": business_data.get("phone_number", "(11) 99999-9999"),
+                "whatsapp": business_data.get("whatsapp_number", "(11) 99999-9999"),
+                "email": business_data.get("email", "contato@empresa.com.br")
+            }
+        }
+    
+    def _build_elementor_structure(self, template_structure: Dict[str, Any], dynamic_content: Dict[str, Any]) -> List[Dict[str, Any]]:
+        """Build complete Elementor JSON structure"""
+        
+        elementor_sections = []
+        
+        for section_config in template_structure.get("sections", []):
+            section = self._create_elementor_section(section_config, dynamic_content)
+            elementor_sections.append(section)
+        
+        return elementor_sections
+    
+    def _create_elementor_section(self, section_config: Dict[str, Any], content: Dict[str, Any]) -> Dict[str, Any]:
+        """Create individual Elementor section"""
+        
+        section_type = section_config.get("type", "generic")
+        elements = section_config.get("elements", [])
+        
+        # Base section structure
+        section = {
+            "id": f"section_{uuid.uuid4().hex[:8]}",
+            "elType": "section",
+            "settings": {
+                "structure": "20",
+                "content_width": "boxed"
+            },
+            "elements": []
+        }
+        
+        # Create column
+        column = {
+            "id": f"column_{uuid.uuid4().hex[:8]}",
+            "elType": "column",
+            "settings": {
+                "_column_size": 100,
+                "_inline_size": None
+            },
+            "elements": []
+        }
+        
+        # Add widgets based on section type and elements
+        for element_name in elements:
+            widget = self._create_elementor_widget(element_name, content.get(element_name))
+            if widget:
+                column["elements"].append(widget)
+        
+        section["elements"].append(column)
+        return section
+    
+    def _create_elementor_widget(self, element_name: str, content_value: Any) -> Optional[Dict[str, Any]]:
+        """Create Elementor widget based on element type"""
+        
+        if not content_value:
+            return None
+        
+        widget_id = f"widget_{uuid.uuid4().hex[:8]}"
+        
+        # Text-based elements
+        if any(term in element_name for term in ["title", "name", "tagline"]):
+            return {
+                "id": widget_id,
+                "elType": "widget",
+                "widgetType": "heading",
+                "settings": {
+                    "title": str(content_value),
+                    "size": "h1" if "name" in element_name else "h2",
+                    "align": "center" if "hero" in element_name else "left"
+                }
+            }
+        
+        # Description/text elements
+        elif any(term in element_name for term in ["description", "text", "info"]):
+            return {
+                "id": widget_id,
+                "elType": "widget", 
+                "widgetType": "text-editor",
+                "settings": {
+                    "editor": str(content_value),
+                    "align": "left"
+                }
+            }
+        
+        # Button elements
+        elif "button" in element_name:
+            return {
+                "id": widget_id,
+                "elType": "widget",
+                "widgetType": "button",
+                "settings": {
+                    "text": str(content_value),
+                    "link": {"url": "#contact"},
+                    "align": "center",
+                    "size": "md"
+                }
+            }
+        
+        # Image elements
+        elif "image" in element_name or "photo" in element_name:
+            return {
+                "id": widget_id,
+                "elType": "widget",
+                "widgetType": "image",
+                "settings": {
+                    "image": {"url": f"/images/{content_value}"},
+                    "image_size": "medium_large",
+                    "align": "center"
+                }
+            }
+        
+        # List elements
+        elif "grid" in element_name or "list" in element_name:
+            if isinstance(content_value, list):
+                list_html = "<ul>"
+                for item in content_value:
+                    list_html += f"<li>{item}</li>"
+                list_html += "</ul>"
+                
+                return {
+                    "id": widget_id,
+                    "elType": "widget",
+                    "widgetType": "text-editor",
+                    "settings": {
+                        "editor": list_html,
+                        "align": "left"
+                    }
+                }
+        
+        # Form elements
+        elif "form" in element_name:
+            return {
+                "id": widget_id,
+                "elType": "widget",
+                "widgetType": "form",
+                "settings": {
+                    "form_name": "Contact Form",
+                    "form_fields": [
+                        {"custom_id": "name", "field_type": "text", "field_label": "Nome", "required": True},
+                        {"custom_id": "email", "field_type": "email", "field_label": "Email", "required": True},
+                        {"custom_id": "phone", "field_type": "tel", "field_label": "Telefone", "required": False},
+                        {"custom_id": "message", "field_type": "textarea", "field_label": "Mensagem", "required": True}
+                    ],
+                    "submit_button_text": "Enviar"
+                }
+            }
+        
+        # Fallback to text widget
+        return {
+            "id": widget_id,
+            "elType": "widget",
+            "widgetType": "text-editor",
+            "settings": {
+                "editor": str(content_value),
+                "align": "left"
+            }
+        }
+    
+    def _generate_page_acf_fields(self, business_data: Dict[str, Any], industry: str, page_type: str) -> List[ACFField]:
+        """Generate ACF fields specific to the page"""
+        
+        fields = []
+        
+        # Common fields for all pages
+        common_fields = [
+            ACFField(
+                key="field_business_name",
+                label="Nome do Negócio",
+                name="business_name",
+                type=ACFFieldType.TEXT,
+                default_value=business_data.get("business_name", ""),
+                instructions="Nome principal do seu negócio"
+            ),
+            ACFField(
+                key="field_phone_number",
+                label="Telefone",
+                name="phone_number", 
+                type=ACFFieldType.TEXT,
+                default_value=business_data.get("phone_number", ""),
+                instructions="Telefone no formato (11) 99999-9999"
+            ),
+            ACFField(
+                key="field_whatsapp_number",
+                label="WhatsApp",
+                name="whatsapp_number",
+                type=ACFFieldType.TEXT,
+                default_value=business_data.get("whatsapp_number", ""),
+                instructions="WhatsApp no formato (11) 99999-9999"
+            )
+        ]
+        
+        fields.extend(common_fields)
+        
+        # Industry-specific fields
+        if industry == "restaurante":
+            restaurant_fields = [
+                ACFField(
+                    key="field_specialty",
+                    label="Especialidade Culinária",
+                    name="specialty",
+                    type=ACFFieldType.TEXT,
+                    default_value="Culinária caseira",
+                    instructions="Tipo de culinária do restaurante"
+                ),
+                ACFField(
+                    key="field_delivery_area",
+                    label="Área de Delivery",
+                    name="delivery_area",
+                    type=ACFFieldType.TEXT,
+                    default_value="Região central",
+                    instructions="Áreas onde fazemos delivery"
+                ),
+                ACFField(
+                    key="field_opening_hours",
+                    label="Horário de Funcionamento",
+                    name="opening_hours",
+                    type=ACFFieldType.TEXT,
+                    default_value="Seg-Dom: 11h às 23h",
+                    instructions="Horários de funcionamento"
+                )
+            ]
+            fields.extend(restaurant_fields)
+        
+        elif industry == "saude":
+            health_fields = [
+                ACFField(
+                    key="field_doctor_name",
+                    label="Nome do Médico",
+                    name="doctor_name",
+                    type=ACFFieldType.TEXT,
+                    default_value="Dr. Especialista",
+                    instructions="Nome completo do médico responsável"
+                ),
+                ACFField(
+                    key="field_medical_specialty",
+                    label="Especialidade Médica",
+                    name="medical_specialty",
+                    type=ACFFieldType.TEXT,
+                    default_value="Clínica Geral",
+                    instructions="Especialidade médica principal"
+                ),
+                ACFField(
+                    key="field_crm_number",
+                    label="Número do CRM",
+                    name="crm_number",
+                    type=ACFFieldType.TEXT,
+                    default_value="",
+                    instructions="Número do registro no CRM"
+                )
+            ]
+            fields.extend(health_fields)
+        
+        elif industry == "ecommerce":
+            ecommerce_fields = [
+                ACFField(
+                    key="field_main_product",
+                    label="Produto Principal",
+                    name="main_product",
+                    type=ACFFieldType.TEXT,
+                    default_value="Produtos de qualidade",
+                    instructions="Categoria ou produto principal"
+                ),
+                ACFField(
+                    key="field_shipping_info",
+                    label="Informações de Entrega",
+                    name="shipping_info",
+                    type=ACFFieldType.TEXT,
+                    default_value="Frete grátis acima de R$ 100",
+                    instructions="Condições de entrega"
+                ),
+                ACFField(
+                    key="field_payment_methods",
+                    label="Formas de Pagamento",
+                    name="payment_methods",
+                    type=ACFFieldType.TEXT,
+                    default_value="PIX, Cartão, Boleto",
+                    instructions="Métodos de pagamento aceitos"
+                )
+            ]
+            fields.extend(ecommerce_fields)
+        
+        return fields
+    
+    def _generate_integration_code(self, elementor_data: List[Dict], acf_fields: List[ACFField]) -> str:
+        """Generate integration code between Elementor and ACF"""
+        
+        field_mappings = []
+        for field in acf_fields:
+            field_mappings.append(f"'{field.name}': get_field('{field.name}') ?: '{field.default_value}'")
+        
+        integration_code = f"""<?php
+/**
+ * Elementor ACF Integration - Auto Generated
+ * KenzySites Dynamic Content System
+ */
+
+// ACF Field Mappings
+function get_dynamic_content_data() {{
+    return [
+        {','.join(field_mappings)}
+    ];
+}}
+
+// Inject dynamic content into page
+add_action('wp_footer', 'inject_dynamic_content');
+function inject_dynamic_content() {{
+    $dynamic_data = get_dynamic_content_data();
+    ?>
+    <script>
+    window.acfDynamicContent = <?php echo json_encode($dynamic_data); ?>;
+    
+    // Replace placeholders on page load
+    document.addEventListener('DOMContentLoaded', function() {{
+        const dynamicData = window.acfDynamicContent;
+        
+        // Replace text placeholders
+        Object.keys(dynamicData).forEach(fieldName => {{
+            const placeholder = '[' + fieldName.toUpperCase() + ']';
+            const value = dynamicData[fieldName];
+            
+            if (value) {{
+                document.querySelectorAll('*').forEach(element => {{
+                    if (element.textContent && element.textContent.includes(placeholder)) {{
+                        element.textContent = element.textContent.replace(
+                            new RegExp('\\\\[' + fieldName.toUpperCase() + '\\\\]', 'g'), 
+                            value
+                        );
+                    }}
+                }});
+            }}
+        }});
+        
+        // Update contact links
+        if (dynamicData.whatsapp_number) {{
+            const whatsappLinks = document.querySelectorAll('a[href*="wa.me"]');
+            whatsappLinks.forEach(link => {{
+                link.href = 'https://wa.me/55' + dynamicData.whatsapp_number.replace(/[^0-9]/g, '');
+            }});
+        }}
+        
+        if (dynamicData.phone_number) {{
+            const phoneLinks = document.querySelectorAll('a[href*="tel:"]');
+            phoneLinks.forEach(link => {{
+                link.href = 'tel:' + dynamicData.phone_number.replace(/[^0-9]/g, '');
+            }});
+        }}
+    }});
+    </script>
+    <?php
+}}
+
+// WhatsApp floating button (if WhatsApp number is provided)
+add_action('wp_footer', 'add_whatsapp_button');
+function add_whatsapp_button() {{
+    $whatsapp = get_field('whatsapp_number');
+    $business_name = get_field('business_name');
+    
+    if ($whatsapp) {{
+        $clean_whatsapp = preg_replace('/[^0-9]/', '', $whatsapp);
+        ?>
+        <a href="https://wa.me/55<?php echo $clean_whatsapp; ?>" 
+           class="whatsapp-float" 
+           target="_blank"
+           rel="noopener">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.890-5.335 11.893-11.893A11.821 11.821 0 0020.885 3.488"/>
+            </svg>
+            <span>Fale conosco</span>
+        </a>
+        
+        <style>
+        .whatsapp-float {{
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #25D366;
+            color: white;
+            padding: 12px 16px;
+            border-radius: 50px;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3);
+            z-index: 9999;
+            transition: transform 0.2s;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-size: 14px;
+            font-weight: 500;
+        }}
+        
+        .whatsapp-float:hover {{
+            transform: scale(1.05);
+            color: white;
+        }}
+        
+        @media (max-width: 768px) {{
+            .whatsapp-float span {{
+                display: none;
+            }}
+            .whatsapp-float {{
+                width: 50px;
+                height: 50px;
+                border-radius: 50%;
+                justify-content: center;
+                padding: 0;
+            }}
+        }}
+        </style>
+        <?php
+    }}
+}}
+?>"""
+        
+        return integration_code
+
     async def convert_elementor_page(
         self, 
         page_data: Dict[str, Any],

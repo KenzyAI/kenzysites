@@ -1,0 +1,110 @@
+version: '3.8'
+
+services:
+  # WordPress Development Environment for Template Creation
+  wordpress-dev:
+    image: wordpress:6.4-php8.2-apache
+    container_name: kenzysites-wordpress-dev
+    restart: unless-stopped
+    ports:
+      - "8090:80"
+    environment:
+      WORDPRESS_DB_HOST: db-dev:3306
+      WORDPRESS_DB_NAME: wordpress_dev
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: wordpress_pass
+      WORDPRESS_DEBUG: 'true'
+      WORDPRESS_CONFIG_EXTRA: |
+        define('WP_DEBUG_LOG', true);
+        define('WP_DEBUG_DISPLAY', false);
+        define('SCRIPT_DEBUG', true);
+        define('WP_HOME', 'http://localhost:8090');
+        define('WP_SITEURL', 'http://localhost:8090');
+        define('FS_METHOD', 'direct');
+        define('WP_MEMORY_LIMIT', '256M');
+        define('WP_MAX_MEMORY_LIMIT', '512M');
+    volumes:
+      - wordpress-dev-data:/var/www/html
+      - ./wordpress-templates:/var/www/html/wp-content/templates
+      - ./wordpress-exports:/var/www/html/wp-content/exports
+      - ./wordpress-plugins:/var/www/html/wp-content/plugins-custom
+    networks:
+      - kenzysites-network
+    depends_on:
+      - db-dev
+
+  # MySQL Database for WordPress Development
+  db-dev:
+    image: mysql:8.0
+    container_name: kenzysites-mysql-dev
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: wordpress_dev
+      MYSQL_USER: wordpress
+      MYSQL_PASSWORD: wordpress_pass
+    volumes:
+      - db-dev-data:/var/lib/mysql
+    networks:
+      - kenzysites-network
+
+  # PHPMyAdmin for Database Management
+  phpmyadmin-dev:
+    image: phpmyadmin:latest
+    container_name: kenzysites-phpmyadmin-dev
+    restart: unless-stopped
+    ports:
+      - "8091:80"
+    environment:
+      PMA_HOST: db-dev
+      PMA_USER: wordpress
+      PMA_PASSWORD: wordpress_pass
+      UPLOAD_LIMIT: 300M
+    networks:
+      - kenzysites-network
+    depends_on:
+      - db-dev
+
+  # WP-CLI Container for automation
+  wp-cli:
+    image: wordpress:cli-php8.2
+    container_name: kenzysites-wp-cli
+    user: "33:33"
+    environment:
+      WORDPRESS_DB_HOST: db-dev:3306
+      WORDPRESS_DB_NAME: wordpress_dev
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: wordpress_pass
+    volumes:
+      - wordpress-dev-data:/var/www/html
+      - ./wordpress-templates:/var/www/html/wp-content/templates
+      - ./wordpress-exports:/var/www/html/wp-content/exports
+      - ./scripts:/scripts
+    networks:
+      - kenzysites-network
+    depends_on:
+      - wordpress-dev
+      - db-dev
+    entrypoint: ["wp"]
+    command: ["--info"]
+
+  # Redis for caching (optional but recommended)
+  redis-dev:
+    image: redis:7-alpine
+    container_name: kenzysites-redis-dev
+    restart: unless-stopped
+    ports:
+      - "6380:6379"
+    networks:
+      - kenzysites-network
+
+volumes:
+  wordpress-dev-data:
+    driver: local
+  db-dev-data:
+    driver: local
+
+networks:
+  kenzysites-network:
+    driver: bridge
+    name: kenzysites-network

@@ -1,0 +1,112 @@
+version: '3.8'
+
+services:
+  wordpress:
+    image: wordpress:6.7-php8.3-apache
+    container_name: kenzysites-wordpress
+    ports:
+      - "8080:80"
+    environment:
+      WORDPRESS_DB_HOST: db:3306
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: wordpress_password
+      WORDPRESS_DB_NAME: wordpress_multisite
+      WORDPRESS_DEBUG: 'true'
+      WORDPRESS_CONFIG_EXTRA: |
+        /* Multisite */
+        define('WP_ALLOW_MULTISITE', true);
+        define('MULTISITE', true);
+        define('SUBDOMAIN_INSTALL', false);
+        define('DOMAIN_CURRENT_SITE', 'localhost:8080');
+        define('PATH_CURRENT_SITE', '/');
+        define('SITE_ID_CURRENT_SITE', 1);
+        define('BLOG_ID_CURRENT_SITE', 1);
+        
+        /* Performance */
+        define('WP_MEMORY_LIMIT', '256M');
+        define('WP_MAX_MEMORY_LIMIT', '512M');
+        
+        /* Security */
+        define('FORCE_SSL_ADMIN', false);
+        define('DISALLOW_FILE_EDIT', false);
+        
+        /* Development */
+        define('WP_DEBUG_LOG', true);
+        define('WP_DEBUG_DISPLAY', false);
+        define('SCRIPT_DEBUG', true);
+        
+        /* API */
+        define('WP_REST_API_ENABLED', true);
+    volumes:
+      - wordpress_data:/var/www/html
+      - ./wp-content:/var/www/html/wp-content
+      - ./scripts:/scripts
+    depends_on:
+      - db
+      - redis
+    networks:
+      - kenzysites-network
+
+  db:
+    image: mysql:8.0
+    container_name: kenzysites-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: wordpress_multisite
+      MYSQL_USER: wordpress
+      MYSQL_PASSWORD: wordpress_password
+    volumes:
+      - db_data:/var/lib/mysql
+    ports:
+      - "3307:3306"
+    networks:
+      - kenzysites-network
+
+  redis:
+    image: redis:7-alpine
+    container_name: kenzysites-redis
+    ports:
+      - "6380:6379"
+    networks:
+      - kenzysites-network
+
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: kenzysites-phpmyadmin
+    ports:
+      - "8081:80"
+    environment:
+      PMA_HOST: db
+      PMA_USER: wordpress
+      PMA_PASSWORD: wordpress_password
+    depends_on:
+      - db
+    networks:
+      - kenzysites-network
+
+  wp-cli:
+    image: wordpress:cli-php8.3
+    container_name: kenzysites-wpcli
+    volumes:
+      - wordpress_data:/var/www/html
+      - ./wp-content:/var/www/html/wp-content
+      - ./scripts:/scripts
+    environment:
+      WORDPRESS_DB_HOST: db:3306
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: wordpress_password
+      WORDPRESS_DB_NAME: wordpress_multisite
+    depends_on:
+      - wordpress
+      - db
+    networks:
+      - kenzysites-network
+    entrypoint: ["sh", "-c", "sleep infinity"]
+
+volumes:
+  wordpress_data:
+  db_data:
+
+networks:
+  kenzysites-network:
+    driver: bridge

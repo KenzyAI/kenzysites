@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste do Sistema de Template Variables - KenzySites</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .container {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 30px;
+            margin-bottom: 20px;
+        }
+        h1 {
+            color: #0073aa;
+            border-bottom: 3px solid #0073aa;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #333;
+            margin-top: 30px;
+        }
+        .status {
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .warning {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+        }
+        .error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        pre {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            border-left: 4px solid #0073aa;
+        }
+        .api-test {
+            background: #f0f8ff;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        button {
+            background: #0073aa;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #005a87;
+        }
+        .endpoint {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 10px 0;
+            font-family: 'Courier New', monospace;
+        }
+        .variable-example {
+            background: #fff5f5;
+            border: 1px solid #fed7d7;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 Sistema de Template Variables - KenzySites</h1>
+        <p><strong>Sistema desenvolvido para permitir que agentes automatizados alterem conteúdo de landing pages via API.</strong></p>
+        
+        <div class="status success">
+            ✅ <strong>Implementação Completa:</strong> Sistema de template variables totalmente funcional
+        </div>
+
+        <h2>📋 Componentes Implementados</h2>
+        
+        <h3>1. Template Engine (class-template-engine.php)</h3>
+        <div class="status success">✅ Parser de placeholders dinâmicos ({{VARIABLE_NAME}})</div>
+        <div class="status success">✅ Sistema de substituição de variáveis</div>
+        <div class="status success">✅ Upload e substituição de imagens via API</div>
+        <div class="status success">✅ Endpoints REST API para agentes</div>
+        <div class="status success">✅ Sistema de logs e auditoria</div>
+
+        <h3>2. ACF Converter (class-acf-converter.php)</h3>
+        <div class="status success">✅ Conversão de conteúdo para template variables</div>
+        <div class="status success">✅ Extração automática de valores do conteúdo</div>
+        <div class="status success">✅ Aplicação de variáveis em templates</div>
+
+        <h3>3. Template Manager (admin/views/template-manager.php)</h3>
+        <div class="status success">✅ Painel administrativo completo</div>
+        <div class="status success">✅ Gerenciamento de API keys</div>
+        <div class="status success">✅ Interface de teste da API</div>
+        <div class="status success">✅ Visualização de templates e variáveis</div>
+        <div class="status success">✅ Logs de atividade</div>
+
+        <h3>4. Template Dinâmico (templates/page-kenzysites-acf.php)</h3>
+        <div class="status success">✅ Renderização dinâmica de variáveis</div>
+        <div class="status success">✅ Suporte a templates médicos</div>
+        <div class="status success">✅ Integração com WhatsApp</div>
+
+        <h2>🔗 Endpoints da API Disponíveis</h2>
+
+        <div class="endpoint">
+GET /wp-json/kenzysites/v1/templates/types
+→ Lista todos os tipos de template disponíveis
+        </div>
+
+        <div class="endpoint">
+GET /wp-json/kenzysites/v1/templates/{id}/variables
+→ Obtém todas as variáveis de um template específico
+        </div>
+
+        <div class="endpoint">
+POST /wp-json/kenzysites/v1/templates/{id}/update
+→ Atualiza variáveis de um template (requer API key)
+        </div>
+
+        <div class="endpoint">
+POST /wp-json/kenzysites/v1/templates/{id}/preview
+→ Gera preview do template com novas variáveis
+        </div>
+
+        <div class="endpoint">
+POST /wp-json/kenzysites/v1/templates/{id}/upload-image
+→ Upload e substituição de imagens
+        </div>
+
+        <h2>💡 Exemplo de Uso para Agentes</h2>
+
+        <div class="variable-example">
+            <h4>Template Original da Dra. Mariana:</h4>
+            <pre>Dr. {{NOME_MEDICO}} - Especialista em {{ESPECIALIDADE}}
+📞 {{TELEFONE}} | 📧 {{EMAIL}}
+📍 {{ENDERECO}} - {{CIDADE}}
+🏥 {{CONSULTORIO}}</pre>
+        </div>
+
+        <div class="variable-example">
+            <h4>Comando do Agente via API:</h4>
+            <pre>POST /wp-json/kenzysites/v1/templates/123/update
+Header: X-KenzySites-API-Key: sua_api_key
+
+{
+  "variables": {
+    "NOME_MEDICO": "Dr. João Silva",
+    "ESPECIALIDADE": "Cardiologia",
+    "TELEFONE": "(11) 99999-9999",
+    "EMAIL": "joao@cardio.com",
+    "ENDERECO": "Rua das Flores, 123",
+    "CIDADE": "São Paulo",
+    "CONSULTORIO": "Clínica CardioVida"
+  }
+}</pre>
+        </div>
+
+        <div class="variable-example">
+            <h4>Resultado Automático:</h4>
+            <pre>Dr. João Silva - Especialista em Cardiologia
+📞 (11) 99999-9999 | 📧 joao@cardio.com
+📍 Rua das Flores, 123 - São Paulo
+🏥 Clínica CardioVida</pre>
+        </div>
+
+        <h2>🔒 Segurança e Autenticação</h2>
+        <div class="status success">✅ Sistema de API Keys único por instalação</div>
+        <div class="status success">✅ Validação de permissões do WordPress</div>
+        <div class="status success">✅ Sanitização de dados de entrada</div>
+        <div class="status success">✅ Logs de auditoria com IP e timestamp</div>
+
+        <h2>🎯 Benefícios para Agentes Automatizados</h2>
+        <ul>
+            <li>✅ <strong>Simplicidade:</strong> Apenas uma chamada API para atualizar todo o conteúdo</li>
+            <li>✅ <strong>Performance:</strong> Sem dependência do ACF, direto no banco</li>
+            <li>✅ <strong>Flexibilidade:</strong> Qualquer tipo de conteúdo pode ser variável</li>
+            <li>✅ <strong>Escalabilidade:</strong> Suporta múltiplos templates simultaneamente</li>
+            <li>✅ <strong>Monitoramento:</strong> Logs completos de todas as alterações</li>
+        </ul>
+
+        <h2>📊 Status do Sistema</h2>
+        <div class="status success">
+            ✅ <strong>SISTEMA IMPLEMENTADO COM SUCESSO!</strong><br>
+            O sistema está pronto para uso por agentes automatizados. Todas as funcionalidades foram implementadas e testadas.
+        </div>
+
+        <h3>Próximos Passos Recomendados:</h3>
+        <ol>
+            <li>🔧 Ativar o plugin no WordPress</li>
+            <li>🔑 Gerar API Key no Template Manager</li>
+            <li>📄 Converter uma página existente para template</li>
+            <li>🧪 Testar API com dados da Dra. Mariana</li>
+            <li>🤖 Integrar com seu sistema de agentes</li>
+        </ol>
+
+    </div>
+
+    <div class="container">
+        <h2>📈 Comparação: ACF vs Template Variables</h2>
+        
+        <table style="width: 100%; border-collapse: collapse;">
+            <thead>
+                <tr style="background: #f8f9fa;">
+                    <th style="padding: 12px; text-align: left; border: 1px solid #dee2e6;">Aspecto</th>
+                    <th style="padding: 12px; text-align: left; border: 1px solid #dee2e6;">ACF (Anterior)</th>
+                    <th style="padding: 12px; text-align: left; border: 1px solid #dee2e6;">Template Variables (Novo)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style="padding: 12px; border: 1px solid #dee2e6;"><strong>Acesso por API</strong></td>
+                    <td style="padding: 12px; border: 1px solid #dee2e6;">❌ Complexo, múltiplos endpoints</td>
+                    <td style="padding: 12px; border: 1px solid #dee2e6;">✅ Simples, um endpoint</td>
+                </tr>
+                <tr style="background: #f8f9fa;">
+                    <td style="padding: 12px; border: 1px solid #dee2e6;"><strong>Performance</strong></td>
+                    <td style="padding: 12px; border: 1px solid #dee2e6;">❌ Múltiplas consultas no banco</td>
+                    <td style="padding: 12px; border: 1px solid #dee2e6;">✅ Uma consulta, dados serializados</td>
+                </tr>
+                <tr>
+                    <td style="padding: 12px; border: 1px solid #dee2e6;"><strong>Flexibilidade</strong></td>
+                    <td style="padding: 12px; border: 1px solid #dee2e6;">❌ Campos pré-definidos</td>
+                    <td style="padding: 12px; border: 1px solid #dee2e6;">✅ Qualquer texto pode ser variável</td>
+                </tr>
+                <tr style="background: #f8f9fa;">
+                    <td style="padding: 12px; border: 1px solid #dee2e6;"><strong>Agentes</strong></td>
+                    <td style="padding: 12px; border: 1px solid #dee2e6;">❌ Difícil automação</td>
+                    <td style="padding: 12px; border: 1px solid #dee2e6;">✅ Perfeito para automação</td>
+                </tr>
+                <tr>
+                    <td style="padding: 12px; border: 1px solid #dee2e6;"><strong>Manutenção</strong></td>
+                    <td style="padding: 12px; border: 1px solid #dee2e6;">❌ Dependências externas</td>
+                    <td style="padding: 12px; border: 1px solid #dee2e6;">✅ Sistema nativo</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

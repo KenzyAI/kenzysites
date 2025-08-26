@@ -42,6 +42,7 @@ class KenzySitesConverter {
     public $acf_converter;
     public $api_client;
     public $admin_page;
+    public $template_engine;
     
     /**
      * Get single instance
@@ -86,6 +87,10 @@ class KenzySitesConverter {
         // Plugin activation/deactivation hooks
         register_activation_hook(__FILE__, [$this, 'activate']);
         register_deactivation_hook(__FILE__, [$this, 'deactivate']);
+        
+        // ACF and template hooks
+        add_action('acf/init', [$this, 'load_acf_field_groups']);
+        add_filter('template_include', [$this, 'load_acf_template'], 99);
     }
     
     /**
@@ -136,12 +141,14 @@ class KenzySitesConverter {
         require_once KENZYSITES_CONVERTER_PLUGIN_PATH . 'includes/class-acf-converter.php';
         require_once KENZYSITES_CONVERTER_PLUGIN_PATH . 'includes/class-api-client.php';
         require_once KENZYSITES_CONVERTER_PLUGIN_PATH . 'includes/class-admin-page.php';
+        require_once KENZYSITES_CONVERTER_PLUGIN_PATH . 'includes/class-template-engine.php';
         
         // Initialize components
         $this->elementor_scanner = new KenzySites_Elementor_Scanner();
         $this->acf_converter = new KenzySites_ACF_Converter();
         $this->api_client = new KenzySites_API_Client();
         $this->admin_page = new KenzySites_Admin_Page();
+        $this->template_engine = new KenzySites_Template_Engine();
     }
     
     /**
@@ -183,6 +190,15 @@ class KenzySitesConverter {
             'manage_options',
             'kenzysites-converter-settings',
             [$this, 'admin_settings_page']
+        );
+        
+        add_submenu_page(
+            'kenzysites-converter',
+            __('Template Manager', 'kenzysites-converter'),
+            __('📝 Templates', 'kenzysites-converter'),
+            'manage_options',
+            'kenzysites-template-manager',
+            [$this, 'admin_template_manager_page']
         );
     }
     
@@ -243,6 +259,13 @@ class KenzySitesConverter {
      */
     public function admin_settings_page() {
         include KENZYSITES_CONVERTER_PLUGIN_PATH . 'admin/views/settings.php';
+    }
+    
+    /**
+     * Admin template manager page
+     */
+    public function admin_template_manager_page() {
+        include KENZYSITES_CONVERTER_PLUGIN_PATH . 'admin/views/template-manager.php';
     }
     
     /**
@@ -348,6 +371,84 @@ class KenzySitesConverter {
         
         // Clear rewrite rules
         flush_rewrite_rules();
+    }
+    
+    /**
+     * Load ACF field groups for converted pages
+     */
+    public function load_acf_field_groups() {
+        if (!function_exists('acf_add_local_field_group')) {
+            return;
+        }
+        
+        global $wpdb;
+        $table_name = $wpdb->prefix . 'kenzysites_converted_templates';
+        
+        // Get all converted templates
+        $templates = $wpdb->get_results(
+            "SELECT page_id, acf_data FROM $table_name",
+            ARRAY_A
+        );
+        
+        foreach ($templates as $template) {
+            $field_groups = json_decode($template['acf_data'], true);
+            
+            if (!is_array($field_groups)) {
+                continue;
+            }
+            
+            foreach ($field_groups as $field_group) {
+                if (is_null($field_group) || !is_array($field_group)) {
+                    continue;
+                }
+                
+                // Update location rules to target specific page
+                $field_group['location'] = [
+                    [
+                        [
+                            'param' => 'page',
+                            'operator' => '==',
+                            'value' => $template['page_id']
+                        ]
+                    ]
+                ];
+                
+                // Add unique prefix to avoid conflicts
+                $field_group['key'] = 'kenzysites_page_' . $template['page_id'] . '_' . $field_group['key'];
+                
+                // Ensure fields have proper keys
+                if (isset($field_group['fields'])) {
+                    foreach ($field_group['fields'] as &$field) {
+                        $field['key'] = 'kenzysites_page_' . $template['page_id'] . '_' . $field['key'];
+                    }
+                }
+                
+                // Register the field group
+                acf_add_local_field_group($field_group);
+            }
+        }
+    }
+    
+    /**
+     * Load ACF template for converted pages
+     */
+    public function load_acf_template($template) {
+        if (!is_page()) {
+            return $template;
+        }
+        
+        $page_id = get_the_ID();
+        
+        // Check if this page was converted from Elementor to ACF
+        if (get_post_meta($page_id, '_kenzysites_acf_mode', true) === '1') {
+            $acf_template = KENZYSITES_CONVERTER_PLUGIN_PATH . 'templates/page-kenzysites-acf.php';
+            
+            if (file_exists($acf_template)) {
+                return $acf_template;
+            }
+        }
+        
+        return $template;
     }
     
     /**

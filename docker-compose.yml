@@ -58,7 +58,6 @@ services:
       - DEBUG=True
       - DATABASE_URL=postgresql://postgres:postgres@db:5432/wordpress_ai_builder
       - REDIS_URL=redis://redis:6379/0
-      - ALLOWED_ORIGINS=http://localhost:3000,http://127.0.0.1:3000
       # AI Provider API keys (set these in .env file)
       - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
       - OPENAI_API_KEY=${OPENAI_API_KEY}
@@ -75,15 +74,72 @@ services:
     image: adminer
     container_name: wordpress-ai-adminer
     ports:
-      - '8080:8080'
+      - '8082:8080'
     depends_on:
       - db
+      - wordpress-db
+    networks:
+      - wordpress-ai-network
+
+  # WordPress Local Development
+  wordpress:
+    image: wordpress:latest
+    container_name: kenzysites-wordpress
+    ports:
+      - '8085:80'
+    environment:
+      WORDPRESS_DB_HOST: wordpress-db:3306
+      WORDPRESS_DB_NAME: wordpress_local
+      WORDPRESS_DB_USER: wp_user
+      WORDPRESS_DB_PASSWORD: wp_pass
+      WORDPRESS_DEBUG: 'true'
+    volumes:
+      - wordpress_data:/var/www/html
+      - ./wordpress-plugin/kenzysites-converter:/var/www/html/wp-content/plugins/kenzysites-converter
+      - ./wordpress/uploads:/var/www/html/wp-content/uploads
+      - ./wordpress/themes:/var/www/html/wp-content/themes
+    depends_on:
+      - wordpress-db
+    networks:
+      - wordpress-ai-network
+
+  # WordPress Database
+  wordpress-db:
+    image: mysql:8.0
+    container_name: kenzysites-wordpress-db
+    ports:
+      - '3307:3306'
+    environment:
+      MYSQL_ROOT_PASSWORD: root_pass
+      MYSQL_DATABASE: wordpress_local
+      MYSQL_USER: wp_user
+      MYSQL_PASSWORD: wp_pass
+    volumes:
+      - wordpress_db_data:/var/lib/mysql
+    command: '--default-authentication-plugin=mysql_native_password'
+    networks:
+      - wordpress-ai-network
+
+  # phpMyAdmin for WordPress DB management
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: kenzysites-phpmyadmin
+    ports:
+      - '8081:80'
+    environment:
+      PMA_HOSTS: wordpress-db,db
+      PMA_ARBITRARY: 1
+      UPLOAD_LIMIT: 100M
+    depends_on:
+      - wordpress-db
     networks:
       - wordpress-ai-network
 
 volumes:
   postgres_data:
   redis_data:
+  wordpress_data:
+  wordpress_db_data:
 
 networks:
   wordpress-ai-network:

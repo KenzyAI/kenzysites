@@ -39,3 +39,25 @@ class AICreditsBalance(BaseModel):
     credits_used: int
     credits_total: int
     reset_date: datetime
+
+class BatchContentRequest(BaseModel):
+    items: List[ContentGenerationRequest]
+    batch_id: Optional[str] = None
+
+class GeneratedContent(BaseModel):
+    content_id: str
+    content_type: str
+    title: str
+    content: str
+    metadata: Optional[Dict[str, Any]] = None
+    created_at: datetime
+
+class BatchProcessingStatus(BaseModel):
+    batch_id: str
+    status: str  # pending, processing, completed, failed
+    total_items: int
+    processed_items: int
+    failed_items: int
+    results: Optional[List[GeneratedContent]] = None
+    created_at: datetime
+    completed_at: Optional[datetime] = None

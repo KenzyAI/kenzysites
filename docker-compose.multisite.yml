@@ -1,0 +1,138 @@
+version: '3.8'
+
+services:
+  # WordPress Multisite Configuration
+  wordpress-multisite:
+    image: wordpress:6.4-php8.2-apache
+    container_name: kenzysites-multisite
+    restart: always
+    ports:
+      - '8090:80'
+    environment:
+      WORDPRESS_DB_HOST: multisite-db:3306
+      WORDPRESS_DB_NAME: wordpress_multisite
+      WORDPRESS_DB_USER: wp_multisite
+      WORDPRESS_DB_PASSWORD: wp_multisite_pass
+      WORDPRESS_TABLE_PREFIX: wp_
+      
+      # Multisite Configuration
+      WORDPRESS_CONFIG_EXTRA: |
+        /* Multisite */
+        define('WP_ALLOW_MULTISITE', true);
+        define('MULTISITE', true);
+        define('SUBDOMAIN_INSTALL', true);
+        define('DOMAIN_CURRENT_SITE', 'localhost');
+        define('PATH_CURRENT_SITE', '/');
+        define('SITE_ID_CURRENT_SITE', 1);
+        define('BLOG_ID_CURRENT_SITE', 1);
+        
+        /* Performance */
+        define('WP_MEMORY_LIMIT', '256M');
+        define('WP_MAX_MEMORY_LIMIT', '512M');
+        
+        /* Developer */
+        define('WP_DEBUG', true);
+        define('WP_DEBUG_LOG', true);
+        define('WP_DEBUG_DISPLAY', false);
+        define('SCRIPT_DEBUG', true);
+        
+        /* Security */
+        define('DISALLOW_FILE_EDIT', false);
+        define('WP_AUTO_UPDATE_CORE', false);
+        
+        /* URLs */
+        define('WP_HOME', 'http://localhost:8090');
+        define('WP_SITEURL', 'http://localhost:8090');
+        
+    volumes:
+      - multisite_data:/var/www/html
+      - ./wordpress-multisite/themes:/var/www/html/wp-content/themes
+      - ./wordpress-multisite/plugins:/var/www/html/wp-content/plugins
+      - ./wordpress-multisite/uploads:/var/www/html/wp-content/uploads
+      - ./wordpress-multisite/mu-plugins:/var/www/html/wp-content/mu-plugins
+      - ./scripts/multisite-setup.sh:/docker-entrypoint-initdb.d/multisite-setup.sh
+    depends_on:
+      - multisite-db
+    networks:
+      - wordpress-ai-network
+
+  # MySQL Database for Multisite
+  multisite-db:
+    image: mysql:8.0
+    container_name: kenzysites-multisite-db
+    restart: always
+    ports:
+      - '3308:3306'
+    environment:
+      MYSQL_ROOT_PASSWORD: multisite_root
+      MYSQL_DATABASE: wordpress_multisite
+      MYSQL_USER: wp_multisite
+      MYSQL_PASSWORD: wp_multisite_pass
+    volumes:
+      - multisite_db_data:/var/lib/mysql
+      - ./scripts/multisite-db-init.sql:/docker-entrypoint-initdb.d/init.sql
+    command: 
+      - '--default-authentication-plugin=mysql_native_password'
+      - '--character-set-server=utf8mb4'
+      - '--collation-server=utf8mb4_unicode_ci'
+      - '--max_connections=500'
+      - '--max_allowed_packet=256M'
+    networks:
+      - wordpress-ai-network
+
+  # WP-CLI Container for automation
+  wp-cli:
+    image: wordpress:cli-php8.2
+    container_name: kenzysites-wpcli
+    user: "33:33"
+    environment:
+      WORDPRESS_DB_HOST: multisite-db:3306
+      WORDPRESS_DB_NAME: wordpress_multisite
+      WORDPRESS_DB_USER: wp_multisite
+      WORDPRESS_DB_PASSWORD: wp_multisite_pass
+    volumes:
+      - multisite_data:/var/www/html
+      - ./wordpress-multisite/themes:/var/www/html/wp-content/themes
+      - ./wordpress-multisite/plugins:/var/www/html/wp-content/plugins
+      - ./scripts/wp-cli-scripts:/scripts
+    depends_on:
+      - wordpress-multisite
+      - multisite-db
+    networks:
+      - wordpress-ai-network
+    entrypoint: ["sh", "-c", "sleep infinity"]
+
+  # phpMyAdmin for Multisite DB
+  phpmyadmin-multisite:
+    image: phpmyadmin/phpmyadmin
+    container_name: kenzysites-phpmyadmin-multisite
+    ports:
+      - '8091:80'
+    environment:
+      PMA_HOST: multisite-db
+      PMA_PORT: 3306
+      UPLOAD_LIMIT: 100M
+    depends_on:
+      - multisite-db
+    networks:
+      - wordpress-ai-network
+
+  # Redis for caching (optional but recommended)
+  redis-multisite:
+    image: redis:7-alpine
+    container_name: kenzysites-redis-multisite
+    ports:
+      - '6380:6379'
+    volumes:
+      - redis_multisite_data:/data
+    networks:
+      - wordpress-ai-network
+
+volumes:
+  multisite_data:
+  multisite_db_data:
+  redis_multisite_data:
+
+networks:
+  wordpress-ai-network:
+    external: true

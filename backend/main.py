@@ -103,6 +103,18 @@ app.include_router(white_label.router, prefix="/api/v1/white-label", tags=["whit
 from app.api.routers import marketing
 app.include_router(marketing.router, prefix="/api/v1/marketing", tags=["marketing"])
 
+# Import and include site generation V2 router (MAIN GENERATION SYSTEM)
+from app.api.routers import site_generation_v2
+app.include_router(site_generation_v2.router, prefix="/api/v2/generation", tags=["site-generation-v2"])
+
+# Import and include instant sites router
+from app.api.routers import instant_sites
+app.include_router(instant_sites.router, prefix="/api/instant", tags=["instant-sites"])
+
+# Import and include templates router
+from app.api.routers import templates
+app.include_router(templates.router, prefix="/api/v1/templates", tags=["templates"])
+
 # Root endpoint
 @app.get("/")
 async def root():

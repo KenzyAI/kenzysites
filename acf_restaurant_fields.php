@@ -1,0 +1,1007 @@
+<?php
+
+if( function_exists('acf_add_local_field_group') ):
+
+acf_add_local_field_group(array(
+    'key' => 'group_contact_info',
+    'title' => 'Informações de Contato',
+    'fields' => array(
+        array(
+            'key' => 'field_contact_info_0',
+            'label' => 'Nome do Negócio',
+            'name' => 'business_name',
+            'type' => 'text',
+            'instructions' => '',
+            'required' => 1,
+            'conditional_logic' => 0,
+            'wrapper' => array(
+                'width' => '',
+                'class' => '',
+                'id' => ''
+            ),
+            'default_value' => '',
+            'placeholder' => '',
+            'prepend' => '',
+            'append' => '',
+            'maxlength' => 100
+        ),
+        array(
+            'key' => 'field_contact_info_1',
+            'label' => 'Logo da Empresa',
+            'name' => 'business_logo',
+            'type' => 'image',
+            'instructions' => '',
+            'required' => 0,
+            'conditional_logic' => 0,
+            'wrapper' => array(
+                'width' => '',
+                'class' => '',
+                'id' => ''
+            ),
+            'return_format' => 'url',
+            'preview_size' => 'medium',
+            'library' => 'all',
+            'min_width' => '',
+            'min_height' => '',
+            'max_width' => '',
+            'max_height' => '',
+            'max_size' => '',
+            'mime_types' => ''
+        ),
+        array(
+            'key' => 'field_contact_info_2',
+            'label' => 'Slogan',
+            'name' => 'business_slogan',
+            'type' => 'text',
+            'instructions' => '',
+            'required' => 0,
+            'conditional_logic' => 0,
+            'wrapper' => array(
+                'width' => '',
+                'class' => '',
+                'id' => ''
+            ),
+            'default_value' => '',
+            'placeholder' => 'Seu slogan aqui',
+            'prepend' => '',
+            'append' => '',
+            'maxlength' => 150
+        ),
+        array(
+            'key' => 'field_contact_info_3',
+            'label' => 'Telefone',
+            'name' => 'contact_info_3',
+            'type' => 'text',
+            'instructions' => 'Telefone com DDD',
+            'required' => 0,
+            'conditional_logic' => 0,
+            'wrapper' => array(
+                'width' => '',
+                'class' => '',
+                'id' => ''
+            ),
+            'default_value' => '',
+            'placeholder' => '(11) 99999-9999',
+            'prepend' => '',
+            'append' => '',
+            'maxlength' => ''
+        ),
+        array(
+            'key' => 'field_contact_info_4',
+            'label' => 'WhatsApp',
+            'name' => 'contact_info_4',
+            'type' => 'text',
+            'instructions' => 'Número do WhatsApp com código do país',
+            'required' => 0,
+            'conditional_logic' => 0,
+            'wrapper' => array(
+                'width' => '',
+                'class' => '',
+                'id' => ''
+            ),
+            'default_value' => '',
+            'placeholder' => '5511999999999',
+            'prepend' => '+55',
+            'append' => '',
+            'maxlength' => ''
+        ),
+        array(
+            'key' => 'field_contact_info_5',
+            'label' => 'E-mail',
+            'name' => 'email',
+            'type' => 'email',
+            'instructions' => '',
+            'required' => 1,
+            'conditional_logic' => 0,
+            'wrapper' => array(
+                'width' => '',
+                'class' => '',
+                'id' => ''
+            )
+        ),
+        array(
+            'key' => 'field_contact_info_6',
+            'label' => 'Endereço',
+            'name' => 'endereco',
+            'type' => 'group',
+            'instructions' => '',
+            'required' => 0,
+            'conditional_logic' => 0,
+            'wrapper' => array(
+                'width' => '',
+                'class' => '',
+                'id' => ''
+            ),
+            'layout' => 'block',
+            'sub_fields' => array(
+                array(
+                    'key' => 'field_contact_info_6_0',
+                    'label' => 'Rua',
+                    'name' => 'rua',
+                    'type' => 'text',
+                    'instructions' => '',
+                    'required' => 0,
+                    'conditional_logic' => 0,
+                    'wrapper' => array(
+                        'width' => '',
+                        'class' => '',
+                        'id' => ''
+                    ),
+                    'default_value' => '',
+                    'placeholder' => '',
+                    'prepend' => '',
+                    'append' => '',
+                    'maxlength' => ''
+                ),
+                array(
+                    'key' => 'field_contact_info_6_1',
+                    'label' => 'Número',
+                    'name' => 'numero',
+                    'type' => 'text',
+                    'instructions' => '',
+                    'required' => 0,
+                    'conditional_logic' => 0,
+                    'wrapper' => array(
+                        'width' => '',
+                        'class' => '',
+                        'id' => ''
+                    ),
+                    'default_value' => '',
+                    'placeholder' => '',
+                    'prepend' => '',
+                    'append' => '',
+                    'maxlength' => ''
+                ),
+                array(
+                    'key' => 'field_contact_info_6_2',
+                    'label' => 'Complemento',
+                    'name' => 'complemento',
+                    'type' => 'text',
+                    'instructions' => '',
+                    'required' => 0,
+                    'conditional_logic' => 0,
+                    'wrapper' => array(
+                        'width' => '',
+                        'class' => '',
+                        'id' => ''
+                    ),
+                    'default_value' => '',
+                    'placeholder' => '',
+                    'prepend' => '',
+                    'append' => '',
+                    'maxlength' => ''
+                ),
+                array(
+                    'key' => 'field_contact_info_6_3',
+                    'label' => 'Bairro',
+                    'name' => 'bairro',
+                    'type' => 'text',
+                    'instructions' => '',
+                    'required' => 0,
+                    'conditional_logic' => 0,
+                    'wrapper' => array(
+                        'width' => '',
+                        'class' => '',
+                        'id' => ''
+                    ),
+                    'default_value' => '',
+                    'placeholder' => '',
+                    'prepend' => '',
+                    'append' => '',
+                    'maxlength' => ''
+                ),
+                array(
+                    'key' => 'field_contact_info_6_4',
+                    'label' => 'Cidade',
+                    'name' => 'cidade',
+                    'type' => 'text',
+                    'instructions' => '',
+                    'required' => 0,
+                    'conditional_logic' => 0,
+                    'wrapper' => array(
+                        'width' => '',
+                        'class' => '',
+                        'id' => ''
+                    ),
+                    'default_value' => '',
+                    'placeholder' => '',
+                    'prepend' => '',
+                    'append' => '',
+                    'maxlength' => ''
+                ),
+                array(
+                    'key' => 'field_contact_info_6_5',
+                    'label' => 'Estado',
+                    'name' => 'estado',
+                    'type' => 'select',
+                    'instructions' => '',
+                    'required' => 0,
+                    'conditional_logic' => 0,
+                    'wrapper' => array(
+                        'width' => '',
+                        'class' => '',
+                        'id' => ''
+                    ),
+                    'choices' => array(
+                        'AC' => 'Acre',
+                        'AL' => 'Alagoas',
+                        'AP' => 'Amapá',
+                        'AM' => 'Amazonas',
+                        'BA' => 'Bahia',
+                        'CE' => 'Ceará',
+                        'DF' => 'Distrito Federal',
+                        'ES' => 'Espírito Santo',
+                        'GO' => 'Goiás',
+                        'MA' => 'Maranhão',
+                        'MT' => 'Mato Grosso',
+                        'MS' => 'Mato Grosso do Sul',
+                        'MG' => 'Minas Gerais',
+                        'PA' => 'Pará',
+                        'PB' => 'Paraíba',
+                        'PR' => 'Paraná',
+                        'PE' => 'Pernambuco',
+                        'PI' => 'Piauí',
+                        'RJ' => 'Rio de Janeiro',
+                        'RN' => 'Rio Grande do Norte',
+                        'RS' => 'Rio Grande do Sul',
+                        'RO' => 'Rondônia',
+                        'RR' => 'Roraima',
+                        'SC' => 'Santa Catarina',
+                        'SP' => 'São Paulo',
+                        'SE' => 'Sergipe',
+                        'TO' => 'Tocantins'
+                    ),
+                    'default_value' => '',
+                    'allow_null' => 0,
+                    'multiple' => 0,
+                    'ui' => 0,
+                    'ajax' => 0,
+                    'return_format' => 'value',
+                    'placeholder' => ''
+                ),
+                array(
+                    'key' => 'field_contact_info_6_6',
+                    'label' => 'CEP',
+                    'name' => 'contact_info_6_6',
+                    'type' => 'text',
+                    'instructions' => 'CEP do endereço',
+                    'required' => 0,
+                    'conditional_logic' => 0,
+                    'wrapper' => array(
+                        'width' => '',
+                        'class' => '',
+                        'id' => ''
+                    ),
+                    'default_value' => '',
+                    'placeholder' => '00000-000',
+                    'prepend' => '',
+                    'append' => '',
+                    'maxlength' => 9
+                )
+            )
+        )
+    ),
+    'location' => array(
+        array(
+            array(
+                'param' => 'post_type',
+                'operator' => '==',
+                'value' => 'page'
+            )
+        )
+    ),
+    'menu_order' => 0,
+    'position' => 'normal',
+    'style' => 'default',
+    'label_placement' => 'top',
+    'instruction_placement' => 'label',
+    'hide_on_screen' => array(
+
+    ),
+    'active' => true,
+    'description' => 'Generated by KenzySites on 2025-08-22T00:54:44.544302'
+));
+
+acf_add_local_field_group(array(
+    'key' => 'group_restaurant_info',
+    'title' => 'Informações do Restaurante',
+    'fields' => array(
+        array(
+            'key' => 'field_restaurant_info_0',
+            'label' => 'Tipo de Cozinha',
+            'name' => 'tipo_cozinha',
+            'type' => 'select',
+            'instructions' => '',
+            'required' => 0,
+            'conditional_logic' => 0,
+            'wrapper' => array(
+                'width' => '',
+                'class' => '',
+                'id' => ''
+            ),
+            'choices' => array(
+                'italiana' => 'Italiana',
+                'japonesa' => 'Japonesa',
+                'brasileira' => 'Brasileira',
+                'mexicana' => 'Mexicana',
+                'chinesa' => 'Chinesa',
+                'francesa' => 'Francesa',
+                'vegetariana' => 'Vegetariana',
+                'vegana' => 'Vegana',
+                'regional' => 'Regional',
+                'contemporanea' => 'Contemporânea',
+                'outros' => 'Outros'
+            ),
+            'default_value' => '',
+            'allow_null' => 0,
+            'multiple' => 1,
+            'ui' => 0,
+            'ajax' => 0,
+            'return_format' => 'value',
+            'placeholder' => ''
+        ),
+        array(
+            'key' => 'field_restaurant_info_1',
+            'label' => 'Horário de Funcionamento',
+            'name' => 'horario_funcionamento',
+            'type' => 'repeater',
+            'instructions' => '',
+            'required' => 0,
+            'conditional_logic' => 0,
+            'wrapper' => array(
+                'width' => '',
+                'class' => '',
+                'id' => ''
+            ),
+            'collapsed' => '',
+            'min' => 0,
+            'max' => 0,
+            'layout' => 'table',
+            'button_label' => 'Adicionar',
+            'sub_fields' => array(
+                array(
+                    'key' => 'field_restaurant_info_1_0',
+                    'label' => 'Dia da Semana',
+                    'name' => 'dia_semana',
+                    'type' => 'select',
+                    'instructions' => '',
+                    'required' => 0,
+                    'conditional_logic' => 0,
+                    'wrapper' => array(
+                        'width' => '',
+                        'class' => '',
+                        'id' => ''
+                    ),
+                    'choices' => array(
+                        'segunda' => 'Segunda-feira',
+                        'terca' => 'Terça-feira',
+                        'quarta' => 'Quarta-feira',
+                        'quinta' => 'Quinta-feira',
+                        'sexta' => 'Sexta-feira',
+                        'sabado' => 'Sábado',
+                        'domingo' => 'Domingo'
+                    ),
+                    'default_value' => '',
+                    'allow_null' => 0,
+                    'multiple' => 0,
+                    'ui' => 0,
+                    'ajax' => 0,
+                    'return_format' => 'value',
+                    'placeholder' => ''
+                ),
+                array(
+                    'key' => 'field_restaurant_info_1_1',
+                    'label' => 'Abertura',
+                    'name' => 'abertura',
+                    'type' => 'time_picker',
+                    'instructions' => '',
+                    'required' => 0,
+                    'conditional_logic' => 0,
+                    'wrapper' => array(
+                        'width' => '',
+                        'class' => '',
+                        'id' => ''
+                    )
+                ),
+                array(
+                    'key' => 'field_restaurant_info_1_2',
+                    'label' => 'Fechamento',
+                    'name' => 'fechamento',
+                    'type' => 'time_picker',
+                    'instructions' => '',
+                    'required' => 0,
+                    'conditional_logic' => 0,
+                    'wrapper' => array(
+                        'width' => '',
+                        'class' => '',
+                        'id' => ''
+                    )
+                )
+            )
+        ),
+        array(
+            'key' => 'field_restaurant_info_2',
+            'label' => 'Capacidade de Pessoas',
+            'name' => 'capacidade',
+            'type' => 'number',
+            'instructions' => '',
+            'required' => 0,
+            'conditional_logic' => 0,
+            'wrapper' => array(
+                'width' => '',
+                'class' => '',
+                'id' => ''
+            ),
+            'default_value' => '',
+            'placeholder' => '',
+            'prepend' => '',
+            'append' => '',
+            'min' => 1,
+            'max' => '',
+            'step' => ''
+        ),
+        array(
+            'key' => 'field_restaurant_info_3',
+            'label' => 'Aceita Reservas',
+            'name' => 'aceita_reservas',
+            'type' => 'true_false',
+            'instructions' => '',
+            'required' => 0,
+            'conditional_logic' => 0,
+            'wrapper' => array(
+                'width' => '',
+                'class' => '',
+                'id' => ''
+            ),
+            'message' => '',
+            'default_value' => 0,
+            'ui' => 1,
+            'ui_on_text' => 'Sim',
+            'ui_off_text' => 'Não'
+        ),
+        array(
+            'key' => 'field_restaurant_info_4',
+            'label' => 'Possui Delivery',
+            'name' => 'delivery',
+            'type' => 'true_false',
+            'instructions' => '',
+            'required' => 0,
+            'conditional_logic' => 0,
+            'wrapper' => array(
+                'width' => '',
+                'class' => '',
+                'id' => ''
+            ),
+            'message' => '',
+            'default_value' => 0,
+            'ui' => 1,
+            'ui_on_text' => 'Sim',
+            'ui_off_text' => 'Não'
+        ),
+        array(
+            'key' => 'field_restaurant_info_5',
+            'label' => 'Área de Entrega',
+            'name' => 'area_entrega',
+            'type' => 'textarea',
+            'instructions' => '',
+            'required' => 0,
+            'conditional_logic' => array(
+                array(
+                    array(
+                        'field' => 'field_delivery',
+                        'operator' => '==',
+                        'value' => '1'
+                    )
+                )
+            ),
+            'wrapper' => array(
+                'width' => '',
+                'class' => '',
+                'id' => ''
+            ),
+            'default_value' => '',
+            'placeholder' => '',
+            'maxlength' => '',
+            'rows' => 3,
+            'new_lines' => 'wpautop'
+        ),
+        array(
+            'key' => 'field_restaurant_info_6',
+            'label' => 'Formas de Pagamento',
+            'name' => 'formas_pagamento',
+            'type' => 'checkbox',
+            'instructions' => '',
+            'required' => 0,
+            'conditional_logic' => 0,
+            'wrapper' => array(
+                'width' => '',
+                'class' => '',
+                'id' => ''
+            )
+        )
+    ),
+    'location' => array(
+        array(
+            array(
+                'param' => 'post_type',
+                'operator' => '==',
+                'value' => 'page'
+            )
+        )
+    ),
+    'menu_order' => 1,
+    'position' => 'normal',
+    'style' => 'default',
+    'label_placement' => 'top',
+    'instruction_placement' => 'label',
+    'hide_on_screen' => array(
+
+    ),
+    'active' => true,
+    'description' => 'Generated by KenzySites on 2025-08-22T00:54:44.544369'
+));
+
+acf_add_local_field_group(array(
+    'key' => 'group_restaurant_menu',
+    'title' => 'Cardápio',
+    'fields' => array(
+        array(
+            'key' => 'field_restaurant_menu_0',
+            'label' => 'Cardápio',
+            'name' => 'cardapio',
+            'type' => 'repeater',
+            'instructions' => '',
+            'required' => 0,
+            'conditional_logic' => 0,
+            'wrapper' => array(
+                'width' => '',
+                'class' => '',
+                'id' => ''
+            ),
+            'collapsed' => '',
+            'min' => 0,
+            'max' => 0,
+            'layout' => 'row',
+            'button_label' => 'Adicionar Item',
+            'sub_fields' => array(
+                array(
+                    'key' => 'field_restaurant_menu_0_0',
+                    'label' => 'Categoria',
+                    'name' => 'categoria',
+                    'type' => 'select',
+                    'instructions' => '',
+                    'required' => 0,
+                    'conditional_logic' => 0,
+                    'wrapper' => array(
+                        'width' => '',
+                        'class' => '',
+                        'id' => ''
+                    ),
+                    'choices' => array(
+                        'entrada' => 'Entrada',
+                        'prato_principal' => 'Prato Principal',
+                        'sobremesa' => 'Sobremesa',
+                        'bebida' => 'Bebida',
+                        'promocao' => 'Promoção'
+                    ),
+                    'default_value' => '',
+                    'allow_null' => 0,
+                    'multiple' => 0,
+                    'ui' => 0,
+                    'ajax' => 0,
+                    'return_format' => 'value',
+                    'placeholder' => ''
+                ),
+                array(
+                    'key' => 'field_restaurant_menu_0_1',
+                    'label' => 'Nome do Prato',
+                    'name' => 'nome_prato',
+                    'type' => 'text',
+                    'instructions' => '',
+                    'required' => 1,
+                    'conditional_logic' => 0,
+                    'wrapper' => array(
+                        'width' => '',
+                        'class' => '',
+                        'id' => ''
+                    ),
+                    'default_value' => '',
+                    'placeholder' => '',
+                    'prepend' => '',
+                    'append' => '',
+                    'maxlength' => ''
+                ),
+                array(
+                    'key' => 'field_restaurant_menu_0_2',
+                    'label' => 'Descrição',
+                    'name' => 'descricao',
+                    'type' => 'textarea',
+                    'instructions' => '',
+                    'required' => 0,
+                    'conditional_logic' => 0,
+                    'wrapper' => array(
+                        'width' => '',
+                        'class' => '',
+                        'id' => ''
+                    ),
+                    'default_value' => '',
+                    'placeholder' => '',
+                    'maxlength' => '',
+                    'rows' => 2,
+                    'new_lines' => 'wpautop'
+                ),
+                array(
+                    'key' => 'field_restaurant_menu_0_3',
+                    'label' => 'Preço',
+                    'name' => 'preco',
+                    'type' => 'number',
+                    'instructions' => '',
+                    'required' => 0,
+                    'conditional_logic' => 0,
+                    'wrapper' => array(
+                        'width' => '',
+                        'class' => '',
+                        'id' => ''
+                    ),
+                    'default_value' => '',
+                    'placeholder' => '',
+                    'prepend' => 'R$',
+                    'append' => '',
+                    'min' => 0,
+                    'max' => '',
+                    'step' => 0.01
+                ),
+                array(
+                    'key' => 'field_restaurant_menu_0_4',
+                    'label' => 'Foto do Prato',
+                    'name' => 'foto_prato',
+                    'type' => 'image',
+                    'instructions' => '',
+                    'required' => 0,
+                    'conditional_logic' => 0,
+                    'wrapper' => array(
+                        'width' => '',
+                        'class' => '',
+                        'id' => ''
+                    ),
+                    'return_format' => 'url',
+                    'preview_size' => 'thumbnail',
+                    'library' => 'all',
+                    'min_width' => '',
+                    'min_height' => '',
+                    'max_width' => '',
+                    'max_height' => '',
+                    'max_size' => '',
+                    'mime_types' => ''
+                ),
+                array(
+                    'key' => 'field_restaurant_menu_0_5',
+                    'label' => 'Prato em Destaque',
+                    'name' => 'destaque',
+                    'type' => 'true_false',
+                    'instructions' => '',
+                    'required' => 0,
+                    'conditional_logic' => 0,
+                    'wrapper' => array(
+                        'width' => '',
+                        'class' => '',
+                        'id' => ''
+                    ),
+                    'message' => '',
+                    'default_value' => 0,
+                    'ui' => 0,
+                    'ui_on_text' => 'Sim',
+                    'ui_off_text' => 'Não'
+                )
+            )
+        )
+    ),
+    'location' => array(
+        array(
+            array(
+                'param' => 'post_type',
+                'operator' => '==',
+                'value' => 'page'
+            )
+        )
+    ),
+    'menu_order' => 2,
+    'position' => 'normal',
+    'style' => 'default',
+    'label_placement' => 'top',
+    'instruction_placement' => 'label',
+    'hide_on_screen' => array(
+
+    ),
+    'active' => true,
+    'description' => 'Generated by KenzySites on 2025-08-22T00:54:44.544400'
+));
+
+acf_add_local_field_group(array(
+    'key' => 'group_brazilian_compliance',
+    'title' => 'Informações Legais e Compliance',
+    'fields' => array(
+        array(
+            'key' => 'field_brazilian_compliance_0',
+            'label' => 'CNPJ',
+            'name' => 'brazilian_compliance_0',
+            'type' => 'text',
+            'instructions' => 'Digite o CNPJ (apenas números)',
+            'required' => 0,
+            'conditional_logic' => 0,
+            'wrapper' => array(
+                'width' => '',
+                'class' => '',
+                'id' => ''
+            ),
+            'default_value' => '',
+            'placeholder' => '00.000.000/0000-00',
+            'prepend' => '',
+            'append' => '',
+            'maxlength' => 18
+        ),
+        array(
+            'key' => 'field_brazilian_compliance_1',
+            'label' => 'Inscrição Estadual',
+            'name' => 'inscricao_estadual',
+            'type' => 'text',
+            'instructions' => '',
+            'required' => 0,
+            'conditional_logic' => 0,
+            'wrapper' => array(
+                'width' => '',
+                'class' => '',
+                'id' => ''
+            ),
+            'default_value' => '',
+            'placeholder' => '',
+            'prepend' => '',
+            'append' => '',
+            'maxlength' => ''
+        ),
+        array(
+            'key' => 'field_brazilian_compliance_2',
+            'label' => 'Inscrição Municipal',
+            'name' => 'inscricao_municipal',
+            'type' => 'text',
+            'instructions' => '',
+            'required' => 0,
+            'conditional_logic' => 0,
+            'wrapper' => array(
+                'width' => '',
+                'class' => '',
+                'id' => ''
+            ),
+            'default_value' => '',
+            'placeholder' => '',
+            'prepend' => '',
+            'append' => '',
+            'maxlength' => ''
+        ),
+        array(
+            'key' => 'field_brazilian_compliance_3',
+            'label' => 'Chave PIX',
+            'name' => 'brazilian_compliance_3',
+            'type' => 'text',
+            'instructions' => 'Chave PIX para pagamentos',
+            'required' => 0,
+            'conditional_logic' => 0,
+            'wrapper' => array(
+                'width' => '',
+                'class' => '',
+                'id' => ''
+            ),
+            'default_value' => '',
+            'placeholder' => 'email@exemplo.com ou CPF/CNPJ',
+            'prepend' => '',
+            'append' => '',
+            'maxlength' => ''
+        ),
+        array(
+            'key' => 'field_brazilian_compliance_4',
+            'label' => 'Conformidade LGPD',
+            'name' => 'lgpd_compliance',
+            'type' => 'group',
+            'instructions' => '',
+            'required' => 0,
+            'conditional_logic' => 0,
+            'wrapper' => array(
+                'width' => '',
+                'class' => '',
+                'id' => ''
+            ),
+            'layout' => 'block',
+            'sub_fields' => array(
+                array(
+                    'key' => 'field_brazilian_compliance_4_0',
+                    'label' => 'Link da Política de Privacidade',
+                    'name' => 'politica_privacidade',
+                    'type' => 'url',
+                    'instructions' => '',
+                    'required' => 0,
+                    'conditional_logic' => 0,
+                    'wrapper' => array(
+                        'width' => '',
+                        'class' => '',
+                        'id' => ''
+                    )
+                ),
+                array(
+                    'key' => 'field_brazilian_compliance_4_1',
+                    'label' => 'Link dos Termos de Uso',
+                    'name' => 'termos_uso',
+                    'type' => 'url',
+                    'instructions' => '',
+                    'required' => 0,
+                    'conditional_logic' => 0,
+                    'wrapper' => array(
+                        'width' => '',
+                        'class' => '',
+                        'id' => ''
+                    )
+                ),
+                array(
+                    'key' => 'field_brazilian_compliance_4_2',
+                    'label' => 'Contato do DPO (Encarregado de Dados)',
+                    'name' => 'dpo_contato',
+                    'type' => 'email',
+                    'instructions' => '',
+                    'required' => 0,
+                    'conditional_logic' => 0,
+                    'wrapper' => array(
+                        'width' => '',
+                        'class' => '',
+                        'id' => ''
+                    )
+                )
+            )
+        )
+    ),
+    'location' => array(
+        array(
+            array(
+                'param' => 'post_type',
+                'operator' => '==',
+                'value' => 'page'
+            )
+        )
+    ),
+    'menu_order' => 8,
+    'position' => 'normal',
+    'style' => 'default',
+    'label_placement' => 'top',
+    'instruction_placement' => 'label',
+    'hide_on_screen' => array(
+
+    ),
+    'active' => true,
+    'description' => 'Generated by KenzySites on 2025-08-22T00:54:44.544425'
+));
+
+acf_add_local_field_group(array(
+    'key' => 'group_seo_settings',
+    'title' => 'Configurações SEO',
+    'fields' => array(
+        array(
+            'key' => 'field_seo_settings_0',
+            'label' => 'Título SEO',
+            'name' => 'seo_title',
+            'type' => 'text',
+            'instructions' => 'Título para mecanismos de busca (máx. 60 caracteres)',
+            'required' => 0,
+            'conditional_logic' => 0,
+            'wrapper' => array(
+                'width' => '',
+                'class' => '',
+                'id' => ''
+            ),
+            'default_value' => '',
+            'placeholder' => '',
+            'prepend' => '',
+            'append' => '',
+            'maxlength' => 60
+        ),
+        array(
+            'key' => 'field_seo_settings_1',
+            'label' => 'Meta Descrição',
+            'name' => 'seo_description',
+            'type' => 'textarea',
+            'instructions' => 'Descrição para mecanismos de busca (máx. 160 caracteres)',
+            'required' => 0,
+            'conditional_logic' => 0,
+            'wrapper' => array(
+                'width' => '',
+                'class' => '',
+                'id' => ''
+            ),
+            'default_value' => '',
+            'placeholder' => '',
+            'maxlength' => 160,
+            'rows' => 3,
+            'new_lines' => 'wpautop'
+        ),
+        array(
+            'key' => 'field_seo_settings_2',
+            'label' => 'Palavras-chave',
+            'name' => 'seo_keywords',
+            'type' => 'text',
+            'instructions' => 'Palavras-chave separadas por vírgula',
+            'required' => 0,
+            'conditional_logic' => 0,
+            'wrapper' => array(
+                'width' => '',
+                'class' => '',
+                'id' => ''
+            ),
+            'default_value' => '',
+            'placeholder' => '',
+            'prepend' => '',
+            'append' => '',
+            'maxlength' => ''
+        ),
+        array(
+            'key' => 'field_seo_settings_3',
+            'label' => 'Imagem para Redes Sociais',
+            'name' => 'og_image',
+            'type' => 'image',
+            'instructions' => 'Imagem para compartilhamento (1200x630px recomendado)',
+            'required' => 0,
+            'conditional_logic' => 0,
+            'wrapper' => array(
+                'width' => '',
+                'class' => '',
+                'id' => ''
+            ),
+            'return_format' => 'url',
+            'preview_size' => 'thumbnail',
+            'library' => 'all',
+            'min_width' => '',
+            'min_height' => '',
+            'max_width' => '',
+            'max_height' => '',
+            'max_size' => '',
+            'mime_types' => ''
+        )
+    ),
+    'location' => array(
+        array(
+            array(
+                'param' => 'post_type',
+                'operator' => '==',
+                'value' => 'page'
+            )
+        )
+    ),
+    'menu_order' => 9,
+    'position' => 'normal',
+    'style' => 'default',
+    'label_placement' => 'top',
+    'instruction_placement' => 'label',
+    'hide_on_screen' => array(
+
+    ),
+    'active' => true,
+    'description' => 'Generated by KenzySites on 2025-08-22T00:54:44.544446'
+));
+
+endif;

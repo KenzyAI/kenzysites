@@ -1,0 +1,477 @@
+{
+  "id": "healthcare_clinic_v1",
+  "name": "Clínica Médica Moderna",
+  "industry": "healthcare",
+  "version": "1.0.0",
+  "description": "Template completo para clínicas médicas, consultórios e centros de saúde com agendamento online",
+  "language": "pt-BR",
+  "features": [
+    "online_appointment",
+    "doctor_profiles",
+    "specialties_showcase",
+    "patient_portal",
+    "telemedicine_ready",
+    "insurance_info",
+    "emergency_contact"
+  ],
+  "pages": [
+    {
+      "slug": "home",
+      "title": "{{BUSINESS_NAME}} - Clínica Médica",
+      "template": "elementor",
+      "sections": [
+        {
+          "type": "hero",
+          "settings": {
+            "background_image": "{{HERO_IMAGE}}",
+            "overlay_color": "rgba(0,123,255,0.1)",
+            "title": "{{HERO_TITLE}}",
+            "subtitle": "{{HERO_SUBTITLE}}",
+            "buttons": [
+              {
+                "text": "Agendar Consulta",
+                "url": "#agendamento",
+                "style": "primary"
+              },
+              {
+                "text": "Fale Conosco",
+                "url": "#contato",
+                "style": "secondary"
+              }
+            ],
+            "emergency_banner": {
+              "enabled": true,
+              "text": "Emergência 24h: {{EMERGENCY_PHONE}}",
+              "icon": "fas fa-phone-alt"
+            }
+          }
+        },
+        {
+          "type": "features",
+          "settings": {
+            "title": "Por que escolher a {{BUSINESS_NAME}}?",
+            "items": [
+              {
+                "icon": "fas fa-user-md",
+                "title": "Médicos Especializados",
+                "description": "Equipe médica altamente qualificada"
+              },
+              {
+                "icon": "fas fa-hospital",
+                "title": "Infraestrutura Moderna",
+                "description": "Equipamentos de última geração"
+              },
+              {
+                "icon": "fas fa-clock",
+                "title": "Horário Flexível",
+                "description": "Atendimento em horários convenientes"
+              },
+              {
+                "icon": "fas fa-shield-alt",
+                "title": "Segurança e Higiene",
+                "description": "Protocolos rigorosos de segurança"
+              }
+            ]
+          }
+        },
+        {
+          "type": "specialties",
+          "settings": {
+            "title": "Nossas Especialidades",
+            "grid_layout": true,
+            "items": [
+              {
+                "name": "{{SPECIALTY_1_NAME}}",
+                "description": "{{SPECIALTY_1_DESC}}",
+                "icon": "{{SPECIALTY_1_ICON}}",
+                "doctor": "{{SPECIALTY_1_DOCTOR}}"
+              },
+              {
+                "name": "{{SPECIALTY_2_NAME}}",
+                "description": "{{SPECIALTY_2_DESC}}",
+                "icon": "{{SPECIALTY_2_ICON}}",
+                "doctor": "{{SPECIALTY_2_DOCTOR}}"
+              },
+              {
+                "name": "{{SPECIALTY_3_NAME}}",
+                "description": "{{SPECIALTY_3_DESC}}",
+                "icon": "{{SPECIALTY_3_ICON}}",
+                "doctor": "{{SPECIALTY_3_DOCTOR}}"
+              },
+              {
+                "name": "{{SPECIALTY_4_NAME}}",
+                "description": "{{SPECIALTY_4_DESC}}",
+                "icon": "{{SPECIALTY_4_ICON}}",
+                "doctor": "{{SPECIALTY_4_DOCTOR}}"
+              }
+            ]
+          }
+        },
+        {
+          "type": "doctors_showcase",
+          "settings": {
+            "title": "Nossa Equipe Médica",
+            "layout": "carousel",
+            "doctors": [
+              {
+                "name": "{{DOCTOR_1_NAME}}",
+                "specialty": "{{DOCTOR_1_SPECIALTY}}",
+                "crm": "{{DOCTOR_1_CRM}}",
+                "bio": "{{DOCTOR_1_BIO}}",
+                "photo": "{{DOCTOR_1_PHOTO}}",
+                "experience": "{{DOCTOR_1_EXPERIENCE}}"
+              },
+              {
+                "name": "{{DOCTOR_2_NAME}}",
+                "specialty": "{{DOCTOR_2_SPECIALTY}}",
+                "crm": "{{DOCTOR_2_CRM}}",
+                "bio": "{{DOCTOR_2_BIO}}",
+                "photo": "{{DOCTOR_2_PHOTO}}",
+                "experience": "{{DOCTOR_2_EXPERIENCE}}"
+              }
+            ]
+          }
+        },
+        {
+          "type": "appointment_cta",
+          "settings": {
+            "title": "Agende sua Consulta Online",
+            "subtitle": "Rápido, fácil e seguro",
+            "form_fields": [
+              "name",
+              "phone",
+              "email",
+              "specialty",
+              "preferred_date",
+              "preferred_time",
+              "insurance"
+            ],
+            "whatsapp_scheduling": {
+              "enabled": true,
+              "number": "{{WHATSAPP_NUMBER}}",
+              "message": "Olá! Gostaria de agendar uma consulta."
+            }
+          }
+        },
+        {
+          "type": "insurance_accepted",
+          "settings": {
+            "title": "Convênios Aceitos",
+            "layout": "logo_grid",
+            "insurances": "{{INSURANCE_LIST}}",
+            "particular_info": "Também atendemos particular com preços especiais"
+          }
+        },
+        {
+          "type": "about",
+          "settings": {
+            "title": "{{ABOUT_TITLE}}",
+            "content": "{{ABOUT_TEXT}}",
+            "image": "{{ABOUT_IMAGE}}",
+            "years_service": "{{YEARS_SERVICE}}",
+            "patients_served": "{{PATIENTS_SERVED}}",
+            "certifications": "{{CERTIFICATIONS}}"
+          }
+        },
+        {
+          "type": "testimonials",
+          "settings": {
+            "title": "O que nossos pacientes dizem",
+            "items": [
+              {
+                "text": "{{TESTIMONIAL_1_TEXT}}",
+                "author": "{{TESTIMONIAL_1_AUTHOR}}",
+                "rating": 5,
+                "treatment": "{{TESTIMONIAL_1_TREATMENT}}"
+              },
+              {
+                "text": "{{TESTIMONIAL_2_TEXT}}",
+                "author": "{{TESTIMONIAL_2_AUTHOR}}",
+                "rating": 5,
+                "treatment": "{{TESTIMONIAL_2_TREATMENT}}"
+              }
+            ]
+          }
+        },
+        {
+          "type": "covid_protocol",
+          "settings": {
+            "enabled": true,
+            "title": "Protocolos COVID-19",
+            "items": [
+              "Uso obrigatório de máscara",
+              "Higienização constante",
+              "Distanciamento social",
+              "Agendamento espaçado"
+            ]
+          }
+        },
+        {
+          "type": "location_contact",
+          "settings": {
+            "title": "Localização e Contato",
+            "address": "{{ADDRESS}}",
+            "phone": "{{PHONE_NUMBER}}",
+            "whatsapp": "{{WHATSAPP_NUMBER}}",
+            "email": "{{EMAIL}}",
+            "opening_hours": "{{OPENING_HOURS}}",
+            "emergency_hours": "{{EMERGENCY_HOURS}}",
+            "google_maps_embed": "{{GOOGLE_MAPS_EMBED}}"
+          }
+        }
+      ]
+    },
+    {
+      "slug": "especialidades",
+      "title": "Especialidades - {{BUSINESS_NAME}}",
+      "template": "elementor",
+      "sections": [
+        {
+          "type": "specialties_full",
+          "settings": {
+            "layout": "tabs",
+            "detailed_info": true,
+            "appointment_button": true
+          }
+        }
+      ]
+    },
+    {
+      "slug": "equipe-medica",
+      "title": "Equipe Médica - {{BUSINESS_NAME}}",
+      "template": "elementor",
+      "sections": [
+        {
+          "type": "doctors_directory",
+          "settings": {
+            "filter_by_specialty": true,
+            "show_availability": true,
+            "online_profiles": true
+          }
+        }
+      ]
+    },
+    {
+      "slug": "agendamento",
+      "title": "Agendamento Online - {{BUSINESS_NAME}}",
+      "template": "elementor",
+      "sections": [
+        {
+          "type": "appointment_system",
+          "settings": {
+            "calendar_view": true,
+            "doctor_selection": true,
+            "insurance_verification": true,
+            "confirmation_email": true,
+            "reminder_sms": true
+          }
+        }
+      ]
+    },
+    {
+      "slug": "convenios",
+      "title": "Convênios - {{BUSINESS_NAME}}",
+      "template": "elementor",
+      "sections": [
+        {
+          "type": "insurance_detailed",
+          "settings": {
+            "coverage_info": true,
+            "authorization_process": true,
+            "contact_for_questions": true
+          }
+        }
+      ]
+    },
+    {
+      "slug": "contato",
+      "title": "Contato - {{BUSINESS_NAME}}",
+      "template": "elementor",
+      "sections": [
+        {
+          "type": "contact_form",
+          "settings": {
+            "fields": ["name", "email", "phone", "subject", "message"],
+            "departments": ["Geral", "Agendamento", "Convênios", "Emergência"],
+            "email_to": "{{EMAIL}}",
+            "success_message": "Obrigado! Retornaremos em breve."
+          }
+        }
+      ]
+    }
+  ],
+  "navigation": {
+    "primary": [
+      {"label": "Início", "url": "/"},
+      {"label": "Especialidades", "url": "/especialidades"},
+      {"label": "Equipe Médica", "url": "/equipe-medica"},
+      {"label": "Agendamento", "url": "/agendamento"},
+      {"label": "Convênios", "url": "/convenios"},
+      {"label": "Contato", "url": "/contato"}
+    ],
+    "mobile": "hamburger",
+    "sticky": true,
+    "emergency_button": true
+  },
+  "design": {
+    "colors": {
+      "primary": "{{PRIMARY_COLOR}}",
+      "secondary": "{{SECONDARY_COLOR}}",
+      "accent": "{{ACCENT_COLOR}}",
+      "text": "#333333",
+      "background": "#FFFFFF",
+      "success": "#22C55E",
+      "info": "#3B82F6"
+    },
+    "typography": {
+      "heading_font": "Montserrat",
+      "body_font": "Open Sans",
+      "base_size": "16px"
+    },
+    "spacing": {
+      "section_padding": "80px",
+      "container_width": "1200px"
+    }
+  },
+  "seo": {
+    "meta_title": "{{BUSINESS_NAME}} - Clínica Médica em {{CITY}}",
+    "meta_description": "{{BUSINESS_DESCRIPTION}}. Agendamento online. Convênios aceitos.",
+    "keywords": [
+      "clínica médica {{CITY}}",
+      "médico {{CITY}}",
+      "consulta médica",
+      "agendamento online",
+      "{{SPECIALTY_1_NAME}}",
+      "{{SPECIALTY_2_NAME}}"
+    ],
+    "og_image": "{{OG_IMAGE}}",
+    "schema_type": "MedicalClinic"
+  },
+  "brazilian_features": {
+    "whatsapp_widget": {
+      "enabled": true,
+      "position": "bottom-right",
+      "message": "Olá! Gostaria de agendar uma consulta",
+      "number": "{{WHATSAPP_NUMBER}}"
+    },
+    "telemedicine": {
+      "enabled": true,
+      "platform": "{{TELEMEDICINE_PLATFORM}}",
+      "info": "Consultas online disponíveis"
+    },
+    "lgpd_notice": {
+      "enabled": true,
+      "text": "Seus dados médicos são protegidos conforme a LGPD.",
+      "privacy_url": "/politica-privacidade"
+    },
+    "emergency_features": {
+      "emergency_phone": "{{EMERGENCY_PHONE}}",
+      "ambulance_service": false,
+      "24h_service": false
+    },
+    "health_integrations": {
+      "sus_compatible": true,
+      "anvisa_registered": true,
+      "crm_verified": true
+    }
+  },
+  "plugins_required": [
+    "elementor",
+    "advanced-custom-fields",
+    "bookly-responsive-appointment-booking-tool",
+    "wp-whatsapp-chat",
+    "contact-form-7",
+    "yoast-seo",
+    "gdpr-cookie-compliance"
+  ],
+  "acf_fields": [
+    {
+      "group": "clinic_info",
+      "fields": [
+        {"name": "clinic_type", "type": "select", "label": "Tipo de Clínica"},
+        {"name": "cnes_number", "type": "text", "label": "Número CNES"},
+        {"name": "medical_director", "type": "text", "label": "Diretor Médico"},
+        {"name": "emergency_phone", "type": "text", "label": "Telefone Emergência"},
+        {"name": "telemedicine_available", "type": "true_false", "label": "Telemedicina Disponível"}
+      ]
+    },
+    {
+      "group": "doctors",
+      "fields": [
+        {"name": "doctor_profiles", "type": "repeater", "label": "Perfis dos Médicos"},
+        {"name": "specialties_offered", "type": "checkbox", "label": "Especialidades Oferecidas"},
+        {"name": "consultation_duration", "type": "number", "label": "Duração da Consulta (min)"}
+      ]
+    },
+    {
+      "group": "insurance",
+      "fields": [
+        {"name": "accepted_insurance", "type": "repeater", "label": "Convênios Aceitos"},
+        {"name": "particular_price", "type": "text", "label": "Valor Consulta Particular"},
+        {"name": "payment_methods", "type": "checkbox", "label": "Formas de Pagamento"}
+      ]
+    }
+  ],
+  "placeholders": [
+    "{{BUSINESS_NAME}}",
+    "{{BUSINESS_DESCRIPTION}}",
+    "{{PHONE_NUMBER}}",
+    "{{WHATSAPP_NUMBER}}",
+    "{{EMERGENCY_PHONE}}",
+    "{{EMAIL}}",
+    "{{ADDRESS}}",
+    "{{CITY}}",
+    "{{OPENING_HOURS}}",
+    "{{EMERGENCY_HOURS}}",
+    "{{HERO_TITLE}}",
+    "{{HERO_SUBTITLE}}",
+    "{{HERO_IMAGE}}",
+    "{{ABOUT_TITLE}}",
+    "{{ABOUT_TEXT}}",
+    "{{ABOUT_IMAGE}}",
+    "{{YEARS_SERVICE}}",
+    "{{PATIENTS_SERVED}}",
+    "{{CERTIFICATIONS}}",
+    "{{SPECIALTY_1_NAME}}",
+    "{{SPECIALTY_1_DESC}}",
+    "{{SPECIALTY_1_ICON}}",
+    "{{SPECIALTY_1_DOCTOR}}",
+    "{{SPECIALTY_2_NAME}}",
+    "{{SPECIALTY_2_DESC}}",
+    "{{SPECIALTY_2_ICON}}",
+    "{{SPECIALTY_2_DOCTOR}}",
+    "{{SPECIALTY_3_NAME}}",
+    "{{SPECIALTY_3_DESC}}",
+    "{{SPECIALTY_3_ICON}}",
+    "{{SPECIALTY_3_DOCTOR}}",
+    "{{SPECIALTY_4_NAME}}",
+    "{{SPECIALTY_4_DESC}}",
+    "{{SPECIALTY_4_ICON}}",
+    "{{SPECIALTY_4_DOCTOR}}",
+    "{{DOCTOR_1_NAME}}",
+    "{{DOCTOR_1_SPECIALTY}}",
+    "{{DOCTOR_1_CRM}}",
+    "{{DOCTOR_1_BIO}}",
+    "{{DOCTOR_1_PHOTO}}",
+    "{{DOCTOR_1_EXPERIENCE}}",
+    "{{DOCTOR_2_NAME}}",
+    "{{DOCTOR_2_SPECIALTY}}",
+    "{{DOCTOR_2_CRM}}",
+    "{{DOCTOR_2_BIO}}",
+    "{{DOCTOR_2_PHOTO}}",
+    "{{DOCTOR_2_EXPERIENCE}}",
+    "{{INSURANCE_LIST}}",
+    "{{TELEMEDICINE_PLATFORM}}",
+    "{{PRIMARY_COLOR}}",
+    "{{SECONDARY_COLOR}}",
+    "{{ACCENT_COLOR}}",
+    "{{OG_IMAGE}}",
+    "{{GOOGLE_MAPS_EMBED}}",
+    "{{TESTIMONIAL_1_TEXT}}",
+    "{{TESTIMONIAL_1_AUTHOR}}",
+    "{{TESTIMONIAL_1_TREATMENT}}",
+    "{{TESTIMONIAL_2_TEXT}}",
+    "{{TESTIMONIAL_2_AUTHOR}}",
+    "{{TESTIMONIAL_2_TREATMENT}}"
+  ]
+}
