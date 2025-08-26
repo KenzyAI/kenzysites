@@ -40,7 +40,18 @@ async def health_check():
     return {
         "status": "healthy",
         "service": "WordPress AI SaaS Backend",
-        "version": "1.0.0"
+        "version": "1.0.0-simple"
+    }
+
+@app.get("/api/v1/health")
+async def health_check_v1():
+    """Health check endpoint compatible with Render"""
+    return {
+        "status": "healthy",
+        "service": "KenzySites Backend",
+        "version": "1.0.0-simple",
+        "mode": "simplified_without_agno",
+        "timestamp": time.time()
     }
 
 # Mock generation endpoint for demo

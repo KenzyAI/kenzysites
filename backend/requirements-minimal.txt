@@ -1,20 +1,10 @@
-# KenzySites - Minimal Dependencies for Initial Deploy
+# KenzySites - Ultra Minimal Dependencies for PHASE 1 Deploy
 # Python 3.12+ required
 
-# Core Framework - minimal stable versions
+# Core Framework - minimal stable versions that work on Render
 fastapi==0.100.1
 uvicorn==0.23.2
 pydantic==1.10.12
 
-# Database & ORM - essential only
-# sqlalchemy==2.0.23
-# psycopg2-binary==2.9.9
-redis==4.6.0
-
-# HTTP & API - basic only
-requests==2.31.0
+# Basic utilities only
 python-dotenv==1.0.0
-
-# AI Providers - basic versions
-# anthropic==0.34.0
-# openai==1.50.0
