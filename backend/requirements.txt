@@ -39,7 +39,7 @@ aioftp==0.21.4
 
 # Brazilian Features
 validate-docbr==1.10.0  # CPF/CNPJ validation
-brazilcep==0.2.0  # CEP validation
+brazilcep==7.0.1  # CEP validation
 
 # Payment Processing
 stripe==7.4.0  # For international payments (future)
