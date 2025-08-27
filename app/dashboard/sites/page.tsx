@@ -112,6 +112,14 @@ export default function SitesPage() {
   const [page, setPage] = useState(1)
   const [pageSize, setPageSize] = useState(10)
   const totalPages = Math.ceil(sites.length / pageSize)
+  const pagination = {
+    page,
+    pageSize,
+    totalItems: sites.length,
+    totalPages,
+    hasNext: page < totalPages,
+    hasPrev: page > 1,
+  }
 
   // Filter sites
   const filteredSites = sites.filter((site) => {
