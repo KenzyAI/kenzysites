@@ -24,8 +24,18 @@ define('KENZYSITES_AI_URL', plugin_dir_url(__FILE__));
 class KenzySites_AI_Builder {
     
     public function __construct() {
+        // Include required files
+        $this->includes();
+        
         add_action('init', array($this, 'init'));
         add_action('rest_api_init', array($this, 'register_rest_routes'));
+    }
+
+    /**
+     * Include required files
+     */
+    private function includes() {
+        require_once KENZYSITES_AI_PATH . 'includes/color-manager.php';
     }
     
     /**
