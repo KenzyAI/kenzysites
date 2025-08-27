@@ -52,7 +52,7 @@ const generateMockSiteContent = (site: Site) => {
     'landing-page': { primary: '#f59e0b', secondary: '#fbbf24', accent: '#fcd34d' },
   }
 
-  const categoryColors = colors[site.category] || colors.blog
+  const categoryColors = colors[site.category as keyof typeof colors] || colors.blog
 
   return `
     <!DOCTYPE html>

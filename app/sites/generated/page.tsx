@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, ReactElement } from 'react';
 import { useRouter } from 'next/navigation';
 import { 
   FileText, 
@@ -207,7 +207,7 @@ export default function GeneratedSitesDashboard() {
   };
 
   const getIndustryIcon = (industry: string) => {
-    const icons: Record<string, JSX.Element> = {
+    const icons: Record<string, ReactElement> = {
       restaurant: <span className="text-orange-500">🍴</span>,
       healthcare: <span className="text-blue-500">🏥</span>,
       ecommerce: <span className="text-purple-500">🛒</span>,

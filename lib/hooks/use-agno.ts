@@ -11,7 +11,7 @@ import agnoClient, {
   AICreditsBalance,
   AgnoSystemStatus 
 } from '@/lib/api/agno-client';
-import { toast } from '@/components/ui/use-toast';
+import { toast } from '@/lib/use-toast';
 
 // Custom hook for AI Credits management
 export function useAICredits() {

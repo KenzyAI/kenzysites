@@ -11,11 +11,11 @@ interface HostedWordPressConfig extends WPSiteConfig {
 export class HostedWordPressClient extends WordPressAPIClient {
   private isMultisite: boolean = false
   private currentSiteId?: number
-  private config: HostedWordPressConfig
+  private hostedConfig: HostedWordPressConfig
 
   constructor(config: HostedWordPressConfig) {
     super(config)
-    this.config = config
+    this.hostedConfig = config
     this.isMultisite = config.isMultisite || false
     this.currentSiteId = config.siteId
   }
@@ -24,7 +24,7 @@ export class HostedWordPressClient extends WordPressAPIClient {
    * Make a GET request to WordPress API
    */
   private async get(endpoint: string): Promise<any> {
-    const response = await this.request(endpoint)
+    const response = await this.hostedRequest(endpoint)
     return response.data
   }
 
@@ -32,7 +32,7 @@ export class HostedWordPressClient extends WordPressAPIClient {
    * Make a POST request to WordPress API
    */
   private async post(endpoint: string, data: any): Promise<any> {
-    const response = await this.request(endpoint, {
+    const response = await this.hostedRequest(endpoint, {
       method: 'POST',
       body: JSON.stringify(data)
     })
@@ -40,11 +40,11 @@ export class HostedWordPressClient extends WordPressAPIClient {
   }
 
   /**
-   * Make request using parent class method
+   * Make request using hosted client implementation
    */
-  private async request(endpoint: string, options: RequestInit = {}): Promise<any> {
+  private async hostedRequest(endpoint: string, options: RequestInit = {}): Promise<any> {
     // Build full URL
-    const baseUrl = `${this.config.url.replace(/\/$/, '')}`
+    const baseUrl = `${this.hostedConfig.url.replace(/\/$/, '')}`
     const url = endpoint.startsWith('/wp-json') ? `${baseUrl}${endpoint}` : `${baseUrl}/wp-json/wp/v2${endpoint}`
     
     const headers: Record<string, string> = {
@@ -54,8 +54,8 @@ export class HostedWordPressClient extends WordPressAPIClient {
     }
 
     // Add authentication
-    if (this.config.username && this.config.applicationPassword) {
-      const credentials = btoa(`${this.config.username}:${this.config.applicationPassword}`)
+    if (this.hostedConfig.username && this.hostedConfig.applicationPassword) {
+      const credentials = btoa(`${this.hostedConfig.username}:${this.hostedConfig.applicationPassword}`)
       headers['Authorization'] = `Basic ${credentials}`
     }
 

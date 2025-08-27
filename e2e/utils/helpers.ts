@@ -78,7 +78,7 @@ export async function checkAccessibility(page: Page) {
   // Check for form labels
   const inputsWithoutLabels = await page.$$eval(
     'input:not([aria-label]):not([aria-labelledby])',
-    (inputs) => inputs.filter((input) => !input.labels?.length).length
+    (inputs) => inputs.filter((input) => !(input as HTMLInputElement).labels?.length).length
   )
   
   return {

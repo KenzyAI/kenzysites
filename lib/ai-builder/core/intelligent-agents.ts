@@ -1,6 +1,11 @@
 // Agentes Inteligentes para Análise e Modificação de Conteúdo
 
-import type { BusinessInfo, PlaceholderMapping } from '../types'
+import type { BusinessInfo } from '../types'
+
+// Missing type definition
+export interface PlaceholderMapping {
+  [key: string]: string
+}
 
 export interface ContentAnalysis {
   intent: string
@@ -147,7 +152,7 @@ export class SemanticAnalysisAgent {
         if (content.toLowerCase().includes(keyword)) {
           replacements.push({
             original: `nossos ${keyword}`,
-            suggested: `nossos serviços: ${businessInfo.services.slice(0, 3).join(', ')}`,
+            suggested: `nossos serviços: ${businessInfo.services?.slice(0, 3).join(', ') || 'diversos serviços'}`,
             confidence: 0.8,
             reasoning: 'Inclusão de serviços específicos do negócio'
           })
@@ -250,7 +255,7 @@ export class ContentGenerationAgent {
     }
     
     const businessType = this.detectBusinessTypeFromAnalysis(analysis)
-    const options = templates[businessType] || templates['business']
+    const options = templates[businessType as keyof typeof templates] || templates['business']
     
     return options[Math.floor(Math.random() * options.length)]
   }

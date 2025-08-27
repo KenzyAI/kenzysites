@@ -126,7 +126,7 @@ export async function exportToPDF(
   }
 
   // Dynamic import for client-side only
-  const { jsPDF } = await import('jspdf')
+  const { default: jsPDF } = await import('jspdf')
   require('jspdf-autotable')
 
   // Determine columns

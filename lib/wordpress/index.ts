@@ -29,23 +29,6 @@ export type {
   WPHealthCheck,
   WPProvisioningRequest,
   WPProvisioningResponse,
-  
-  // Manager Types
-  ThemeManagerConfig,
-  ThemeMetadata,
-  ThemePreview,
-  PluginManagerConfig,
-  PluginMetadata,
-  BackupManagerConfig,
-  BackupSchedule,
-  BackupStatistics,
-  RestorePoint,
-  SyncManagerConfig,
-  SyncStatus,
-  SyncConflict,
-  SyncMapping,
-  SyncLog,
-  SyncType,
 } from './types'
 
 export type {

@@ -233,8 +233,8 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
                             <Link
                               key={subItem.name}
                               href={subItem.href}
-                              target={subItem.external ? '_blank' : undefined}
-                              rel={subItem.external ? 'noopener noreferrer' : undefined}
+                              target={'external' in subItem && subItem.external ? '_blank' : undefined}
+                              rel={'external' in subItem && subItem.external ? 'noopener noreferrer' : undefined}
                               className={cn(
                                 'group flex items-center pl-11 pr-3 py-2 text-sm rounded-md transition-colors',
                                 pathname === subItem.href
@@ -243,7 +243,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
                               )}
                             >
                               {subItem.name}
-                              {subItem.external && (
+                              {'external' in subItem && subItem.external && (
                                 <ExternalLink className="ml-1 h-3 w-3" />
                               )}
                             </Link>
