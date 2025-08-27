@@ -135,6 +135,16 @@ async def agno_status():
         "secondary_models_count": len(agno_manager.secondary_models),
     })
 
+# Import and include routers
+from app.api.routers import simple_landing_pages
+
+# Include routers
+app.include_router(
+    simple_landing_pages.router, 
+    prefix="/api/v1/simple-landing",
+    tags=["Simple Landing Pages"]
+)
+
 # Test AI endpoint (if Agno is available)
 @app.post("/api/v1/ai/test")
 async def test_ai():

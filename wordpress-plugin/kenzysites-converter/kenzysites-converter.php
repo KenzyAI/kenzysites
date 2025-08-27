@@ -91,6 +91,9 @@ class KenzySitesConverter {
         // ACF and template hooks
         add_action('acf/init', [$this, 'load_acf_field_groups']);
         add_filter('template_include', [$this, 'load_acf_template'], 99);
+        
+        // REST API hooks
+        add_action('rest_api_init', [$this, 'register_rest_endpoints']);
     }
     
     /**
@@ -493,6 +496,147 @@ class KenzySitesConverter {
      */
     public static function update_option($key, $value) {
         return update_option('kenzysites_' . $key, $value);
+    }
+    
+    /**
+     * Register REST API endpoints
+     */
+    public function register_rest_endpoints() {
+        // Endpoint para receber templates do KenzySites
+        register_rest_route('kenzysites/v1', '/templates/receive', [
+            'methods' => 'POST',
+            'callback' => [$this, 'rest_receive_template'],
+            'permission_callback' => [$this, 'rest_permission_check'],
+            'args' => [
+                'template_data' => [
+                    'required' => true,
+                    'type' => 'object',
+                    'description' => 'Dados do template Elementor'
+                ],
+                'business_info' => [
+                    'required' => true,
+                    'type' => 'object',
+                    'description' => 'Informações do negócio'
+                ],
+                'page_title' => [
+                    'required' => true,
+                    'type' => 'string',
+                    'description' => 'Título da página'
+                ]
+            ]
+        ]);
+        
+        // Endpoint para verificar status de deployment
+        register_rest_route('kenzysites/v1', '/templates/status/(?P<id>[a-zA-Z0-9\-]+)', [
+            'methods' => 'GET',
+            'callback' => [$this, 'rest_get_deployment_status'],
+            'permission_callback' => [$this, 'rest_permission_check']
+        ]);
+    }
+    
+    /**
+     * REST API permission check
+     */
+    public function rest_permission_check($request) {
+        // Verificar API key no header
+        $api_key = $request->get_header('X-API-Key');
+        $configured_key = self::get_option('api_key', '');
+        
+        if (empty($configured_key)) {
+            // Se não há API key configurada, permitir (modo de desenvolvimento)
+            return true;
+        }
+        
+        return $api_key === $configured_key;
+    }
+    
+    /**
+     * REST API endpoint: Receive template from KenzySites
+     */
+    public function rest_receive_template($request) {
+        try {
+            $template_data = $request->get_param('template_data');
+            $business_info = $request->get_param('business_info');
+            $page_title = $request->get_param('page_title');
+            $page_slug = $request->get_param('page_slug');
+            
+            // Criar nova página WordPress
+            $page_id = wp_insert_post([
+                'post_title' => $page_title,
+                'post_name' => $page_slug ?: sanitize_title($page_title),
+                'post_type' => 'page',
+                'post_status' => 'publish',
+                'meta_input' => [
+                    '_elementor_edit_mode' => 'builder',
+                    '_elementor_template_type' => 'wp-page',
+                    '_elementor_version' => ELEMENTOR_VERSION,
+                    '_elementor_data' => json_encode($template_data['elementor_json']),
+                    '_kenzysites_generated' => '1',
+                    '_kenzysites_business_info' => json_encode($business_info)
+                ]
+            ]);
+            
+            if (is_wp_error($page_id)) {
+                throw new Exception($page_id->get_error_message());
+            }
+            
+            // Limpar cache do Elementor
+            if (class_exists('\Elementor\Plugin')) {
+                \Elementor\Plugin::$instance->files_manager->clear_cache();
+            }
+            
+            return new WP_REST_Response([
+                'success' => true,
+                'page_id' => $page_id,
+                'page_url' => get_permalink($page_id),
+                'edit_url' => admin_url("post.php?post={$page_id}&action=elementor"),
+                'message' => 'Template criado com sucesso!'
+            ], 200);
+            
+        } catch (Exception $e) {
+            return new WP_REST_Response([
+                'success' => false,
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+    
+    /**
+     * REST API endpoint: Get deployment status
+     */
+    public function rest_get_deployment_status($request) {
+        $id = $request->get_param('id');
+        
+        // Buscar página pelo meta _kenzysites_landing_id
+        $pages = get_posts([
+            'post_type' => 'page',
+            'meta_query' => [
+                [
+                    'key' => '_kenzysites_landing_id',
+                    'value' => $id,
+                    'compare' => '='
+                ]
+            ],
+            'posts_per_page' => 1
+        ]);
+        
+        if (empty($pages)) {
+            return new WP_REST_Response([
+                'success' => false,
+                'error' => 'Landing page não encontrada'
+            ], 404);
+        }
+        
+        $page = $pages[0];
+        
+        return new WP_REST_Response([
+            'success' => true,
+            'status' => 'deployed',
+            'page_id' => $page->ID,
+            'page_url' => get_permalink($page->ID),
+            'edit_url' => admin_url("post.php?post={$page->ID}&action=elementor"),
+            'created_at' => $page->post_date
+        ], 200);
     }
 }
 

@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KenzySites - Teste de Landing Pages</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(45deg, #2c3e50, #3498db);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 1.1rem;
+        }
+        
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+        
+        .form-group input:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+        
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        .btn {
+            background: linear-gradient(45deg, #3498db, #2980b9);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+            width: 100%;
+            margin-bottom: 15px;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+        }
+        
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .btn-test {
+            background: linear-gradient(45deg, #e74c3c, #c0392b);
+        }
+        
+        .btn-test:hover {
+            box-shadow: 0 5px 15px rgba(231, 76, 60, 0.4);
+        }
+        
+        .response {
+            margin-top: 30px;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            white-space: pre-wrap;
+            display: none;
+        }
+        
+        .response.success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        
+        .response.error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+            margin-left: 10px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .step {
+            background: #f8f9fa;
+            border-left: 4px solid #3498db;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .step h3 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .api-config {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+        
+        .api-config h3 {
+            color: #856404;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 KenzySites</h1>
+            <p>Sistema de Landing Pages com IA - Interface de Teste</p>
+        </div>
+        
+        <div class="content">
+            <div class="api-config">
+                <h3>⚙️ Configuração da API</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="apiUrl">URL da API KenzySites:</label>
+                        <input type="url" id="apiUrl" value="https://kenzysites-backend-production.up.railway.app" placeholder="https://seu-backend.render.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="wpUrl">URL do WordPress:</label>
+                        <input type="url" id="wpUrl" placeholder="https://seusite.com" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="wpUsername">WordPress Username:</label>
+                        <input type="text" id="wpUsername" placeholder="admin" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="wpPassword">WordPress Password/App Password:</label>
+                        <input type="password" id="wpPassword" placeholder="sua-senha-ou-app-password" required>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="step">
+                <h3>📋 Passo 1: Informações do Negócio</h3>
+                <p>Preencha os dados do negócio para personalizar a landing page:</p>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="businessName">Nome do Negócio:</label>
+                    <input type="text" id="businessName" placeholder="Restaurante Bella Vista" required>
+                </div>
+                <div class="form-group">
+                    <label for="businessPhone">Telefone/WhatsApp:</label>
+                    <input type="tel" id="businessPhone" placeholder="+55 11 99999-9999" required>
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="businessEmail">Email:</label>
+                    <input type="email" id="businessEmail" placeholder="contato@bellavista.com">
+                </div>
+                <div class="form-group">
+                    <label for="businessAddress">Endereço:</label>
+                    <input type="text" id="businessAddress" placeholder="Rua das Flores, 123 - São Paulo, SP">
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="businessServices">Principais Serviços/Produtos:</label>
+                <input type="text" id="businessServices" placeholder="Comida italiana, pizza, delivery" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="businessDescription">Descrição do Negócio (opcional - IA irá melhorar):</label>
+                <textarea id="businessDescription" placeholder="Somos um restaurante italiano tradicional..."></textarea>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="primaryColor">Cor Primária:</label>
+                    <input type="color" id="primaryColor" value="#8B0000">
+                </div>
+                <div class="form-group">
+                    <label for="secondaryColor">Cor Secundária:</label>
+                    <input type="color" id="secondaryColor" value="#FFD700">
+                </div>
+            </div>
+            
+            <div class="step">
+                <h3>🚀 Passo 2: Gerar e Publicar</h3>
+                <p>Clique no botão abaixo para executar todo o processo automaticamente:</p>
+            </div>
+            
+            <button class="btn btn-test" onclick="runCompleteTest()" id="testBtn">
+                🧪 Teste Completo: Gerar + Publicar no WordPress
+            </button>
+            
+            <button class="btn" onclick="generateOnly()" id="generateBtn">
+                🎨 Apenas Gerar Landing Page (sem publicar)
+            </button>
+            
+            <div id="response" class="response"></div>
+        </div>
+    </div>
+
+    <script>
+        async function runCompleteTest() {
+            const btn = document.getElementById('testBtn');
+            const response = document.getElementById('response');
+            
+            // Validação
+            if (!validateForm()) return;
+            
+            btn.disabled = true;
+            btn.innerHTML = '🔄 Processando... <div class="loading"></div>';
+            response.style.display = 'none';
+            
+            try {
+                const apiUrl = document.getElementById('apiUrl').value;
+                const wpUrl = document.getElementById('wpUrl').value;
+                const wpUsername = document.getElementById('wpUsername').value;
+                const wpPassword = document.getElementById('wpPassword').value;
+                
+                const testResponse = await fetch(`${apiUrl}/api/v1/simple-landing/test/complete-flow?wp_url=${encodeURIComponent(wpUrl)}&wp_username=${encodeURIComponent(wpUsername)}&wp_password=${encodeURIComponent(wpPassword)}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+                
+                const data = await testResponse.json();
+                
+                if (testResponse.ok && data.success) {
+                    response.className = 'response success';
+                    response.innerHTML = `✅ SUCESSO!\n\n${JSON.stringify(data, null, 2)}`;
+                    
+                    if (data.results?.wordpress_deployment?.page_url) {
+                        response.innerHTML += `\n\n🔗 Página criada: ${data.results.wordpress_deployment.page_url}`;
+                    }
+                } else {
+                    throw new Error(data.detail || data.error || 'Erro desconhecido');
+                }
+                
+            } catch (error) {
+                response.className = 'response error';
+                response.innerHTML = `❌ ERRO:\n\n${error.message}`;
+            }
+            
+            response.style.display = 'block';
+            btn.disabled = false;
+            btn.innerHTML = '🧪 Teste Completo: Gerar + Publicar no WordPress';
+        }
+        
+        async function generateOnly() {
+            const btn = document.getElementById('generateBtn');
+            const response = document.getElementById('response');
+            
+            // Validação básica
+            const businessName = document.getElementById('businessName').value;
+            const businessPhone = document.getElementById('businessPhone').value;
+            const businessServices = document.getElementById('businessServices').value;
+            
+            if (!businessName || !businessPhone || !businessServices) {
+                alert('Por favor, preencha pelo menos: Nome do Negócio, Telefone e Serviços');
+                return;
+            }
+            
+            btn.disabled = true;
+            btn.innerHTML = '🔄 Gerando... <div class="loading"></div>';
+            response.style.display = 'none';
+            
+            try {
+                const apiUrl = document.getElementById('apiUrl').value;
+                
+                // 1. Primeiro, registrar um template de exemplo
+                const templateData = {
+                    name: "Template de Teste",
+                    category: "restaurant",
+                    elementor_json: {
+                        version: "3.0.0",
+                        content: [{
+                            id: "test-section",
+                            elType: "section",
+                            settings: {
+                                background_background: "classic",
+                                background_color: document.getElementById('primaryColor').value
+                            },
+                            elements: [{
+                                id: "test-column",
+                                elType: "column",
+                                elements: [{
+                                    id: "test-heading",
+                                    elType: "widget",
+                                    widgetType: "heading",
+                                    settings: {
+                                        title: "{{BUSINESS_NAME}}",
+                                        size: "xxl"
+                                    }
+                                }, {
+                                    id: "test-text",
+                                    elType: "widget",
+                                    widgetType: "text-editor",
+                                    settings: {
+                                        editor: "<p>{{DESCRIPTION}}</p><p>Telefone: {{PHONE}}</p>"
+                                    }
+                                }]
+                            }]
+                        }]
+                    }
+                };
+                
+                const templateResponse = await fetch(`${apiUrl}/api/v1/simple-landing/templates/register`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(templateData)
+                });
+                
+                const templateResult = await templateResponse.json();
+                if (!templateResponse.ok) throw new Error(templateResult.detail || 'Erro ao registrar template');
+                
+                // 2. Gerar landing page
+                const generationData = {
+                    template_id: templateResult.template_id,
+                    business_info: {
+                        name: businessName,
+                        phone: businessPhone,
+                        email: document.getElementById('businessEmail').value,
+                        address: document.getElementById('businessAddress').value,
+                        services: businessServices,
+                        description: document.getElementById('businessDescription').value,
+                        primary_color: document.getElementById('primaryColor').value,
+                        secondary_color: document.getElementById('secondaryColor').value
+                    },
+                    ai_enhancement: true,
+                    language: "pt-BR"
+                };
+                
+                const generateResponse = await fetch(`${apiUrl}/api/v1/simple-landing/landing/generate`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(generationData)
+                });
+                
+                const generateResult = await generateResponse.json();
+                
+                if (generateResponse.ok && generateResult.success) {
+                    response.className = 'response success';
+                    response.innerHTML = `✅ LANDING PAGE GERADA!\n\n${JSON.stringify(generateResult, null, 2)}`;
+                } else {
+                    throw new Error(generateResult.detail || generateResult.error || 'Erro desconhecido');
+                }
+                
+            } catch (error) {
+                response.className = 'response error';
+                response.innerHTML = `❌ ERRO:\n\n${error.message}`;
+            }
+            
+            response.style.display = 'block';
+            btn.disabled = false;
+            btn.innerHTML = '🎨 Apenas Gerar Landing Page (sem publicar)';
+        }
+        
+        function validateForm() {
+            const required = ['businessName', 'businessPhone', 'businessServices', 'wpUrl', 'wpUsername', 'wpPassword'];
+            
+            for (let field of required) {
+                if (!document.getElementById(field).value) {
+                    alert(`Por favor, preencha o campo: ${field}`);
+                    return false;
+                }
+            }
+            return true;
+        }
+    </script>
+</body>
+</html>
