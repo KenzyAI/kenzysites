@@ -8,10 +8,13 @@ import logging
 from typing import Dict, List, Optional, Any
 from datetime import datetime, timedelta
 
-# Agno Framework v1.8.0 imports
-from agno import Agent, Workflow
-from agno.models import Claude, OpenAI, GoogleGenerativeAI
-from agno.tools import ReasoningTools, PythonTools
+# Agno Framework imports
+from agno.agent import Agent
+from agno.models.anthropic import Claude
+from agno.models.openai import OpenAI
+from agno.models.google import GoogleGenerativeAI
+from agno.tools.reasoning import ReasoningTools
+from agno.tools.python import PythonTools
 
 # Import our real Agno components
 from app.services.agno.agents import (
@@ -91,7 +94,7 @@ class AgnoManager:
         # Primary: Claude 3.5 Sonnet (as per PRD)
         if settings.ANTHROPIC_API_KEY:
             self.primary_model = Claude(
-                model="claude-3-5-sonnet-20241022",
+                id="claude-sonnet-4-20250514",
                 api_key=settings.ANTHROPIC_API_KEY
             )
             logger.info("✅ Primary model: Claude 3.5 Sonnet initialized")
@@ -100,7 +103,7 @@ class AgnoManager:
         if settings.OPENAI_API_KEY:
             self.secondary_models.append(
                 OpenAI(
-                    model="gpt-4o-2024-08-06",
+                    id="gpt-4o-2024-08-06",
                     api_key=settings.OPENAI_API_KEY
                 )
             )
@@ -110,7 +113,7 @@ class AgnoManager:
         if settings.GOOGLE_AI_API_KEY:
             self.secondary_models.append(
                 GoogleGenerativeAI(
-                    model="gemini-2.0-flash-exp",
+                    id="gemini-2.0-flash-exp",
                     api_key=settings.GOOGLE_AI_API_KEY
                 )
             )

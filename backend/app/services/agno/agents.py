@@ -7,72 +7,39 @@ from typing import Dict, Any, List, Optional
 from datetime import datetime
 import logging
 
-# Note: In production, would import from actual Agno package
-# from agno import Agent, Task, Tool, Crew, Process
-# For now, we'll create our own implementation
+# Agno v1.8.0 imports
+from agno import Agent
 
 logger = logging.getLogger(__name__)
 
-class Agent:
-    """Base Agent class for Agno Framework"""
-    
-    def __init__(
-        self,
-        name: str,
-        role: str,
-        goal: str,
-        backstory: str,
-        llm_model: str = "claude-3.5-sonnet",
-        tools: List[Any] = None,
-        max_iterations: int = 5,
-        verbose: bool = True
-    ):
-        self.name = name
-        self.role = role
-        self.goal = goal
-        self.backstory = backstory
-        self.llm_model = llm_model
-        self.tools = tools or []
-        self.max_iterations = max_iterations
-        self.verbose = verbose
-        self.memory = []
-        
-    def execute(self, task: str, context: Dict[str, Any] = None) -> Dict[str, Any]:
-        """Execute a task with the agent"""
-        if self.verbose:
-            logger.info(f"Agent {self.name} executing: {task}")
-        
-        # Store in memory
-        self.memory.append({
-            "task": task,
-            "context": context,
-            "timestamp": datetime.now()
-        })
-        
-        # Would call actual LLM here
-        return {
-            "agent": self.name,
-            "task": task,
-            "result": f"Completed by {self.name}",
-            "status": "success"
-        }
-
 # ============= SPECIALIZED AGENTS =============
 
-class ContentGeneratorAgent(Agent):
-    """Agent specialized in content generation"""
+class ContentGeneratorAgent:
+    """Agent specialized in content generation using Agno v1.8.0"""
     
-    def __init__(self):
-        super().__init__(
-            name="ContentGenerator",
-            role="Expert Content Creator and SEO Specialist",
-            goal="Generate high-quality, SEO-optimized content that engages users and ranks well",
-            backstory="""You are a seasoned content marketing expert with 10+ years of experience 
-            in creating compelling web content. You understand SEO best practices, user psychology, 
-            and how to write content that converts visitors into customers.""",
-            llm_model="claude-3.5-sonnet",
-            tools=["web_search", "keyword_research", "content_optimizer"]
-        )
+    def __init__(self, model=None):
+        # This will be replaced by actual Agno Agent when model is provided
+        self.model = model
+        self.agent = None
+        
+        if model:
+            from agno.tools import ReasoningTools
+            self.agent = Agent(
+                name="ContentGenerator",
+                model=model,
+                tools=[ReasoningTools()],
+                instructions="""You are an expert content creator and SEO specialist with 10+ years of experience.
+                
+                Your responsibilities:
+                - Generate high-quality, SEO-optimized WordPress content
+                - Create compelling blog posts, pages, and meta descriptions
+                - Ensure content is engaging and converts visitors into customers
+                - Write in Brazilian Portuguese unless specified otherwise
+                - Follow SEO best practices and WordPress formatting guidelines
+                """,
+                markdown=True,
+                description="Specialized agent for WordPress content generation"
+            )
     
     def generate_blog_post(self, topic: str, keywords: List[str], tone: str = "professional") -> Dict[str, Any]:
         """Generate a complete blog post"""
