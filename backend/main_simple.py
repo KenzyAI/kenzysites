@@ -5,7 +5,7 @@ Simplified WordPress AI SaaS - FastAPI Backend
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from typing import Dict, Any, List, Optional
 import random
 import time
@@ -69,6 +69,8 @@ class GenerationRequest(BaseModel):
     target_audience: Optional[str] = None
     seo_keywords: Optional[List[str]] = None
     features: Optional[Dict[str, bool]] = None
+    
+    model_config = {"extra": "allow"}
 
 @app.post("/api/v2/generation/generate")
 async def generate_site(request: GenerationRequest):

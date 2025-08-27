@@ -1,10 +1,10 @@
 # KenzySites - FASE 1: Ultra Minimal Dependencies for Initial Deploy
-# Python 3.12+ required
+# Python 3.13 compatible versions
 
-# Core Framework - minimal stable versions that work on Render
-fastapi==0.100.1
-uvicorn==0.23.2
-pydantic==1.10.12
+# Core Framework - latest compatible versions for Python 3.13
+fastapi==0.115.0
+uvicorn==0.30.6
+pydantic==2.9.0
 
 # Basic utilities only
 python-dotenv==1.0.0
