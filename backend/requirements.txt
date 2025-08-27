@@ -1,5 +1,5 @@
-# KenzySites - FASE 2: Com Phidata (Python 3.13 compatible)
-# Alternative to Agno Framework for better compatibility
+# KenzySites - FASE 2: Com Agno Framework (latest stable)
+# Using Agno 1.7.12 - latest stable version for August 2025
 
 # Core Framework - latest compatible versions for Python 3.13
 fastapi==0.115.0
@@ -9,10 +9,10 @@ pydantic==2.9.0
 # Basic utilities
 python-dotenv==1.0.0
 
-# Phidata (more stable than Agno 1.8.0)
-phidata==2.6.0
+# Agno Framework - latest stable version (August 2025)
+agno==1.7.12
 
-# AI Providers 
+# AI Providers for Agno
 anthropic==0.34.0
 openai==1.50.0
 google-generativeai==0.8.0

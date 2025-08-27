@@ -8,24 +8,23 @@ import logging
 from typing import Dict, List, Optional, Any
 from datetime import datetime, timedelta
 
-# Phidata v2.6.0 imports (more stable than Agno 1.8.0)
+# Agno Framework v1.7.12 imports (latest stable for August 2025)
 try:
-    from phi.agent import Agent
-    from phi.model.anthropic import Claude
-    from phi.model.openai import OpenAI
-    from phi.model.google import GoogleGenerativeAI
-    from phi.tools.reasoning import ReasoningTools
-    from phi.tools.python import PythonTools
-    PHIDATA_AVAILABLE = True
-except ImportError:
-    # Fallback imports if Phidata is not available
+    from agno import Agent, Workflow
+    from agno.models import Claude, OpenAI, GoogleGenerativeAI
+    from agno.tools import ReasoningTools, PythonTools
+    AGNO_AVAILABLE = True
+except ImportError as e:
+    # Fallback imports if Agno is not available
     Agent = None
+    Workflow = None
     Claude = None
     OpenAI = None
     GoogleGenerativeAI = None
     ReasoningTools = None
     PythonTools = None
-    PHIDATA_AVAILABLE = False
+    AGNO_AVAILABLE = False
+    logger.warning(f"Agno Framework not available: {e}")
 
 # Import our real Agno components
 from app.services.agno.agents import (
@@ -77,12 +76,12 @@ class AgnoManager:
         self.tool_executor = tool_executor
         
     async def initialize(self):
-        """Initialize Phidata Framework and create AI agents"""
+        """Initialize Agno Framework and create AI agents"""
         try:
-            logger.info("🚀 Initializing Phidata Framework Manager")
+            logger.info("🚀 Initializing Agno Framework Manager v1.7.12")
             
-            if not PHIDATA_AVAILABLE:
-                logger.warning("⚠️ Phidata not available, running in limited mode")
+            if not AGNO_AVAILABLE:
+                logger.warning("⚠️ Agno Framework not available, running in limited mode")
                 self.initialized = False
                 return
             
@@ -98,10 +97,10 @@ class AgnoManager:
             await self._initialize_specialized_agents()
             
             self.initialized = True
-            logger.info("✅ Phidata Framework Manager initialized successfully")
+            logger.info("✅ Agno Framework Manager v1.7.12 initialized successfully")
             
         except Exception as e:
-            logger.error(f"❌ Failed to initialize Phidata Manager: {str(e)}")
+            logger.error(f"❌ Failed to initialize Agno Manager: {str(e)}")
             raise
     
     async def _initialize_models(self):
