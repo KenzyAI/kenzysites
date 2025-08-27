@@ -8,38 +8,27 @@ import logging
 from typing import Dict, List, Optional, Any
 from datetime import datetime, timedelta
 
-# Agno Framework v1.7.12 imports (latest stable for August 2025)
+# Direct AI APIs (simplified approach - no Agno Framework)
 try:
-    # Try direct imports first
-    import agno
-    from agno.agent import Agent
-    from agno.workflow import Workflow
-    from agno.models.anthropic import Claude
-    from agno.models.openai import OpenAIChat as OpenAI
-    from agno.models.google import GoogleGenerativeAI
-    from agno.tools.reasoning import ReasoningTools
-    from agno.tools.python import PythonTools
-    AGNO_AVAILABLE = True
-    logging.info(f"✅ Agno Framework v{agno.__version__} loaded successfully")
+    import anthropic
+    import openai
+    import google.generativeai as genai
+    AI_APIS_AVAILABLE = True
+    logging.info("✅ Direct AI APIs loaded successfully")
 except ImportError as e:
-    # Try alternative import pattern for different Agno versions
-    try:
-        from agno import Agent, Workflow
-        from agno.models import Claude, OpenAI, GoogleGenerativeAI
-        from agno.tools import ReasoningTools, PythonTools
-        AGNO_AVAILABLE = True
-        logging.info("✅ Agno Framework loaded with alternative imports")
-    except ImportError as e2:
-        # Complete fallback - no Agno available
-        Agent = None
-        Workflow = None
-        Claude = None
-        OpenAI = None
-        GoogleGenerativeAI = None
-        ReasoningTools = None
-        PythonTools = None
-        AGNO_AVAILABLE = False
-        logging.warning(f"⚠️ Agno Framework not available: Primary error: {e}, Secondary error: {e2}")
+    AI_APIS_AVAILABLE = False
+    logging.error(f"❌ Failed to load AI APIs: {e}")
+
+# Agno Framework - temporarily disabled due to import issues
+AGNO_AVAILABLE = False
+Agent = None
+Workflow = None
+Claude = None
+OpenAI = None
+GoogleGenerativeAI = None
+ReasoningTools = None
+PythonTools = None
+logging.info("ℹ️ Agno Framework disabled - using direct AI APIs")
 
 # Import our real Agno components
 from app.services.agno.agents import (
