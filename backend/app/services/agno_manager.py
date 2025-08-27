@@ -49,13 +49,42 @@ try:
             print(f"❌ Cannot import Workflow: {e}")
             Workflow = None
     
-    # Import models - try multiple patterns
+    # Import models - discovered the correct path
+    Claude = None
+    OpenAI = None
+    GoogleGenerativeAI = None
+    
     try:
         from agno.models.anthropic import Claude
+        print("✅ Claude imported from agno.models.anthropic")
+    except ImportError as e:
+        print(f"❌ Cannot import Claude from agno.models.anthropic: {e}")
+        try:
+            # Check what's in models directory
+            import os
+            models_dir = os.path.join(agno_dir, 'models')
+            if os.path.exists(models_dir):
+                model_files = os.listdir(models_dir)
+                print(f"Models directory files: {model_files}")
+                
+                # Try to find anthropic module
+                for file in model_files:
+                    if 'anthropic' in file.lower():
+                        print(f"Found anthropic file: {file}")
+        except Exception as e2:
+            print(f"Error exploring models: {e2}")
+    
+    try:
         from agno.models.openai import OpenAIChat as OpenAI
+        print("✅ OpenAI imported from agno.models.openai")
+    except ImportError as e:
+        print(f"❌ Cannot import OpenAI: {e}")
+    
+    try:
         from agno.models.google import GoogleGenerativeAI
-    except ImportError:
-        from agno.models import Claude, OpenAI, GoogleGenerativeAI
+        print("✅ GoogleGenerativeAI imported from agno.models.google")
+    except ImportError as e:
+        print(f"❌ Cannot import GoogleGenerativeAI: {e}")
     
     # Import tools
     try:
