@@ -10,7 +10,7 @@ pydantic==2.9.0
 python-dotenv==1.0.0
 
 # Agno Framework - latest stable version (August 2025)
-agno==1.8.0
+agno==1.7.12
 
 # AI Providers for Agno
 anthropic==0.34.0
