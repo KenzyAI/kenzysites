@@ -8,27 +8,55 @@ import logging
 from typing import Dict, List, Optional, Any
 from datetime import datetime, timedelta
 
-# Direct AI APIs (simplified approach - no Agno Framework)
+# Agno Framework v1.8.0 with explicit extras - FINAL ATTEMPT
 try:
-    import anthropic
-    import openai
-    import google.generativeai as genai
-    AI_APIS_AVAILABLE = True
-    logging.info("✅ Direct AI APIs loaded successfully")
-except ImportError as e:
-    AI_APIS_AVAILABLE = False
-    logging.error(f"❌ Failed to load AI APIs: {e}")
-
-# Agno Framework - temporarily disabled due to import issues
-AGNO_AVAILABLE = False
-Agent = None
-Workflow = None
-Claude = None
-OpenAI = None
-GoogleGenerativeAI = None
-ReasoningTools = None
-PythonTools = None
-logging.info("ℹ️ Agno Framework disabled - using direct AI APIs")
+    # Force fresh import
+    import agno
+    print(f"Agno installed at: {agno.__file__}")
+    print(f"Agno version: {agno.__version__}")
+    
+    # Import basic agent class
+    from agno.agent import Agent
+    from agno.workflow import Workflow
+    
+    # Import models - try multiple patterns
+    try:
+        from agno.models.anthropic import Claude
+        from agno.models.openai import OpenAIChat as OpenAI
+        from agno.models.google import GoogleGenerativeAI
+    except ImportError:
+        from agno.models import Claude, OpenAI, GoogleGenerativeAI
+    
+    # Import tools
+    try:
+        from agno.tools.reasoning import ReasoningTools
+        from agno.tools.python import PythonTools
+    except ImportError:
+        from agno.tools import ReasoningTools, PythonTools
+    
+    AGNO_AVAILABLE = True
+    logging.info(f"✅ Agno Framework v{agno.__version__} loaded successfully with explicit extras")
+    
+except Exception as e:
+    AGNO_AVAILABLE = False
+    Agent = None
+    Workflow = None
+    Claude = None
+    OpenAI = None
+    GoogleGenerativeAI = None
+    ReasoningTools = None
+    PythonTools = None
+    logging.error(f"❌ Agno Framework failed to load: {e}")
+    logging.error(f"Exception type: {type(e).__name__}")
+    
+    # Try to load direct APIs as backup
+    try:
+        import anthropic
+        import openai
+        import google.generativeai as genai
+        logging.info("✅ Direct AI APIs loaded as backup")
+    except ImportError as backup_e:
+        logging.error(f"❌ Even direct AI APIs failed: {backup_e}")
 
 # Import our real Agno components
 from app.services.agno.agents import (

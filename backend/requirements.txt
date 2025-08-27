@@ -9,13 +9,13 @@ pydantic==2.9.0
 # Basic utilities
 python-dotenv==1.0.0
 
-# AI Providers - Direct usage without Agno for now
+# Agno Framework with explicit dependencies
+agno[anthropic,openai,google]==1.8.0
+
+# AI Providers - explicit versions for compatibility
 anthropic==0.34.0
 openai==1.50.0
 google-generativeai==0.8.0
-
-# Agno Framework - problematic, using direct AI APIs
-# agno==1.8.0
 
 # HTTP Client for WordPress integration
 aiohttp==3.10.5
