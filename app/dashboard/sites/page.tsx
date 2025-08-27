@@ -677,7 +677,11 @@ export default function SitesPage() {
             <SiteForm
               mode="edit"
               site={editingSite}
-              onSubmit={handleEditSite}
+              onSubmit={async (data) => {
+                if ('id' in data) {
+                  await handleEditSite(data as UpdateSiteData)
+                }
+              }}
               onCancel={() => setEditingSite(null)}
               loading={actionLoading}
             />
