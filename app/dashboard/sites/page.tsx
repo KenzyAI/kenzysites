@@ -115,6 +115,7 @@ export default function SitesPage() {
   const pagination = {
     page,
     pageSize,
+    total: sites.length,
     totalItems: sites.length,
     totalPages,
     hasNext: page < totalPages,
