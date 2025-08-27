@@ -8,10 +8,24 @@ import logging
 from typing import Dict, List, Optional, Any
 from datetime import datetime, timedelta
 
-# Agno Framework v1.8.0 imports
-from agno import Agent, Workflow
-from agno.models import Claude, OpenAI, GoogleGenerativeAI
-from agno.tools import ReasoningTools, PythonTools
+# Phidata v2.6.0 imports (more stable than Agno 1.8.0)
+try:
+    from phi.agent import Agent
+    from phi.model.anthropic import Claude
+    from phi.model.openai import OpenAI
+    from phi.model.google import GoogleGenerativeAI
+    from phi.tools.reasoning import ReasoningTools
+    from phi.tools.python import PythonTools
+    PHIDATA_AVAILABLE = True
+except ImportError:
+    # Fallback imports if Phidata is not available
+    Agent = None
+    Claude = None
+    OpenAI = None
+    GoogleGenerativeAI = None
+    ReasoningTools = None
+    PythonTools = None
+    PHIDATA_AVAILABLE = False
 
 # Import our real Agno components
 from app.services.agno.agents import (
@@ -63,9 +77,14 @@ class AgnoManager:
         self.tool_executor = tool_executor
         
     async def initialize(self):
-        """Initialize Agno Framework and create AI agents"""
+        """Initialize Phidata Framework and create AI agents"""
         try:
-            logger.info("🚀 Initializing Agno Framework Manager")
+            logger.info("🚀 Initializing Phidata Framework Manager")
+            
+            if not PHIDATA_AVAILABLE:
+                logger.warning("⚠️ Phidata not available, running in limited mode")
+                self.initialized = False
+                return
             
             # Initialize model providers (PRD: Claude 3.5 Sonnet primary, GPT-4o secondary, Gemini tertiary)
             await self._initialize_models()
@@ -79,10 +98,10 @@ class AgnoManager:
             await self._initialize_specialized_agents()
             
             self.initialized = True
-            logger.info("✅ Agno Framework Manager initialized successfully")
+            logger.info("✅ Phidata Framework Manager initialized successfully")
             
         except Exception as e:
-            logger.error(f"❌ Failed to initialize Agno Manager: {str(e)}")
+            logger.error(f"❌ Failed to initialize Phidata Manager: {str(e)}")
             raise
     
     async def _initialize_models(self):

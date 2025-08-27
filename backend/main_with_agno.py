@@ -14,22 +14,22 @@ from contextlib import asynccontextmanager
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# Try to import Agno - if it fails, fall back to simple mode
+# Try to import Phidata (formerly Agno) - if it fails, fall back to simple mode
 try:
     from app.services.agno_manager import AgnoManager
-    AGNO_AVAILABLE = True
-    logger.info("✅ Agno Framework available")
+    PHIDATA_AVAILABLE = True
+    logger.info("✅ Phidata Framework available")
 except ImportError as e:
-    AGNO_AVAILABLE = False
-    logger.warning(f"⚠️ Agno Framework not available: {e}")
+    PHIDATA_AVAILABLE = False
+    logger.warning(f"⚠️ Phidata Framework not available: {e}")
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Application lifespan manager"""
     # Startup
-    logger.info("🚀 Starting WordPress AI SaaS Backend with Agno Framework v1.8.0")
+    logger.info("🚀 Starting WordPress AI SaaS Backend with Phidata Framework v2.6.0")
     
-    if AGNO_AVAILABLE:
+    if PHIDATA_AVAILABLE:
         try:
             # Initialize Agno Manager
             agno_manager = AgnoManager()
@@ -84,10 +84,10 @@ async def health_check():
     return JSONResponse({
         "status": "healthy",
         "message": "KenzySites Backend is running",
-        "version": "1.8.0-with-agno",
-        "agno_framework": agno_status,
+        "version": "2.6.0-with-phidata",
+        "phidata_framework": agno_status,
         "features": {
-            "agno_available": AGNO_AVAILABLE,
+            "phidata_available": PHIDATA_AVAILABLE,
             "agno_initialized": getattr(app.state, 'agno_enabled', False),
             "ai_agents": getattr(app.state, 'agno_enabled', False),
         }
