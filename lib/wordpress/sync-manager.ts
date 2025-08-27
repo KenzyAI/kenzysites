@@ -90,7 +90,7 @@ export class WordPressSyncManager {
       this.performFullSync()
     }, this.syncInterval * 60 * 1000)
 
-    this.logSync('sync', 'bidirectional', 'success', 'Auto-sync started')
+    this.logSync('posts', 'bidirectional', 'success', 'Auto-sync started')
   }
 
   /**
@@ -102,7 +102,7 @@ export class WordPressSyncManager {
       this.syncIntervalId = undefined
     }
 
-    this.logSync('sync', 'bidirectional', 'success', 'Auto-sync stopped')
+    this.logSync('posts', 'bidirectional', 'success', 'Auto-sync stopped')
   }
 
   /**
@@ -308,7 +308,7 @@ export class WordPressSyncManager {
   async forceSyncItem(
     type: SyncType, 
     itemId: string | number, 
-    direction: 'local_to_remote' | 'remote_to_local' = 'bidirectional'
+    direction: 'local_to_remote' | 'remote_to_local' = 'local_to_remote'
   ): Promise<{ success: boolean; message?: string }> {
     try {
       switch (direction) {
@@ -346,7 +346,7 @@ export class WordPressSyncManager {
    */
   clearSyncLogs(): void {
     this.syncLogs = []
-    this.logSync('sync', 'bidirectional', 'success', 'Sync logs cleared')
+    this.logSync('posts', 'bidirectional', 'success', 'Sync logs cleared')
   }
 
   /**

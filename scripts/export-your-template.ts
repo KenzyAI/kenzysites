@@ -129,7 +129,7 @@ async function testTemplateWithAI(template: any) {
     templateId: template.id, // Usar especificamente seu template
     preferences: {
       colorScheme: 'light' as const,
-      style: 'professional' as const,
+      style: 'corporate' as const,
       layout: 'single-page' as const
     }
   }

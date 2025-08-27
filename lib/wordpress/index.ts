@@ -1,5 +1,13 @@
 // WordPress Integration - Main Export File
 
+import { WordPressAPIClient } from './client'
+import { WordPressProvisioningService } from './provisioning'
+import { WordPressHealthCheckService } from './health-check'
+import { WordPressThemeManager } from './theme-manager'
+import { WordPressPluginManager } from './plugin-manager'
+import { WordPressBackupManager } from './backup-manager'
+import { WordPressSyncManager } from './sync-manager'
+
 export { WordPressAPIClient } from './client'
 export { WordPressProvisioningService } from './provisioning'
 export { WordPressHealthCheckService } from './health-check'
@@ -7,6 +15,28 @@ export { WordPressThemeManager } from './theme-manager'
 export { WordPressPluginManager } from './plugin-manager'
 export { WordPressBackupManager } from './backup-manager'
 export { WordPressSyncManager } from './sync-manager'
+
+import type {
+  WPSiteConfig,
+  WPSiteInfo,
+  WPUser,
+  WPPost,
+  WPPage,
+  WPTheme,
+  WPPlugin,
+  WPCategory,
+  WPTag,
+  WPMedia,
+  WPComment,
+  WPSettings,
+  WPAPIResponse,
+  WPAPIError,
+  WPQueryParams,
+  WPBackup,
+  WPHealthCheck,
+  WPProvisioningRequest,
+  WPProvisioningResponse,
+} from './types'
 
 export type {
   // Core Types
@@ -30,6 +60,33 @@ export type {
   WPProvisioningRequest,
   WPProvisioningResponse,
 } from './types'
+
+import type {
+  ThemeManagerConfig,
+  ThemeMetadata,
+  ThemePreview,
+} from './theme-manager'
+
+import type {
+  PluginManagerConfig,
+  PluginMetadata,
+} from './plugin-manager'
+
+import type {
+  BackupManagerConfig,
+  BackupSchedule,
+  BackupStatistics,
+  RestorePoint,
+} from './backup-manager'
+
+import type {
+  SyncManagerConfig,
+  SyncStatus,
+  SyncConflict,
+  SyncMapping,
+  SyncLog,
+  SyncType,
+} from './sync-manager'
 
 export type {
   ThemeManagerConfig,

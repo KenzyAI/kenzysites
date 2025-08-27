@@ -59,7 +59,7 @@ async function testDifferentBusinesses() {
       templateId: template.id,
       preferences: {
         colorScheme: index === 0 ? 'light' as const : 'colorful' as const,
-        style: 'professional' as const
+        style: 'corporate' as const
       }
     }
     

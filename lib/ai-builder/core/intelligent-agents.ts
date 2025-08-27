@@ -1,11 +1,7 @@
 // Agentes Inteligentes para Análise e Modificação de Conteúdo
 
 import type { BusinessInfo } from '../types'
-
-// Missing type definition
-export interface PlaceholderMapping {
-  [key: string]: string
-}
+import type { PlaceholderMapping } from './placeholder-system'
 
 export interface ContentAnalysis {
   intent: string
