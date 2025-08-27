@@ -66,6 +66,10 @@ import {
   Globe,
   Trash2,
   MoreHorizontal,
+  Eye,
+  Plus,
+  Filter,
+  Edit,
 } from 'lucide-react'
 import { format } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
