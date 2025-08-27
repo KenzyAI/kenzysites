@@ -1,0 +1,646 @@
+{
+  "id": "business-001",
+  "title": "Modern Business Template",
+  "type": "page",
+  "category": ["business", "corporate", "professional"],
+  "tags": ["modern", "clean", "professional", "services", "corporate", "consulting"],
+  "thumbnail": "https://via.placeholder.com/600x400/007cba/ffffff?text=Business+Template",
+  "preview_url": "https://demo.example.com/business-template",
+  "requiredPlugins": ["elementor"],
+  "customizable": {
+    "colors": true,
+    "fonts": true,
+    "content": true,
+    "images": true
+  },
+  "content": [
+    {
+      "id": "hero-section",
+      "elType": "section",
+      "settings": {
+        "layout": "boxed",
+        "gap": "default",
+        "height": "min-height",
+        "height_tablet": "min-height",
+        "height_mobile": "min-height",
+        "custom_height": {
+          "unit": "vh",
+          "size": 100
+        },
+        "background_background": "classic",
+        "background_color": "#f8f9fa",
+        "background_image": {
+          "url": "hero-image",
+          "id": 1
+        },
+        "background_position": "center center",
+        "background_attachment": "scroll",
+        "background_repeat": "no-repeat",
+        "background_size": "cover"
+      },
+      "elements": [
+        {
+          "id": "hero-column",
+          "elType": "column",
+          "settings": {
+            "width": "100",
+            "content_position": "middle"
+          },
+          "elements": [
+            {
+              "id": "hero-heading",
+              "elType": "widget",
+              "widgetType": "heading",
+              "settings": {
+                "title": "{{headline}}",
+                "size": "xxl",
+                "align": "center",
+                "color": "#333333",
+                "typography_typography": "custom",
+                "typography_font_size": {
+                  "unit": "px",
+                  "size": 48
+                },
+                "typography_font_weight": "700",
+                "margin": {
+                  "unit": "px",
+                  "top": "0",
+                  "right": "0",
+                  "bottom": "20",
+                  "left": "0"
+                }
+              }
+            },
+            {
+              "id": "hero-description",
+              "elType": "widget",
+              "widgetType": "text-editor",
+              "settings": {
+                "editor": "{{tagline}}",
+                "align": "center",
+                "text_color": "#666666",
+                "typography_typography": "custom",
+                "typography_font_size": {
+                  "unit": "px",
+                  "size": 18
+                },
+                "margin": {
+                  "unit": "px",
+                  "top": "0",
+                  "right": "0",
+                  "bottom": "30",
+                  "left": "0"
+                }
+              }
+            },
+            {
+              "id": "hero-button",
+              "elType": "widget",
+              "widgetType": "button",
+              "settings": {
+                "text": "{{cta_primary}}",
+                "link": {
+                  "url": "#contact",
+                  "is_external": false,
+                  "nofollow": false
+                },
+                "align": "center",
+                "size": "lg",
+                "button_background_color": "#007cba",
+                "button_text_color": "#ffffff",
+                "border_radius": {
+                  "unit": "px",
+                  "size": 5
+                },
+                "button_box_shadow": {
+                  "horizontal": 0,
+                  "vertical": 5,
+                  "blur": 15,
+                  "spread": 0,
+                  "color": "rgba(0,124,186,0.3)"
+                },
+                "typography_typography": "custom",
+                "typography_font_size": {
+                  "unit": "px",
+                  "size": 16
+                },
+                "typography_font_weight": "600",
+                "padding": {
+                  "unit": "px",
+                  "top": "15",
+                  "right": "30",
+                  "bottom": "15",
+                  "left": "30"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "about-section",
+      "elType": "section",
+      "settings": {
+        "layout": "boxed",
+        "gap": "default",
+        "background_background": "classic",
+        "background_color": "#ffffff",
+        "padding": {
+          "unit": "px",
+          "top": "80",
+          "right": "20",
+          "bottom": "80",
+          "left": "20"
+        }
+      },
+      "elements": [
+        {
+          "id": "about-column-left",
+          "elType": "column",
+          "settings": {
+            "width": "50",
+            "content_position": "middle"
+          },
+          "elements": [
+            {
+              "id": "about-heading",
+              "elType": "widget",
+              "widgetType": "heading",
+              "settings": {
+                "title": "Sobre {{company_name}}",
+                "size": "large",
+                "color": "#333333",
+                "typography_typography": "custom",
+                "typography_font_size": {
+                  "unit": "px",
+                  "size": 36
+                },
+                "typography_font_weight": "700",
+                "margin": {
+                  "unit": "px",
+                  "top": "0",
+                  "right": "0",
+                  "bottom": "20",
+                  "left": "0"
+                }
+              }
+            },
+            {
+              "id": "about-text",
+              "elType": "widget",
+              "widgetType": "text-editor",
+              "settings": {
+                "editor": "{{about}}",
+                "text_color": "#666666",
+                "typography_typography": "custom",
+                "typography_font_size": {
+                  "unit": "px",
+                  "size": 16
+                },
+                "typography_line_height": {
+                  "unit": "em",
+                  "size": 1.6
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "about-column-right",
+          "elType": "column",
+          "settings": {
+            "width": "50",
+            "content_position": "middle"
+          },
+          "elements": [
+            {
+              "id": "about-image",
+              "elType": "widget",
+              "widgetType": "image",
+              "settings": {
+                "image": {
+                  "url": "about-image",
+                  "alt": "Sobre nós"
+                },
+                "image_size": "large",
+                "border_radius": {
+                  "unit": "px",
+                  "size": 10
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "services-section",
+      "elType": "section",
+      "settings": {
+        "layout": "boxed",
+        "gap": "default",
+        "background_background": "classic",
+        "background_color": "#f8f9fa",
+        "padding": {
+          "unit": "px",
+          "top": "80",
+          "right": "20",
+          "bottom": "80",
+          "left": "20"
+        }
+      },
+      "elements": [
+        {
+          "id": "services-heading-column",
+          "elType": "column",
+          "settings": {
+            "width": "100"
+          },
+          "elements": [
+            {
+              "id": "services-heading",
+              "elType": "widget",
+              "widgetType": "heading",
+              "settings": {
+                "title": "Nossos Serviços",
+                "size": "large",
+                "align": "center",
+                "color": "#333333",
+                "typography_typography": "custom",
+                "typography_font_size": {
+                  "unit": "px",
+                  "size": 36
+                },
+                "typography_font_weight": "700",
+                "margin": {
+                  "unit": "px",
+                  "top": "0",
+                  "right": "0",
+                  "bottom": "50",
+                  "left": "0"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "services-cards-section",
+      "elType": "section",
+      "settings": {
+        "layout": "boxed",
+        "gap": "default",
+        "background_background": "classic",
+        "background_color": "#f8f9fa",
+        "padding": {
+          "unit": "px",
+          "top": "0",
+          "right": "20",
+          "bottom": "80",
+          "left": "20"
+        }
+      },
+      "elements": [
+        {
+          "id": "service-1-column",
+          "elType": "column",
+          "settings": {
+            "width": "33.33"
+          },
+          "elements": [
+            {
+              "id": "service-1-icon",
+              "elType": "widget",
+              "widgetType": "icon",
+              "settings": {
+                "icon": {
+                  "value": "fas fa-briefcase",
+                  "library": "fa-solid"
+                },
+                "size": {
+                  "unit": "px",
+                  "size": 48
+                },
+                "color": "#007cba",
+                "align": "center",
+                "margin": {
+                  "unit": "px",
+                  "top": "0",
+                  "right": "0",
+                  "bottom": "20",
+                  "left": "0"
+                }
+              }
+            },
+            {
+              "id": "service-1-title",
+              "elType": "widget",
+              "widgetType": "heading",
+              "settings": {
+                "title": "Consultoria",
+                "size": "medium",
+                "align": "center",
+                "color": "#333333",
+                "typography_typography": "custom",
+                "typography_font_size": {
+                  "unit": "px",
+                  "size": 24
+                },
+                "typography_font_weight": "600",
+                "margin": {
+                  "unit": "px",
+                  "top": "0",
+                  "right": "0",
+                  "bottom": "15",
+                  "left": "0"
+                }
+              }
+            },
+            {
+              "id": "service-1-description",
+              "elType": "widget",
+              "widgetType": "text-editor",
+              "settings": {
+                "editor": "Oferecemos consultoria especializada para otimizar seus processos e alcançar melhores resultados.",
+                "align": "center",
+                "text_color": "#666666",
+                "typography_typography": "custom",
+                "typography_font_size": {
+                  "unit": "px",
+                  "size": 14
+                },
+                "typography_line_height": {
+                  "unit": "em",
+                  "size": 1.5
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "service-2-column",
+          "elType": "column",
+          "settings": {
+            "width": "33.33"
+          },
+          "elements": [
+            {
+              "id": "service-2-icon",
+              "elType": "widget",
+              "widgetType": "icon",
+              "settings": {
+                "icon": {
+                  "value": "fas fa-cogs",
+                  "library": "fa-solid"
+                },
+                "size": {
+                  "unit": "px",
+                  "size": 48
+                },
+                "color": "#007cba",
+                "align": "center",
+                "margin": {
+                  "unit": "px",
+                  "top": "0",
+                  "right": "0",
+                  "bottom": "20",
+                  "left": "0"
+                }
+              }
+            },
+            {
+              "id": "service-2-title",
+              "elType": "widget",
+              "widgetType": "heading",
+              "settings": {
+                "title": "Desenvolvimento",
+                "size": "medium",
+                "align": "center",
+                "color": "#333333",
+                "typography_typography": "custom",
+                "typography_font_size": {
+                  "unit": "px",
+                  "size": 24
+                },
+                "typography_font_weight": "600",
+                "margin": {
+                  "unit": "px",
+                  "top": "0",
+                  "right": "0",
+                  "bottom": "15",
+                  "left": "0"
+                }
+              }
+            },
+            {
+              "id": "service-2-description",
+              "elType": "widget",
+              "widgetType": "text-editor",
+              "settings": {
+                "editor": "Desenvolvemos soluções personalizadas que atendem exatamente às suas necessidades específicas.",
+                "align": "center",
+                "text_color": "#666666",
+                "typography_typography": "custom",
+                "typography_font_size": {
+                  "unit": "px",
+                  "size": 14
+                },
+                "typography_line_height": {
+                  "unit": "em",
+                  "size": 1.5
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "service-3-column",
+          "elType": "column",
+          "settings": {
+            "width": "33.33"
+          },
+          "elements": [
+            {
+              "id": "service-3-icon",
+              "elType": "widget",
+              "widgetType": "icon",
+              "settings": {
+                "icon": {
+                  "value": "fas fa-headset",
+                  "library": "fa-solid"
+                },
+                "size": {
+                  "unit": "px",
+                  "size": 48
+                },
+                "color": "#007cba",
+                "align": "center",
+                "margin": {
+                  "unit": "px",
+                  "top": "0",
+                  "right": "0",
+                  "bottom": "20",
+                  "left": "0"
+                }
+              }
+            },
+            {
+              "id": "service-3-title",
+              "elType": "widget",
+              "widgetType": "heading",
+              "settings": {
+                "title": "Suporte",
+                "size": "medium",
+                "align": "center",
+                "color": "#333333",
+                "typography_typography": "custom",
+                "typography_font_size": {
+                  "unit": "px",
+                  "size": 24
+                },
+                "typography_font_weight": "600",
+                "margin": {
+                  "unit": "px",
+                  "top": "0",
+                  "right": "0",
+                  "bottom": "15",
+                  "left": "0"
+                }
+              }
+            },
+            {
+              "id": "service-3-description",
+              "elType": "widget",
+              "widgetType": "text-editor",
+              "settings": {
+                "editor": "Fornecemos suporte contínuo para garantir que você tenha sempre a melhor experiência.",
+                "align": "center",
+                "text_color": "#666666",
+                "typography_typography": "custom",
+                "typography_font_size": {
+                  "unit": "px",
+                  "size": 14
+                },
+                "typography_line_height": {
+                  "unit": "em",
+                  "size": 1.5
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "contact-section",
+      "elType": "section",
+      "settings": {
+        "layout": "boxed",
+        "gap": "default",
+        "background_background": "classic",
+        "background_color": "#333333",
+        "padding": {
+          "unit": "px",
+          "top": "80",
+          "right": "20",
+          "bottom": "80",
+          "left": "20"
+        }
+      },
+      "elements": [
+        {
+          "id": "contact-column",
+          "elType": "column",
+          "settings": {
+            "width": "100",
+            "content_position": "middle"
+          },
+          "elements": [
+            {
+              "id": "contact-heading",
+              "elType": "widget",
+              "widgetType": "heading",
+              "settings": {
+                "title": "Entre em Contato",
+                "size": "large",
+                "align": "center",
+                "color": "#ffffff",
+                "typography_typography": "custom",
+                "typography_font_size": {
+                  "unit": "px",
+                  "size": 36
+                },
+                "typography_font_weight": "700",
+                "margin": {
+                  "unit": "px",
+                  "top": "0",
+                  "right": "0",
+                  "bottom": "20",
+                  "left": "0"
+                }
+              }
+            },
+            {
+              "id": "contact-text",
+              "elType": "widget",
+              "widgetType": "text-editor",
+              "settings": {
+                "editor": "Pronto para começar? Entre em contato conosco e vamos conversar sobre como podemos ajudar seu negócio a crescer.",
+                "align": "center",
+                "text_color": "#cccccc",
+                "typography_typography": "custom",
+                "typography_font_size": {
+                  "unit": "px",
+                  "size": 18
+                },
+                "margin": {
+                  "unit": "px",
+                  "top": "0",
+                  "right": "0",
+                  "bottom": "30",
+                  "left": "0"
+                }
+              }
+            },
+            {
+              "id": "contact-button",
+              "elType": "widget",
+              "widgetType": "button",
+              "settings": {
+                "text": "{{cta_primary}}",
+                "link": {
+                  "url": "tel:{{phone}}",
+                  "is_external": false,
+                  "nofollow": false
+                },
+                "align": "center",
+                "size": "lg",
+                "button_background_color": "#007cba",
+                "button_text_color": "#ffffff",
+                "border_radius": {
+                  "unit": "px",
+                  "size": 5
+                },
+                "typography_typography": "custom",
+                "typography_font_size": {
+                  "unit": "px",
+                  "size": 16
+                },
+                "typography_font_weight": "600",
+                "padding": {
+                  "unit": "px",
+                  "top": "15",
+                  "right": "30",
+                  "bottom": "15",
+                  "left": "30"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+# KenzySites - Alternative version with compatible Agno/Phidata
+# Python 3.13 compatible versions
+
+# Core Framework - latest compatible versions for Python 3.13
+fastapi==0.115.0
+uvicorn==0.30.6
+pydantic==2.9.0
+
+# Basic utilities
+python-dotenv==1.0.0
+
+# Try older Agno version or use Phidata directly
+phidata==2.6.0
+
+# Alternative AI Providers (if Agno fails)
+anthropic==0.34.0
+openai==1.50.0
+google-generativeai==0.8.0
+
+# HTTP Client for WordPress integration
+aiohttp==3.10.5
