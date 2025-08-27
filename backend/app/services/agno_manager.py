@@ -10,6 +10,8 @@ from datetime import datetime, timedelta
 
 # Agno Framework v1.7.12 imports (latest stable for August 2025)
 try:
+    # Try direct imports first
+    import agno
     from agno.agent import Agent
     from agno.workflow import Workflow
     from agno.models.anthropic import Claude
@@ -18,16 +20,26 @@ try:
     from agno.tools.reasoning import ReasoningTools
     from agno.tools.python import PythonTools
     AGNO_AVAILABLE = True
+    logging.info(f"✅ Agno Framework v{agno.__version__} loaded successfully")
 except ImportError as e:
-    # Fallback imports if Agno is not available
-    Agent = None
-    Workflow = None
-    Claude = None
-    OpenAI = None
-    GoogleGenerativeAI = None
-    ReasoningTools = None
-    PythonTools = None
-    AGNO_AVAILABLE = False
+    # Try alternative import pattern for different Agno versions
+    try:
+        from agno import Agent, Workflow
+        from agno.models import Claude, OpenAI, GoogleGenerativeAI
+        from agno.tools import ReasoningTools, PythonTools
+        AGNO_AVAILABLE = True
+        logging.info("✅ Agno Framework loaded with alternative imports")
+    except ImportError as e2:
+        # Complete fallback - no Agno available
+        Agent = None
+        Workflow = None
+        Claude = None
+        OpenAI = None
+        GoogleGenerativeAI = None
+        ReasoningTools = None
+        PythonTools = None
+        AGNO_AVAILABLE = False
+        logging.warning(f"⚠️ Agno Framework not available: Primary error: {e}, Secondary error: {e2}")
 
 # Import our real Agno components
 from app.services.agno.agents import (
