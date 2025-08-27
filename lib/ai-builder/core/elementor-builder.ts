@@ -15,10 +15,12 @@ import type {
 import { ElementorTemplateParser } from './template-parser'
 import { AIContentGenerator } from './content-generator'
 import { HostedWordPressClient } from '../../wordpress/hosted-client'
+import { WordPressColorManager, type ColorScheme } from '../../wordpress/color-manager'
 
 export class ElementorAIBuilder {
   private templateParser: ElementorTemplateParser
   private contentGenerator: AIContentGenerator
+  private colorManager: WordPressColorManager
   private wpClient?: HostedWordPressClient
   private config: AIBuilderConfig
   private templates: ElementorTemplate[] = []
@@ -28,6 +30,7 @@ export class ElementorAIBuilder {
     this.wpClient = wpClient
     this.templateParser = new ElementorTemplateParser()
     this.contentGenerator = new AIContentGenerator(config)
+    this.colorManager = new WordPressColorManager(wpClient)
   }
 
   /**
@@ -96,12 +99,31 @@ export class ElementorAIBuilder {
         }
       })
 
+      // Stage 4.5: Generate AI-powered color scheme
+      onProgress?.({
+        stage: 'customizing',
+        progress: 80,
+        message: 'Gerando esquema de cores...',
+        details: { 
+          template_selected: selectedTemplate.title,
+          content_generated: true
+        }
+      })
+
+      const colorScheme = await this.colorManager.generateColorScheme({
+        industry: businessInfo.type as any,
+        mood: request.preferences?.style === 'corporate' ? 'professional' : 
+              request.preferences?.style === 'creative' ? 'creative' : 'professional',
+        brandColors: request.customization?.primaryColor ? [request.customization.primaryColor] : undefined
+      })
+
       const customizedTemplate = await this.customizeTemplate(
         selectedTemplate,
         generatedContent,
         businessInfo,
         request.preferences,
-        request.customization
+        request.customization,
+        colorScheme
       )
 
       // Stage 5: Deploy to WordPress (if client available)
@@ -266,7 +288,8 @@ export class ElementorAIBuilder {
     content: GeneratedContent,
     businessInfo: BusinessInfo,
     preferences?: SiteGenerationRequest['preferences'],
-    customization?: SiteGenerationRequest['customization']
+    customization?: SiteGenerationRequest['customization'],
+    colorScheme?: ColorScheme
   ): Promise<ElementorTemplate> {
     // Clone template to avoid modifying original
     const customized = this.templateParser.clone(template)
@@ -308,14 +331,19 @@ export class ElementorAIBuilder {
       // For now, we'll use the text replacement above
     }
 
-    // Apply color scheme
-    if (preferences?.colorScheme !== 'auto' || customization?.primaryColor) {
-      const colorScheme = this.generateColorScheme(
-        preferences?.colorScheme,
-        customization
-      )
+    // Apply AI-generated color scheme
+    if (colorScheme) {
+      // Update template elements with new colors (for elements not using Global Settings)
+      this.templateParser.updateColors(customized, {
+        primary: colorScheme.primary,
+        secondary: colorScheme.secondary,
+        accent: colorScheme.accent,
+        text: colorScheme.text,
+        background: colorScheme.background || '#ffffff'
+      })
       
-      this.templateParser.updateColors(customized, colorScheme)
+      // Store color scheme for WordPress deployment
+      customized.colorScheme = colorScheme
     }
 
     // Replace images (mock implementation)
@@ -420,6 +448,16 @@ export class ElementorAIBuilder {
 
       if (!importResult.success) {
         throw new Error(importResult.message)
+      }
+
+      // Apply color scheme to WordPress Global Settings (if available)
+      if (template.colorScheme && this.wpClient) {
+        try {
+          await this.wpClient.applyColorScheme(1, template.colorScheme) // Site ID 1 for main site
+        } catch (colorError) {
+          console.warn('Cores não foram aplicadas ao Global Settings:', colorError)
+          // Continue without colors - não é crítico
+        }
       }
 
       return {

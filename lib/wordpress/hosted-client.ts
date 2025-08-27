@@ -308,6 +308,82 @@ export class HostedWordPressClient extends WordPressAPIClient {
   }
 
   /**
+   * Apply color scheme to Elementor Global Settings
+   */
+  async applyColorScheme(siteId: number, colorScheme: {
+    primary: string
+    secondary: string 
+    text: string
+    accent: string
+  }): Promise<{
+    success: boolean
+    kitId?: number
+    message: string
+  }> {
+    try {
+      // Switch to specific site if multisite
+      if (siteId && siteId > 1) {
+        await this.switchToSite(siteId)
+      }
+
+      // Get active Elementor kit ID
+      const kitResponse = await this.get('/wp-json/wp/v2/options/elementor_active_kit')
+      const kitId = parseInt(kitResponse.value || kitResponse)
+
+      if (!kitId) {
+        return {
+          success: false,
+          message: 'Kit do Elementor não encontrado'
+        }
+      }
+
+      // Prepare Elementor color structure
+      const elementorColors = {
+        system_colors: [
+          {
+            _id: "primary",
+            title: "Primary", 
+            color: colorScheme.primary
+          },
+          {
+            _id: "secondary", 
+            title: "Secondary",
+            color: colorScheme.secondary
+          },
+          {
+            _id: "text",
+            title: "Text", 
+            color: colorScheme.text
+          },
+          {
+            _id: "accent",
+            title: "Accent",
+            color: colorScheme.accent
+          }
+        ]
+      }
+
+      // Update kit settings via custom endpoint
+      const updateResponse = await this.post('/wp-json/kenzysites/v1/elementor/colors', {
+        kit_id: kitId,
+        colors: elementorColors
+      })
+
+      return {
+        success: updateResponse.success || true,
+        kitId,
+        message: updateResponse.message || 'Cores aplicadas com sucesso!'
+      }
+
+    } catch (error) {
+      return {
+        success: false,
+        message: `Erro ao aplicar cores: ${error instanceof Error ? error.message : 'Erro desconhecido'}`
+      }
+    }
+  }
+
+  /**
    * Import Elementor template to hosted WordPress using KenzySites plugin
    */
   async importElementorTemplate(templateData: {
