@@ -10,14 +10,44 @@ from datetime import datetime, timedelta
 
 # Agno Framework v1.8.0 with explicit extras - FINAL ATTEMPT
 try:
-    # Force fresh import
+    # Force fresh import and debug
     import agno
     print(f"Agno installed at: {agno.__file__}")
-    print(f"Agno version: {agno.__version__}")
+    print(f"Agno dir contents: {dir(agno)}")
     
-    # Import basic agent class
-    from agno.agent import Agent
-    from agno.workflow import Workflow
+    # Check what's available in the package
+    import os
+    agno_dir = os.path.dirname(agno.__file__)
+    agno_files = os.listdir(agno_dir)
+    print(f"Agno package files: {agno_files}")
+    
+    # Try to import Agent directly from agno package root
+    try:
+        from agno import Agent
+        print("✅ Agent imported from agno root")
+    except ImportError as e1:
+        print(f"❌ Cannot import Agent from agno root: {e1}")
+        try:
+            from agno.agent import Agent
+            print("✅ Agent imported from agno.agent")
+        except ImportError as e2:
+            print(f"❌ Cannot import Agent from agno.agent: {e2}")
+            # Try to find where Agent actually is
+            for file in agno_files:
+                if file.endswith('.py') and 'agent' in file.lower():
+                    print(f"Found potential agent file: {file}")
+    
+    # Same for Workflow
+    try:
+        from agno import Workflow
+        print("✅ Workflow imported from agno root")
+    except ImportError:
+        try:
+            from agno.workflow import Workflow
+            print("✅ Workflow imported from agno.workflow")
+        except ImportError as e:
+            print(f"❌ Cannot import Workflow: {e}")
+            Workflow = None
     
     # Import models - try multiple patterns
     try:
