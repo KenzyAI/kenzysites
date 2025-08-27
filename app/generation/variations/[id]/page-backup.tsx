@@ -389,6 +389,7 @@ export default function VariationSelector() {
               businessData={variationSet}
               className="w-full"
             />
+          </div>
         </Card>
 
         {/* Comparison Mode */}
